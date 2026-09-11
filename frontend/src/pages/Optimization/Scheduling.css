@@ -1,0 +1,470 @@
+
+.scheduling-page {
+  min-height: 100vh;
+  padding: 48px 56px 80px;
+  background: #0a0a0a;
+  color: #ffffff;
+  font-family: Inter, "Plus Jakarta Sans", Arial, sans-serif;
+}
+
+.scheduling-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  padding-bottom: 42px;
+}
+
+.scheduling-label {
+  display: block;
+  margin-bottom: 18px;
+  color: #777777;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.scheduling-header h1 {
+  margin: 0;
+  font-size: clamp(48px, 6vw, 82px);
+  line-height: 0.95;
+  font-weight: 600;
+  letter-spacing: -0.055em;
+}
+
+.scheduling-header h1 span {
+  color: #777777;
+}
+
+.scheduling-header p {
+  max-width: 650px;
+  margin: 24px 0 0;
+  color: #8a8a8a;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.scheduling-badge {
+  min-width: 260px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: #111111;
+}
+
+.scheduling-badge span {
+  display: block;
+  margin-bottom: 8px;
+  color: #666666;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.scheduling-badge strong {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.scheduling-error {
+  margin-bottom: 24px;
+  padding: 15px 18px;
+  border: 1px solid rgba(255, 90, 90, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 70, 70, 0.08);
+  color: #ff8c8c;
+  font-size: 13px;
+}
+
+.scheduling-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.scheduling-control-card,
+.jobs-overview-card,
+.algorithm-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: #111111;
+}
+
+.scheduling-control-card,
+.jobs-overview-card {
+  padding: 30px;
+}
+
+.section-label {
+  display: block;
+  margin-bottom: 12px;
+  color: #666666;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.scheduling-control-card h2,
+.jobs-overview-card h2,
+.scheduling-result-section h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.input-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.input-summary div {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #0d0d0d;
+}
+
+.input-summary span {
+  display: block;
+  margin-bottom: 8px;
+  color: #666666;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.input-summary strong {
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.scheduling-description {
+  margin: 22px 0;
+  color: #777777;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.run-scheduling-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 20px;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0a0a0a;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.run-scheduling-button:hover:not(:disabled) {
+  background: #dcdcdc;
+}
+
+.run-scheduling-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.run-scheduling-button:active:not(:disabled) {
+  transform: none;
+}
+
+.run-scheduling-button span {
+  font-size: 18px;
+}
+
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.job-count {
+  color: #777777;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.job-list {
+  margin-top: 28px;
+}
+
+.job-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.job-main strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.job-main span {
+  color: #666666;
+  font-size: 11px;
+}
+
+.job-meta {
+  text-align: right;
+}
+
+.job-meta span {
+  display: block;
+  margin-bottom: 5px;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.job-meta small {
+  color: #555555;
+  font-size: 9px;
+}
+
+.scheduling-message {
+  padding: 25px 0;
+  color: #666666;
+  font-size: 12px;
+}
+
+.scheduling-result-section {
+  margin-top: 18px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: #111111;
+}
+
+.result-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.result-status {
+  color: #8dffb0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.empty-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: #0d0d0d;
+}
+
+.empty-result > span {
+  color: #555555;
+  font-size: 11px;
+}
+
+.empty-result strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.empty-result p {
+  margin: 0;
+  color: #666666;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.algorithm-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.algorithm-card {
+  padding: 26px;
+}
+
+.algorithm-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.algorithm-card-header > div > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #555555;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.algorithm-card-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.algorithm-tag {
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  color: #777777;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.algorithm-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.algorithm-stats div {
+  padding: 15px 12px;
+  border-radius: 9px;
+  background: #0d0d0d;
+}
+
+.algorithm-stats span {
+  display: block;
+  margin-bottom: 7px;
+  color: #555555;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+.algorithm-stats strong {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.scheduling-list {
+  margin-top: 24px;
+}
+
+.scheduling-list > span {
+  display: block;
+  margin-bottom: 10px;
+  color: #555555;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.scheduling-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+}
+
+.scheduling-row span {
+  color: #888888;
+}
+
+.scheduling-row strong {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.scheduling-list p {
+  color: #666666;
+  font-size: 12px;
+}
+
+@media (max-width: 1000px) {
+  .scheduling-page {
+    padding: 35px 30px 60px;
+  }
+
+  .scheduling-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .scheduling-badge {
+    width: 100%;
+  }
+
+  .scheduling-layout,
+  .algorithm-results {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .scheduling-page {
+    padding: 25px 18px 45px;
+  }
+
+  .scheduling-header h1 {
+    font-size: 48px;
+  }
+
+  .scheduling-header p {
+    font-size: 13px;
+  }
+
+  .scheduling-control-card,
+  .jobs-overview-card,
+  .scheduling-result-section,
+  .algorithm-card {
+    padding: 20px;
+  }
+
+  .input-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .job-item {
+    flex-direction: column;
+  }
+
+  .job-meta {
+    text-align: left;
+  }
+
+  .algorithm-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .result-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .algorithm-card-header {
+    flex-direction: column;
+  }
+}

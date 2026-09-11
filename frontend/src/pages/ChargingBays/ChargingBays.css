@@ -1,0 +1,499 @@
+
+.charging-bays-page {
+  width: 100%;
+  min-height: 100%;
+  color: #ffffff;
+}
+
+/* HEADER */
+
+.charging-bays-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding-bottom: 50px;
+}
+
+.charging-bays-label {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: #777777;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.charging-bays-header h1 {
+  margin: 0;
+  font-size: clamp(55px, 7vw, 100px);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  font-weight: 700;
+}
+
+.charging-bays-header h1 span {
+  color: #666666;
+}
+
+.charging-bays-header p {
+  max-width: 560px;
+  margin: 28px 0 0;
+  color: #888888;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* BUTTON */
+
+.add-bay-button {
+  min-width: 150px;
+  height: 54px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.add-bay-button:hover {
+  transform: translateY(-2px);
+  background: #dddddd;
+}
+
+.add-bay-button span {
+  font-size: 18px;
+}
+
+/* DIVIDER */
+
+.charging-bays-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ERROR */
+
+.charging-bays-error {
+  margin-top: 25px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 100, 100, 0.2);
+  border-radius: 9px;
+  background: rgba(255, 80, 80, 0.05);
+  color: #ff9999;
+  font-size: 12px;
+}
+
+/* STATS */
+
+.bay-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 35px 0 60px;
+}
+
+.bay-stat-card {
+  min-height: 150px;
+  padding: 22px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.025);
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.bay-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.bay-stat-card span {
+  color: #666666;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+
+.bay-stat-card strong {
+  font-size: 42px;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-weight: 600;
+}
+
+.bay-stat-card small {
+  color: #666666;
+  font-size: 10px;
+}
+
+/* FORM */
+
+.bay-form-card {
+  margin-bottom: 60px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.bay-form-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 35px;
+}
+
+.bay-form-heading .section-label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.bay-form-heading h2 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+}
+
+.bay-form-heading > span {
+  color: #555555;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.bay-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.bay-form-group label {
+  display: block;
+  margin-bottom: 9px;
+  color: #666666;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+
+.bay-form-group input,
+.bay-form-group select {
+  width: 100%;
+  height: 52px;
+  box-sizing: border-box;
+  padding: 0 15px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 9px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.035);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.bay-form-group select {
+  cursor: pointer;
+}
+
+.bay-form-group select option {
+  background: #111111;
+  color: #ffffff;
+}
+
+.bay-form-group input::placeholder {
+  color: #555555;
+}
+
+.bay-form-group input:focus,
+.bay-form-group select:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+  outline: none;
+}
+
+.save-bay-button {
+  width: 100%;
+  height: 54px;
+  margin-top: 25px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.save-bay-button:hover {
+  background: #dddddd;
+}
+
+.save-bay-button span {
+  font-size: 18px;
+}
+
+/* TABLE */
+
+.bays-table-section {
+  padding-bottom: 70px;
+}
+
+.bays-table-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.section-label {
+  color: #666666;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+
+.bays-table-heading h2 {
+  margin: 12px 0 0;
+  font-size: 30px;
+  letter-spacing: -0.04em;
+}
+
+.bay-count {
+  color: #555555;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.bays-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.bays-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+}
+
+.bays-table th {
+  padding: 17px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #555555;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-align: left;
+}
+
+.bays-table td {
+  padding: 19px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  color: #888888;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.bays-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.bays-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* BAY */
+
+.bay-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bay-name strong {
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.bay-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* STATUS */
+
+.bay-status {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.bay-status.charging,
+.bay-status.occupied {
+  color: #ffffff;
+}
+
+.bay-status.available,
+.bay-status.idle {
+  color: #777777;
+}
+
+.bay-status.maintenance,
+.bay-status.offline {
+  color: #888888;
+}
+
+/* POWER */
+
+.power-value {
+  color: #ffffff;
+  font-size: 12px;
+}
+
+/* DELETE */
+
+.delete-bay-button {
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: transparent;
+  color: #666666;
+  font-family: inherit;
+  font-size: 8px;
+  cursor: pointer;
+}
+
+.delete-bay-button:hover {
+  border-color: rgba(255, 100, 100, 0.3);
+  background: rgba(255, 80, 80, 0.05);
+  color: #ff9999;
+}
+
+/* STATES */
+
+.bays-state {
+  min-height: 220px;
+  padding: 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.018);
+  text-align: center;
+}
+
+.bays-state > span {
+  color: #666666;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+
+.bays-state p {
+  margin: 12px 0 0;
+  color: #555555;
+  font-size: 12px;
+}
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+  .bay-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charging-bays-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .add-bay-button {
+    width: 100%;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .charging-bays-header {
+    padding-bottom: 35px;
+  }
+
+  .charging-bays-header h1 {
+    font-size: clamp(50px, 15vw, 75px);
+  }
+
+  .charging-bays-header p {
+    margin-top: 22px;
+    font-size: 13px;
+  }
+
+  .bay-stats {
+    grid-template-columns: 1fr;
+    margin: 25px 0 40px;
+  }
+
+  .bay-stat-card {
+    min-height: 125px;
+  }
+
+  .bay-form-card {
+    padding: 20px;
+    margin-bottom: 40px;
+  }
+
+  .bay-form-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .bay-form-heading h2 {
+    font-size: 24px;
+  }
+
+  .bays-table-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bays-table-heading h2 {
+    font-size: 26px;
+  }
+
+  .bays-table-section {
+    padding-bottom: 40px;
+  }
+}

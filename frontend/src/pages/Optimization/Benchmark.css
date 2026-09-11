@@ -1,0 +1,587 @@
+.benchmarks-page {
+  min-height: 100vh;
+  padding: 34px;
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      rgba(255, 255, 255, 0.06),
+      transparent 28%
+    ),
+    #080808;
+  color: #f5f5f5;
+}
+
+.benchmarks-shell {
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+.benchmarks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  margin-bottom: 34px;
+}
+
+.benchmarks-eyebrow,
+.control-label,
+.results-heading > div > span,
+.benchmark-summary span,
+.benchmark-footer > div > span {
+  display: block;
+  color: #777;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.benchmarks-header h1 {
+  margin: 9px 0 10px;
+  font-size: clamp(36px, 4vw, 60px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.benchmarks-header p {
+  max-width: 650px;
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.benchmark-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #aaa;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.benchmark-status span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.benchmark-control,
+.benchmark-results,
+.benchmark-summary > div,
+.comparison-card,
+.benchmark-empty,
+.benchmark-loading,
+.benchmark-footer,
+.benchmark-error {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.025);
+  border-radius: 18px;
+}
+
+.benchmark-control {
+  display: grid;
+  grid-template-columns: 0.8fr 1.5fr auto;
+  gap: 25px;
+  align-items: center;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.benchmark-control p {
+  max-width: 300px;
+  margin: 7px 0 0;
+  color: #666;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.dataset-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.dataset-button {
+  min-height: 64px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: #0d0d0d;
+  color: #777;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.dataset-button:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ccc;
+}
+
+.dataset-button.active {
+  background: #f4f4f4;
+  color: #080808;
+  border-color: #f4f4f4;
+}
+
+.dataset-button strong {
+  display: block;
+  font-size: 17px;
+}
+
+.dataset-button span {
+  display: block;
+  margin-top: 4px;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.benchmark-run {
+  height: 48px;
+  padding: 0 23px;
+  border: 0;
+  border-radius: 10px;
+  background: #f4f4f4;
+  color: #080808;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.2s ease;
+}
+
+.benchmark-run:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.benchmark-run:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.benchmark-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.benchmark-summary > div {
+  padding: 20px;
+}
+
+.benchmark-summary strong {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+}
+
+.benchmark-summary small {
+  margin-left: 7px;
+  color: #666;
+  font-size: 10px;
+}
+
+.benchmark-results {
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.results-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 23px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.results-heading h2 {
+  margin: 7px 0 0;
+  font-size: 20px;
+  letter-spacing: -0.025em;
+}
+
+.results-heading > span {
+  color: #666;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.results-table {
+  width: 100%;
+}
+
+.table-head,
+.table-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1.4fr 1fr 1fr;
+  align-items: center;
+}
+
+.table-head {
+  min-height: 42px;
+  padding: 0 23px;
+  background: rgba(255, 255, 255, 0.025);
+  color: #555;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.table-row {
+  min-height: 65px;
+  padding: 0 23px;
+  border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.table-row > div:first-child strong {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.algorithm-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #ddd;
+  font-size: 12px;
+}
+
+.algorithm-name span {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #888;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.execution-value,
+.operations-value {
+  color: #ddd;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.operations-value {
+  color: #888;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.comparison-card {
+  padding: 20px;
+}
+
+.comparison-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.comparison-card-header > span {
+  color: #ddd;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.comparison-card-header small {
+  color: #555;
+  font-size: 8px;
+  text-align: right;
+}
+
+.comparison-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.comparison-values > div {
+  padding: 13px;
+  background: #0c0c0c;
+}
+
+.comparison-values small {
+  display: block;
+  color: #666;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.comparison-values strong {
+  display: block;
+  margin-top: 7px;
+  color: #ddd;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.operation-comparison {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.operation-comparison span:first-child {
+  margin-right: auto;
+  color: #555;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.operation-comparison strong {
+  color: #aaa;
+  font-size: 11px;
+}
+
+.operation-comparison span:not(:first-child) {
+  color: #444;
+  font-size: 8px;
+}
+
+.benchmark-empty {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.empty-number {
+  color: #333;
+  font-size: 70px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.08em;
+}
+
+.benchmark-empty h2 {
+  margin: 18px 0 8px;
+  font-size: 22px;
+}
+
+.benchmark-empty p {
+  max-width: 430px;
+  margin: 0;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.benchmark-loading {
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  color: #666;
+  font-size: 11px;
+}
+
+.loading-line {
+  width: 180px;
+  height: 1px;
+  overflow: hidden;
+  background: #222;
+  position: relative;
+}
+
+.loading-line::after {
+  content: "";
+  position: absolute;
+  left: -50%;
+  width: 50%;
+  height: 100%;
+  background: #aaa;
+  animation: benchmarkLoad 1.1s infinite;
+}
+
+@keyframes benchmarkLoad {
+  0% {
+    left: -50%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+.benchmark-error {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  color: #888;
+  font-size: 11px;
+}
+
+.benchmark-error strong {
+  color: #eee;
+}
+
+.benchmark-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  padding: 20px 23px;
+  margin-top: 20px;
+}
+
+.benchmark-footer p {
+  max-width: 650px;
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.dataset-label {
+  color: #333;
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+}
+
+@media (max-width: 1050px) {
+  .benchmark-control {
+    grid-template-columns: 1fr;
+  }
+
+  .benchmark-control p {
+    max-width: none;
+  }
+
+  .comparison-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .benchmarks-page {
+    padding: 18px;
+  }
+
+  .benchmarks-header {
+    flex-direction: column;
+  }
+
+  .benchmark-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .dataset-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .results-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .table-head,
+  .table-row {
+    grid-template-columns: 1.2fr 1.4fr 1fr 1fr;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .table-head {
+    font-size: 7px;
+  }
+
+  .table-row {
+    min-height: 70px;
+  }
+
+  .algorithm-name {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .benchmarks-page {
+    padding: 12px;
+  }
+
+  .benchmark-control,
+  .benchmark-summary > div,
+  .benchmark-results,
+  .comparison-card,
+  .benchmark-footer {
+    border-radius: 14px;
+  }
+
+  .benchmarks-header h1 {
+    font-size: 35px;
+  }
+
+  .table-head {
+    display: none;
+  }
+
+  .table-row {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 8px;
+    padding: 13px 15px;
+  }
+
+  .table-row > div:nth-child(3),
+  .table-row > div:nth-child(4) {
+    text-align: right;
+  }
+
+  .table-row > div:nth-child(3)::before {
+    content: "TIME ";
+    color: #444;
+    font-size: 7px;
+  }
+
+  .table-row > div:nth-child(4)::before {
+    content: "OPS ";
+    color: #444;
+    font-size: 7px;
+  }
+
+  .benchmark-footer {
+    align-items: flex-start;
+  }
+
+  .dataset-label {
+    display: none;
+  }
+}

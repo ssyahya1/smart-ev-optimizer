@@ -1,0 +1,337 @@
+.charging-sessions-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+  padding: 55px 6%;
+  box-sizing: border-box;
+}
+
+.charging-sessions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.charging-sessions-label,
+.section-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #777;
+  margin-bottom: 16px;
+}
+
+.charging-sessions-header h1 {
+  margin: 0;
+  font-size: clamp(55px, 8vw, 105px);
+  line-height: .9;
+  letter-spacing: -5px;
+}
+
+.charging-sessions-header h1 span {
+  color: #666;
+}
+
+.charging-sessions-header p {
+  max-width: 550px;
+  color: #888;
+  line-height: 1.7;
+  margin-top: 25px;
+}
+
+.add-session-button,
+.save-session-button {
+  border: 1px solid rgba(255,255,255,.2);
+  background: #fff;
+  color: #000;
+  padding: 15px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-session-button:hover,
+.save-session-button:hover {
+  background: #ddd;
+}
+
+.sessions-error {
+  margin: 20px 0;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 8px;
+  background: #151515;
+  color: #ccc;
+}
+
+.session-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 35px 0;
+}
+
+.session-stat-card {
+  min-height: 155px;
+  padding: 22px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  background: #111;
+}
+
+.session-stat-card span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #777;
+}
+
+.session-stat-card strong {
+  display: block;
+  font-size: 42px;
+  margin: 25px 0 8px;
+}
+
+.session-stat-card small {
+  color: #666;
+}
+
+.session-overview,
+.session-form-section,
+.sessions-table-section {
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  background: #101010;
+  margin-bottom: 14px;
+}
+
+.session-overview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  padding: 35px;
+}
+
+.session-overview h2,
+.form-heading h2,
+.table-heading h2 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.session-overview p {
+  max-width: 550px;
+  color: #777;
+  line-height: 1.6;
+}
+
+.activity-summary {
+  display: flex;
+  gap: 45px;
+}
+
+.activity-summary div {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-summary strong {
+  font-size: 48px;
+}
+
+.activity-summary span {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #777;
+}
+
+.session-form-section {
+  padding: 35px;
+}
+
+.session-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #777;
+  margin-bottom: 9px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 7px;
+  background: #080808;
+  color: #fff;
+  outline: none;
+}
+
+.form-group select option {
+  background: #111;
+  color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: rgba(255,255,255,.4);
+}
+
+.save-session-button {
+  align-self: end;
+}
+
+.sessions-table-section {
+  padding: 35px;
+}
+
+.table-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.live-indicator {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #aaa;
+}
+
+.sessions-table-wrapper {
+  overflow-x: auto;
+}
+
+.sessions-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 950px;
+}
+
+.sessions-table th {
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #666;
+  padding: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.sessions-table td {
+  padding: 18px 14px;
+  font-size: 12px;
+  color: #bbb;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.session-status {
+  display: inline-block;
+  padding: 6px 9px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 5px;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.status-active {
+  color: #fff;
+}
+
+.status-completed {
+  color: #aaa;
+}
+
+.status-cancelled {
+  color: #666;
+}
+
+.delete-session-button {
+  border: 1px solid rgba(255,255,255,.15);
+  background: transparent;
+  color: #aaa;
+  padding: 7px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-session-button:hover {
+  background: #fff;
+  color: #000;
+}
+
+.sessions-message {
+  padding: 60px 20px;
+  text-align: center;
+  color: #666;
+}
+
+@media (max-width: 950px) {
+  .charging-sessions-page {
+    padding: 35px 20px;
+  }
+
+  .charging-sessions-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .session-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .session-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .session-overview {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 550px) {
+  .charging-sessions-page {
+    padding: 25px 15px;
+  }
+
+  .charging-sessions-header h1 {
+    font-size: 55px;
+    letter-spacing: -3px;
+  }
+
+  .session-stats,
+  .session-form {
+    grid-template-columns: 1fr;
+  }
+
+  .session-overview,
+  .session-form-section,
+  .sessions-table-section {
+    padding: 22px;
+  }
+
+  .activity-summary {
+    gap: 30px;
+  }
+
+  .table-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+}

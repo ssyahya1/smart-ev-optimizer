@@ -1,0 +1,331 @@
+.grid-slots-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+  padding: 55px 6%;
+  box-sizing: border-box;
+}
+
+.grid-slots-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.grid-slots-label,
+.section-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #777;
+  margin-bottom: 16px;
+}
+
+.grid-slots-header h1 {
+  margin: 0;
+  font-size: clamp(58px, 8vw, 110px);
+  line-height: .9;
+  letter-spacing: -5px;
+}
+
+.grid-slots-header h1 span {
+  color: #666;
+}
+
+.grid-slots-header p {
+  max-width: 520px;
+  color: #888;
+  line-height: 1.7;
+  margin-top: 25px;
+}
+
+.add-slot-button,
+.save-slot-button {
+  border: 1px solid rgba(255,255,255,.2);
+  background: #fff;
+  color: #000;
+  padding: 15px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-slot-button:hover,
+.save-slot-button:hover {
+  background: #ddd;
+}
+
+.grid-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 35px 0;
+}
+
+.grid-stat-card {
+  min-height: 155px;
+  padding: 22px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  background: #111;
+}
+
+.grid-stat-card span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #777;
+}
+
+.grid-stat-card strong {
+  display: block;
+  font-size: 42px;
+  margin: 25px 0 8px;
+}
+
+.grid-stat-card small {
+  color: #666;
+}
+
+.grid-overview,
+.grid-form-section,
+.grid-table-section {
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  background: #101010;
+  margin-bottom: 14px;
+}
+
+.grid-overview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  padding: 35px;
+}
+
+.grid-overview h2,
+.form-heading h2,
+.table-heading h2 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.grid-overview p {
+  color: #777;
+  max-width: 550px;
+}
+
+.load-display {
+  min-width: 260px;
+}
+
+.load-display strong {
+  font-size: 58px;
+  display: block;
+}
+
+.load-display span {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #777;
+}
+
+.load-bar,
+.mini-load-bar {
+  height: 5px;
+  background: #292929;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.load-bar {
+  margin-top: 18px;
+}
+
+.load-bar div,
+.mini-load-bar div {
+  height: 100%;
+  background: #fff;
+  transition: width .3s ease;
+}
+
+.grid-form-section {
+  padding: 35px;
+}
+
+.grid-slot-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #777;
+  margin-bottom: 9px;
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 7px;
+  background: #080808;
+  color: #fff;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: rgba(255,255,255,.4);
+}
+
+.save-slot-button {
+  align-self: end;
+}
+
+.grid-table-section {
+  padding: 35px;
+}
+
+.table-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.live-indicator {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #aaa;
+}
+
+.grid-table-wrapper {
+  overflow-x: auto;
+}
+
+.grid-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 750px;
+}
+
+.grid-table th {
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #666;
+  padding: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.grid-table td {
+  padding: 18px 14px;
+  font-size: 13px;
+  color: #bbb;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.utilization-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mini-load-bar {
+  width: 80px;
+}
+
+.delete-slot-button {
+  border: 1px solid rgba(255,255,255,.15);
+  background: transparent;
+  color: #aaa;
+  padding: 7px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-slot-button:hover {
+  background: #fff;
+  color: #000;
+}
+
+.grid-message {
+  padding: 60px 20px;
+  text-align: center;
+  color: #666;
+}
+
+.grid-slots-error {
+  margin: 20px 0;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 8px;
+  color: #ccc;
+  background: #151515;
+}
+
+@media (max-width: 900px) {
+  .grid-slots-page {
+    padding: 35px 20px;
+  }
+
+  .grid-slots-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .grid-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grid-slot-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grid-overview {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .load-display {
+    width: 100%;
+  }
+}
+
+@media (max-width: 550px) {
+  .grid-slots-page {
+    padding: 25px 15px;
+  }
+
+  .grid-slots-header h1 {
+    font-size: 58px;
+    letter-spacing: -3px;
+  }
+
+  .grid-stats,
+  .grid-slot-form {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-overview,
+  .grid-form-section,
+  .grid-table-section {
+    padding: 22px;
+  }
+
+  .table-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
