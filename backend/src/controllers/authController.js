@@ -137,7 +137,7 @@ export const loginUser = async(req,res,next)=>{
         {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: "none",
             path: "/",
             maxAge: 15 * 60 * 1000
         }
