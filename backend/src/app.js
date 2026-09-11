@@ -34,6 +34,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://192.168.100.9:5173",
+  "https://smart-ev-optimizer.vercel.app"
 ];
 
 app.use(
