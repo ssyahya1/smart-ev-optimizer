@@ -6,7 +6,8 @@
   "main": "src/app.js",
   "scripts": {
     "dev": "node --watch src/app.js",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -19,5 +20,8 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.23.0",
     "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.0"
   }
 }
