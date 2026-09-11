@@ -25,6 +25,7 @@ export const roundRobinPower = (
     let operations = 0;
 
     const allocations = [];
+    let allocatedPowerTotal = 0;
 
     while (
         queue.length > 0 &&
@@ -74,6 +75,37 @@ export const roundRobinPower = (
             );
         }
 
+        let roundedAllocation = Number(
+            allocation.toFixed(2)
+        );
+
+        if (
+            Number.isFinite(allocation) &&
+            allocation >= 0
+        ) {
+            const remainingAvailablePower = Math.max(
+                0,
+                Number(
+                    (
+                        Number(availablePower) -
+                        allocatedPowerTotal
+                    ).toFixed(2)
+                )
+            );
+            const remainingVehicleDemand = Math.max(
+                0,
+                Math.floor(
+                    currentVehicle.remainingPower * 100
+                ) / 100
+            );
+
+            roundedAllocation = Math.min(
+                roundedAllocation,
+                remainingAvailablePower,
+                remainingVehicleDemand
+            );
+        }
+
         allocations.push({
             vehicleId: currentVehicle.id,
             requestedPowerKw:
@@ -82,15 +114,14 @@ export const roundRobinPower = (
                     currentVehicle.requested_power_kw
                 ),
             allocatedPowerKw:
-                Number(
-                    allocation.toFixed(2)
-                )
+                roundedAllocation
         });
 
         currentVehicle.remainingPower -=
-            allocation;
+            roundedAllocation;
 
-        remainingPower -= allocation;
+        remainingPower -= roundedAllocation;
+        allocatedPowerTotal += roundedAllocation;
 
         operations++;
 
