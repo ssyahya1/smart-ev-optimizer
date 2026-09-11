@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../services/api";
 import "./Scheduling.css";
@@ -16,14 +15,11 @@ function Scheduling() {
     vehicle.id ?? vehicle.vehicle_id ?? vehicle.vehicleId;
 
   const getSessionId = (session) =>
-    session.id ??
-    session.session_id ??
-    session.charging_session_id;
+    session.id ?? session.session_id ?? session.charging_session_id;
 
   const getVehicle = (vehicleId) => {
     return vehicles.find(
-      (vehicle) =>
-        Number(getVehicleId(vehicle)) === Number(vehicleId)
+      (vehicle) => Number(getVehicleId(vehicle)) === Number(vehicleId),
     );
   };
 
@@ -32,11 +28,10 @@ function Scheduling() {
       setLoadingData(true);
       setError("");
 
-      const [vehicleData, sessionData] =
-        await Promise.all([
-          apiRequest("/api/vehicles"),
-          apiRequest("/api/charging-sessions"),
-        ]);
+      const [vehicleData, sessionData] = await Promise.all([
+        apiRequest("/api/vehicles"),
+        apiRequest("/api/charging-sessions"),
+      ]);
 
       let loadedVehicles = [];
       let loadedSessions = [];
@@ -51,9 +46,7 @@ function Scheduling() {
 
       if (Array.isArray(sessionData)) {
         loadedSessions = sessionData;
-      } else if (
-        Array.isArray(sessionData.chargingSessions)
-      ) {
+      } else if (Array.isArray(sessionData.chargingSessions)) {
         loadedSessions = sessionData.chargingSessions;
       } else if (Array.isArray(sessionData.data)) {
         loadedSessions = sessionData.data;
@@ -62,10 +55,7 @@ function Scheduling() {
       setVehicles(loadedVehicles);
       setSessions(loadedSessions);
     } catch (err) {
-      setError(
-        err.message ||
-          "Unable to load vehicles and charging sessions."
-      );
+      setError(err.message || "Unable to load vehicles and charging sessions.");
     } finally {
       setLoadingData(false);
     }
@@ -87,15 +77,11 @@ function Scheduling() {
         return {
           id: Number(getSessionId(session)),
           vehicle_id: Number(session.vehicle_id),
-          start_time: new Date(
-            session.start_time
-          ).toISOString(),
+          start_time: new Date(session.start_time).toISOString(),
           end_time: new Date(
-            session.end_time || session.start_time
+            session.end_time || session.start_time,
           ).toISOString(),
-          deadline: new Date(
-            vehicle.deadline
-          ).toISOString(),
+          deadline: new Date(vehicle.deadline).toISOString(),
           priority: vehicle.priority,
         };
       })
@@ -115,89 +101,64 @@ function Scheduling() {
 
       if (chargingJobs.length === 0) {
         throw new Error(
-          "No valid charging sessions are available for scheduling."
+          "No valid charging sessions are available for scheduling.",
         );
       }
 
-      const data = await apiRequest(
-        "/api/scheduling",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            chargingJobs,
-          }),
-        }
-      );
+      const data = await apiRequest("/api/scheduling", {
+        method: "POST",
+        body: JSON.stringify({
+          chargingJobs,
+        }),
+      });
 
-      console.log(
-        "Scheduling API result:",
-        data
-      );
+      console.log("Scheduling API result:", data);
 
       if (!data?.success) {
-        throw new Error(
-          data?.message ||
-            "Scheduling optimization failed."
-        );
+        throw new Error(data?.message || "Scheduling optimization failed.");
       }
 
       setResult({
         success: true,
+
         greedy: {
-          assignments:
-            data.greedy?.assignments ?? [],
-          scheduled:
-            data.greedy?.scheduled ?? [],
-          rejected:
-            data.greedy?.rejected ?? [],
-          operations:
-            data.greedy?.operations ?? 0,
+          scheduled: data.greedy?.scheduledJobs ?? [],
+
+          rejected: data.greedy?.unscheduledJobs ?? [],
+
+          operations: data.greedy?.operations ?? 0,
         },
+
         dynamicProgramming: {
-          assignments:
-            data.dynamicProgramming?.assignments ?? [],
-          scheduled:
-            data.dynamicProgramming?.scheduled ?? [],
-          rejected:
-            data.dynamicProgramming?.rejected ?? [],
-          operations:
-            data.dynamicProgramming?.operations ?? 0,
+          scheduled: data.dynamicProgramming?.scheduled ?? [],
+
+          rejected: data.dynamicProgramming?.unscheduled ?? [],
+
+          totalPriorityValue: data.dynamicProgramming?.totalPriorityValue ?? 0,
+
+          operations: data.dynamicProgramming?.operations ?? 0,
         },
       });
     } catch (err) {
-      console.error(
-        "Scheduling error:",
-        err
-      );
+      console.error("Scheduling error:", err);
 
-      setError(
-        err.message ||
-          "Unable to run charge scheduling."
-      );
+      setError(err.message || "Unable to run charge scheduling.");
     } finally {
       setLoading(false);
     }
   };
 
   const greedy = result?.greedy;
-  const dynamicProgramming =
-    result?.dynamicProgramming;
+  const dynamicProgramming = result?.dynamicProgramming;
 
-  const greedyScheduled =
-    greedy?.scheduled ??
-    greedy?.assignments ??
-    [];
+  const greedyScheduled = greedy?.scheduled ?? greedy?.assignments ?? [];
 
-  const greedyRejected =
-    greedy?.rejected ?? [];
+  const greedyRejected = greedy?.rejected ?? [];
 
   const dpScheduled =
-    dynamicProgramming?.scheduled ??
-    dynamicProgramming?.assignments ??
-    [];
+    dynamicProgramming?.scheduled ?? dynamicProgramming?.assignments ?? [];
 
-  const dpRejected =
-    dynamicProgramming?.rejected ?? [];
+  const dpRejected = dynamicProgramming?.rejected ?? [];
 
   const jobs = buildJobs();
 
@@ -214,32 +175,23 @@ function Scheduling() {
           </h1>
 
           <p>
-            Compare Greedy Interval Scheduling and
-            Dynamic Programming for intelligent
-            charging-session scheduling.
+            Compare Greedy Interval Scheduling and Dynamic Programming for
+            intelligent charging-session scheduling.
           </p>
         </div>
 
         <div className="scheduling-badge">
           <span>COMPARISON</span>
 
-          <strong>
-            GREEDY vs DYNAMIC PROGRAMMING
-          </strong>
+          <strong>GREEDY vs DYNAMIC PROGRAMMING</strong>
         </div>
       </header>
 
-      {error && (
-        <div className="scheduling-error">
-          {error}
-        </div>
-      )}
+      {error && <div className="scheduling-error">{error}</div>}
 
       <section className="scheduling-layout">
         <article className="scheduling-control-card">
-          <span className="section-label">
-            01 — OPTIMIZATION INPUT
-          </span>
+          <span className="section-label">01 — OPTIMIZATION INPUT</span>
 
           <h2>Scheduling dataset</h2>
 
@@ -253,52 +205,37 @@ function Scheduling() {
                 <div>
                   <span>VEHICLES</span>
 
-                  <strong>
-                    {vehicles.length}
-                  </strong>
+                  <strong>{vehicles.length}</strong>
                 </div>
 
                 <div>
                   <span>SESSIONS</span>
 
-                  <strong>
-                    {sessions.length}
-                  </strong>
+                  <strong>{sessions.length}</strong>
                 </div>
 
                 <div>
                   <span>VALID JOBS</span>
 
-                  <strong>
-                    {jobs.length}
-                  </strong>
+                  <strong>{jobs.length}</strong>
                 </div>
               </div>
 
               <p className="scheduling-description">
-                Charging sessions are combined with
-                vehicle priority and deadline data to
-                create the scheduling jobs required by
-                both algorithms.
+                Charging sessions are combined with vehicle priority and
+                deadline data to create the scheduling jobs required by both
+                algorithms.
               </p>
 
               <button
                 type="button"
                 className="run-scheduling-button"
                 onClick={runScheduling}
-                disabled={
-                  loading ||
-                  loadingData ||
-                  jobs.length === 0
-                }
+                disabled={loading || loadingData || jobs.length === 0}
               >
-                {loading
-                  ? "OPTIMIZING..."
-                  : "RUN BOTH ALGORITHMS"}
+                {loading ? "OPTIMIZING..." : "RUN BOTH ALGORITHMS"}
 
-                {!loading && (
-                  <span>↗</span>
-                )}
+                {!loading && <span>↗</span>}
               </button>
             </>
           )}
@@ -307,16 +244,12 @@ function Scheduling() {
         <article className="jobs-overview-card">
           <div className="card-heading">
             <div>
-              <span className="section-label">
-                02 — SCHEDULING JOBS
-              </span>
+              <span className="section-label">02 — SCHEDULING JOBS</span>
 
               <h2>Charging sessions</h2>
             </div>
 
-            <span className="job-count">
-              {jobs.length} JOBS
-            </span>
+            <span className="job-count">{jobs.length} JOBS</span>
           </div>
 
           <div className="job-list">
@@ -326,30 +259,18 @@ function Scheduling() {
               </div>
             ) : (
               jobs.map((job) => (
-                <div
-                  className="job-item"
-                  key={job.id}
-                >
+                <div className="job-item" key={job.id}>
                   <div className="job-main">
-                    <strong>
-                      Session {job.id}
-                    </strong>
+                    <strong>Session {job.id}</strong>
 
-                    <span>
-                      Vehicle {job.vehicle_id}
-                    </span>
+                    <span>Vehicle {job.vehicle_id}</span>
                   </div>
 
                   <div className="job-meta">
-                    <span>
-                      {job.priority}
-                    </span>
+                    <span>{job.priority}</span>
 
                     <small>
-                      Deadline{" "}
-                      {new Date(
-                        job.deadline
-                      ).toLocaleString()}
+                      Deadline {new Date(job.deadline).toLocaleString()}
                     </small>
                   </div>
                 </div>
@@ -362,18 +283,12 @@ function Scheduling() {
       <section className="scheduling-result-section">
         <div className="result-heading">
           <div>
-            <span className="section-label">
-              03 — ALGORITHM COMPARISON
-            </span>
+            <span className="section-label">03 — ALGORITHM COMPARISON</span>
 
             <h2>Scheduling results</h2>
           </div>
 
-          {result && (
-            <span className="result-status">
-              ● COMPLETE
-            </span>
-          )}
+          {result && <span className="result-status">● COMPLETE</span>}
         </div>
 
         {!result ? (
@@ -381,14 +296,11 @@ function Scheduling() {
             <span>01</span>
 
             <div>
-              <strong>
-                Ready for optimization
-              </strong>
+              <strong>Ready for optimization</strong>
 
               <p>
-                Run the scheduling dataset through
-                both algorithms to compare their
-                performance.
+                Run the scheduling dataset through both algorithms to compare
+                their performance.
               </p>
             </div>
           </div>
@@ -403,34 +315,26 @@ function Scheduling() {
                   <h3>Greedy</h3>
                 </div>
 
-                <span className="algorithm-tag">
-                  INTERVAL SCHEDULING
-                </span>
+                <span className="algorithm-tag">INTERVAL SCHEDULING</span>
               </div>
 
               <div className="algorithm-stats">
                 <div>
                   <span>SCHEDULED</span>
 
-                  <strong>
-                    {greedyScheduled.length}
-                  </strong>
+                  <strong>{greedyScheduled.length}</strong>
                 </div>
 
                 <div>
                   <span>REJECTED</span>
 
-                  <strong>
-                    {greedyRejected.length}
-                  </strong>
+                  <strong>{greedyRejected.length}</strong>
                 </div>
 
                 <div>
                   <span>OPERATIONS</span>
 
-                  <strong>
-                    {greedy?.operations ?? 0}
-                  </strong>
+                  <strong>{greedy?.operations ?? 0}</strong>
                 </div>
               </div>
 
@@ -438,69 +342,46 @@ function Scheduling() {
                 <span>SCHEDULED JOBS</span>
 
                 {greedyScheduled.length > 0 ? (
-                  greedyScheduled.map(
-                    (job, index) => {
-                      const jobId =
-                        typeof job === "object"
-                          ? job.id ??
-                            job.jobId ??
-                            job.sessionId
-                          : job;
+                  greedyScheduled.map((job, index) => {
+                    const jobId =
+                      typeof job === "object"
+                        ? (job.id ?? job.jobId ?? job.sessionId)
+                        : job;
 
-                      return (
-                        <div
-                          className="scheduling-row"
-                          key={`greedy-${index}`}
-                        >
-                          <span>
-                            Job {jobId}
-                          </span>
+                    return (
+                      <div className="scheduling-row" key={`greedy-${index}`}>
+                        <span>Job {jobId}</span>
 
-                          <strong>
-                            Scheduled
-                          </strong>
-                        </div>
-                      );
-                    }
-                  )
+                        <strong>Scheduled</strong>
+                      </div>
+                    );
+                  })
                 ) : (
-                  <p>
-                    No scheduled jobs.
-                  </p>
+                  <p>No scheduled jobs.</p>
                 )}
               </div>
 
               {greedyRejected.length > 0 && (
                 <div className="scheduling-list">
-                  <span>
-                    REJECTED JOBS
-                  </span>
+                  <span>REJECTED JOBS</span>
 
-                  {greedyRejected.map(
-                    (job, index) => {
-                      const jobId =
-                        typeof job === "object"
-                          ? job.id ??
-                            job.jobId ??
-                            job.sessionId
-                          : job;
+                  {greedyRejected.map((job, index) => {
+                    const jobId =
+                      typeof job === "object"
+                        ? (job.id ?? job.jobId ?? job.sessionId)
+                        : job;
 
-                      return (
-                        <div
-                          className="scheduling-row"
-                          key={`greedy-rejected-${index}`}
-                        >
-                          <span>
-                            Job {jobId}
-                          </span>
+                    return (
+                      <div
+                        className="scheduling-row"
+                        key={`greedy-rejected-${index}`}
+                      >
+                        <span>Job {jobId}</span>
 
-                          <strong>
-                            Rejected
-                          </strong>
-                        </div>
-                      );
-                    }
-                  )}
+                        <strong>Rejected</strong>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </article>
@@ -511,40 +392,29 @@ function Scheduling() {
                 <div>
                   <span>ALGORITHM 02</span>
 
-                  <h3>
-                    Dynamic Programming
-                  </h3>
+                  <h3>Dynamic Programming</h3>
                 </div>
 
-                <span className="algorithm-tag">
-                  OPTIMAL SELECTION
-                </span>
+                <span className="algorithm-tag">OPTIMAL SELECTION</span>
               </div>
 
               <div className="algorithm-stats">
                 <div>
                   <span>SCHEDULED</span>
 
-                  <strong>
-                    {dpScheduled.length}
-                  </strong>
+                  <strong>{dpScheduled.length}</strong>
                 </div>
 
                 <div>
                   <span>REJECTED</span>
 
-                  <strong>
-                    {dpRejected.length}
-                  </strong>
+                  <strong>{dpRejected.length}</strong>
                 </div>
 
                 <div>
                   <span>OPERATIONS</span>
 
-                  <strong>
-                    {dynamicProgramming?.operations ??
-                      0}
-                  </strong>
+                  <strong>{dynamicProgramming?.operations ?? 0}</strong>
                 </div>
               </div>
 
@@ -552,69 +422,46 @@ function Scheduling() {
                 <span>SCHEDULED JOBS</span>
 
                 {dpScheduled.length > 0 ? (
-                  dpScheduled.map(
-                    (job, index) => {
-                      const jobId =
-                        typeof job === "object"
-                          ? job.id ??
-                            job.jobId ??
-                            job.sessionId
-                          : job;
+                  dpScheduled.map((job, index) => {
+                    const jobId =
+                      typeof job === "object"
+                        ? (job.id ?? job.jobId ?? job.sessionId)
+                        : job;
 
-                      return (
-                        <div
-                          className="scheduling-row"
-                          key={`dp-${index}`}
-                        >
-                          <span>
-                            Job {jobId}
-                          </span>
+                    return (
+                      <div className="scheduling-row" key={`dp-${index}`}>
+                        <span>Job {jobId}</span>
 
-                          <strong>
-                            Scheduled
-                          </strong>
-                        </div>
-                      );
-                    }
-                  )
+                        <strong>Scheduled</strong>
+                      </div>
+                    );
+                  })
                 ) : (
-                  <p>
-                    No scheduled jobs.
-                  </p>
+                  <p>No scheduled jobs.</p>
                 )}
               </div>
 
               {dpRejected.length > 0 && (
                 <div className="scheduling-list">
-                  <span>
-                    REJECTED JOBS
-                  </span>
+                  <span>REJECTED JOBS</span>
 
-                  {dpRejected.map(
-                    (job, index) => {
-                      const jobId =
-                        typeof job === "object"
-                          ? job.id ??
-                            job.jobId ??
-                            job.sessionId
-                          : job;
+                  {dpRejected.map((job, index) => {
+                    const jobId =
+                      typeof job === "object"
+                        ? (job.id ?? job.jobId ?? job.sessionId)
+                        : job;
 
-                      return (
-                        <div
-                          className="scheduling-row"
-                          key={`dp-rejected-${index}`}
-                        >
-                          <span>
-                            Job {jobId}
-                          </span>
+                    return (
+                      <div
+                        className="scheduling-row"
+                        key={`dp-rejected-${index}`}
+                      >
+                        <span>Job {jobId}</span>
 
-                          <strong>
-                            Rejected
-                          </strong>
-                        </div>
-                      );
-                    }
-                  )}
+                        <strong>Rejected</strong>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </article>
