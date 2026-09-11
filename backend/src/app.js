@@ -104,7 +104,7 @@ pool.query("SELECT NOW()")
   console.log("PostgreSQL connected successfully");
 })
 .catch((error) => {
-  console.error("PostgreSQL connection failed");
+  console.error("PostgreSQL connection failed",error);
 });
 
 
