@@ -353,7 +353,14 @@ describe("Express API integration", () => {
     test("runs all optimization endpoints and validates their envelopes", async () => {
         const responses = await Promise.all([
             api.post("/api/assignment").send({
-                vehicles: [{ id: 1, priority: "Emergency", required_power_kw: 40 }],
+                vehicles: [{
+                    id: 1,
+                    priority: "Emergency",
+                    battery_capacity_kwh: 80,
+                    initial_soc: 25,
+                    arrival_time: "2026-09-11T08:00:00",
+                    deadline: "2026-09-11T12:00:00"
+                }],
                 chargingBays: [{ id: 1, status: "available", max_power_kw: 50 }]
             }),
             api.post("/api/scheduling").send({

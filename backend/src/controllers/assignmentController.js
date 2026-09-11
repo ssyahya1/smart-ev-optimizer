@@ -3,6 +3,36 @@ import { z } from "zod";
 import { greedyAssignment } from "../algorithms/assignment/greedyAssignment.js";
 import { priorityQueueAssignment } from "../algorithms/assignment/priorityQueueAssignment.js";
 
+const assignmentRequestSchema = z.object({
+    vehicles: z.array(
+        z.object({
+            id: z.number().int().positive(),
+            battery_capacity_kwh: z.number().positive(),
+            initial_soc: z.number().min(0).max(100),
+            arrival_time: z.string().min(1),
+            deadline: z.string().min(1),
+            priority: z.enum([
+                "Emergency",
+                "High",
+                "Medium",
+                "Low"
+            ])
+        })
+    ).min(1).max(1000),
+
+    chargingBays: z.array(
+        z.object({
+            id: z.number().int().positive(),
+            status: z.enum([
+                "available",
+                "occupied",
+                "maintenance"
+            ]),
+            max_power_kw: z.number().positive()
+        })
+    ).min(1).max(100)
+});
+
 const assignmentSchema = z.object({
     vehicles: z.array(
         z.object({
@@ -47,19 +77,18 @@ export const runAssignment = (req, res, next) => {
          * stored permanently in the database.
          */
 
-        const { vehicles, chargingBays } = req.body;
+        const requestValidation =
+            assignmentRequestSchema.safeParse(req.body);
 
-
-        if (
-            !Array.isArray(vehicles) ||
-            !Array.isArray(chargingBays)
-        ) {
+        if (!requestValidation.success) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Vehicles and charging bays must be arrays"
+                message: "Invalid assignment data",
+                errors: requestValidation.error.flatten()
             });
         }
+
+        const { vehicles, chargingBays } = requestValidation.data;
 
 
         /*
