@@ -201,15 +201,13 @@ describe("backend security and authentication", () => {
         expect(login.status).toBe(200);
     });
 
-    test("documents unauthenticated user-data exposure through /api/test-db", async () => {
+    test("does not expose the removed database debug endpoint", async () => {
         const response = await request(baseUrl).get("/api/test-db");
 
-        expect(response.status).toBe(200);
-        expect(response.body).toMatchObject({
-            success: true,
-            users: expect.any(Array)
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({
+            success: false,
+            message: "Route not found"
         });
-        expect(response.body.users.length).toBeGreaterThan(0);
-        expect(response.body.users[0]).toHaveProperty("email");
     });
 });

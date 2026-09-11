@@ -108,25 +108,6 @@ pool.query("SELECT NOW()")
 
 
 
-app.get("/api/test-db", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM users");
-    
-    res.json({
-      success: true,
-      message: "Database connection and users table are working",
-      users: result.rows,
-    });
-  } catch (error) {
-    console.error("Database test failed");
-    
-    res.status(500).json({
-      success: false,
-      message: "Database test failed",
-    });
-  }
-});
-
 app.use("/api/auth",authRoute);
 app.use("/api/vehicles", vehicleRoute);
 app.use("/api/charging-bays", chargingBayRoute);
