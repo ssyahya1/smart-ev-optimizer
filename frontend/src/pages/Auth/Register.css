@@ -1,0 +1,9 @@
+.auth-switch-link {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-switch-link:hover {
+  color: #aaaaaa;
+}

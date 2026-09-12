@@ -109,7 +109,19 @@ describe("backend security and authentication", () => {
         expect(response.body.user.password_hash).toBeUndefined();
         expect(cookies.some((cookie) => cookie.startsWith("ev_optimizer_token=")))
             .toBe(true);
+        expect(cookies.some((cookie) => cookie.startsWith("ev_optimizer_refresh_token=")))
+            .toBe(true);
         expect(cookies.some((cookie) => /HttpOnly/i.test(cookie))).toBe(true);
+    });
+
+    test("refreshes access authentication and rotates the refresh token", async () => {
+        const firstRefresh = await api.post("/api/auth/refresh");
+        const secondRefresh = await api.post("/api/auth/refresh");
+        const me = await api.get("/api/auth/me");
+
+        expect(firstRefresh.status).toBe(200);
+        expect(secondRefresh.status).toBe(200);
+        expect(me.status).toBe(200);
     });
 
     test("rejects an invalid password", async () => {
@@ -189,10 +201,13 @@ describe("backend security and authentication", () => {
     test("clears authentication on logout", async () => {
         const logout = await api.post("/api/auth/logout");
         const afterLogout = await api.get("/api/auth/me");
+        const afterRefreshLogout = await api.post("/api/auth/refresh");
 
         expect(logout.status).toBe(200);
         expect(afterLogout.status).toBe(401);
         expect(afterLogout.body.message).toBe("Access token required");
+        expect(afterRefreshLogout.status).toBe(401);
+        expect(afterRefreshLogout.body.message).toBe("Refresh token required");
 
         const login = await api.post("/api/auth/login").send({
             email: testEmail,

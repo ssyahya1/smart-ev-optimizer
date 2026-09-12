@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../services/api";
 import "./Scheduling.css";
@@ -99,6 +100,8 @@ function Scheduling() {
 
       const chargingJobs = buildJobs();
 
+      console.log("Charging Jobs Sent:", chargingJobs);
+
       if (chargingJobs.length === 0) {
         throw new Error(
           "No valid charging sessions are available for scheduling.",
@@ -123,19 +126,15 @@ function Scheduling() {
 
         greedy: {
           scheduled: data.greedy?.scheduledJobs ?? [],
-
           rejected: data.greedy?.unscheduledJobs ?? [],
-
           operations: data.greedy?.operations ?? 0,
         },
 
         dynamicProgramming: {
           scheduled: data.dynamicProgramming?.scheduled ?? [],
-
           rejected: data.dynamicProgramming?.unscheduled ?? [],
-
-          totalPriorityValue: data.dynamicProgramming?.totalPriorityValue ?? 0,
-
+          totalPriorityValue:
+            data.dynamicProgramming?.totalPriorityValue ?? 0,
           operations: data.dynamicProgramming?.operations ?? 0,
         },
       });

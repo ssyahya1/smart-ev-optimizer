@@ -48,4 +48,27 @@ describe("apiRequest", () => {
       "Access token required"
     );
   });
+
+  test("refreshes once and retries an unauthorized request", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        json: async () => ({ message: "Access token required" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ message: "Token refreshed" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ user: { id: 1 } }),
+      });
+
+    await expect(apiRequest("/api/protected")).resolves.toEqual({ user: { id: 1 } });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock.mock.calls[1][0]).toContain("/api/auth/refresh");
+  });
 });

@@ -347,6 +347,47 @@
   font-size: 13px;
 }
 
+.login-success {
+  margin: 10px 0 20px;
+  padding: 12px 14px;
+  border: 1px solid rgba(150, 220, 170, 0.25);
+  border-radius: 8px;
+  color: #b7e6c3;
+  background: rgba(100, 190, 120, 0.08);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.create-account-link {
+  margin-top: 24px;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #777777;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.create-account-link strong {
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.create-account-link strong span {
+  margin-left: 5px;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.create-account-link:hover {
+  color: #ffffff;
+}
+
 /* ================================
    ENTER SYSTEM BUTTON
 ================================ */

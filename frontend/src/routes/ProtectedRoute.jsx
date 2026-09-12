@@ -9,7 +9,7 @@ function ProtectedRoute({ children, requiredRole }) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ message: "Your session has expired. Please sign in again." }} />;
   }
 
   if (requiredRole && user?.role !== requiredRole) {

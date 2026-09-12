@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser,loginUser,logoutUser,createAdmin} from "../controllers/authController.js";
+import { registerUser,loginUser,refreshAccessToken,logoutUser,createAdmin} from "../controllers/authController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
 import { loginLimiter } from "../middleware/rateLimitMiddleware.js";
@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login",loginLimiter, loginUser);
+router.post("/refresh", refreshAccessToken);
 router.get("/me", authMiddleware, (req, res) => {
     res.json({
         id: req.user.id,
