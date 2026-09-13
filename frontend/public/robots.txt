@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://smart-ev-optimizer.vercel.app/sitemap.xml
