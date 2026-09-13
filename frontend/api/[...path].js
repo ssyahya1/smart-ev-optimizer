@@ -1,22 +1,33 @@
 export default async function handler(req, res) {
-  const { path } = req.query;
-
-  const pathString = Array.isArray(path)
-    ? path.join("/")
-    : path || "";
-
-  const targetUrl =
-    `https://smart-ev-optimizer-production.up.railway.app/api/${pathString}`;
-
   try {
+    const requestUrl = new URL(
+      req.url,
+      `https://${req.headers.host}`
+    );
+
+    let path = requestUrl.pathname;
+
+    // Remove the /api prefix
+    if (path.startsWith("/api")) {
+      path = path.slice(4);
+    }
+
+    const targetUrl =
+      `https://smart-ev-optimizer-production.up.railway.app/api${path}${requestUrl.search}`;
+
+    console.log("Proxy target:", targetUrl);
+
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (req.headers.cookie) {
+      headers.Cookie = req.headers.cookie;
+    }
+
     const response = await fetch(targetUrl, {
       method: req.method,
-      headers: {
-        "Content-Type": "application/json",
-        ...(req.headers.cookie
-          ? { Cookie: req.headers.cookie }
-          : {}),
-      },
+      headers,
       body:
         req.method === "GET" || req.method === "HEAD"
           ? undefined
@@ -37,11 +48,11 @@ export default async function handler(req, res) {
 
     const data = await response.text();
 
-    res.status(response.status).send(data);
+    return res.status(response.status).send(data);
   } catch (error) {
     console.error("API proxy error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "API proxy error",
     });
