@@ -6,12 +6,14 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedOut, setLoggedOut] = useState(false);
 
   const checkAuth = async () => {
     try {
       const data = await apiRequest("/api/auth/me");
 
       setUser(data.user || data);
+      setLoggedOut(false);
     } catch (error) {
       setUser(null);
     } finally {
@@ -24,10 +26,14 @@ export function AuthProvider({ children }) {
 
     const handleSessionExpired = () => {
       setUser(null);
+      setLoggedOut(false);
     };
 
     window.addEventListener("auth:expired", handleSessionExpired);
-    return () => window.removeEventListener("auth:expired", handleSessionExpired);
+
+    return () => {
+      window.removeEventListener("auth:expired", handleSessionExpired);
+    };
   }, []);
 
   const login = async (email, password) => {
@@ -39,6 +45,7 @@ export function AuthProvider({ children }) {
       }),
     });
 
+    setLoggedOut(false);
     setUser(data.user || data);
 
     return data;
@@ -50,6 +57,7 @@ export function AuthProvider({ children }) {
         method: "POST",
       });
     } finally {
+      setLoggedOut(true);
       setUser(null);
     }
   };
@@ -61,6 +69,7 @@ export function AuthProvider({ children }) {
     logout,
     checkAuth,
     isAuthenticated: Boolean(user),
+    loggedOut,
   };
 
   return (
