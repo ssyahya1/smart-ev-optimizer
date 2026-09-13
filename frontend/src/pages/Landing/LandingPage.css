@@ -97,6 +97,7 @@
 .hero-background {
   position: absolute;
   inset: 0;
+
   z-index: -2;
 
   overflow: hidden;
@@ -145,7 +146,6 @@
   border-radius: 50%;
 
   filter: blur(100px);
-
   opacity: 0.25;
 
   animation: floatGlow 12s ease-in-out infinite alternate;
@@ -231,8 +231,11 @@
 .hero h1 {
   max-width: 1000px;
 
+  margin: 0;
+
   font-size: clamp(4rem, 9vw, 9.5rem);
   font-weight: 800;
+
   line-height: 0.84;
   letter-spacing: -0.07em;
 }
@@ -252,6 +255,10 @@
   line-height: 1.7;
 }
 
+/* =========================
+   HERO ACTIONS
+========================= */
+
 .hero-actions {
   display: flex;
   align-items: center;
@@ -268,6 +275,7 @@
   gap: 18px;
 
   min-height: 48px;
+
   padding: 0 22px;
 
   border-radius: 100px;
@@ -295,12 +303,15 @@
 
 .secondary-button {
   border: 1px solid rgba(255, 255, 255, 0.15);
+
   color: #aaaaaa;
 }
 
 .secondary-button:hover {
   transform: translateY(-2px);
+
   border-color: rgba(255, 255, 255, 0.35);
+
   color: #ffffff;
 }
 
@@ -363,8 +374,8 @@
 
   font-size: 70px;
   font-weight: 700;
-  line-height: 1;
 
+  line-height: 1;
   letter-spacing: -0.06em;
 }
 
@@ -386,6 +397,7 @@
 .card-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+
   gap: 15px;
 }
 
@@ -455,14 +467,18 @@
 .intro-content {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
+
   gap: 10vw;
 }
 
 .intro-content h2 {
   max-width: 850px;
 
+  margin: 0;
+
   font-size: clamp(2.8rem, 5vw, 6rem);
   font-weight: 500;
+
   line-height: 0.95;
   letter-spacing: -0.055em;
 }
@@ -509,6 +525,7 @@
 
 .system-card:hover {
   background: rgba(255, 255, 255, 0.035);
+
   transform: translateY(-4px);
 }
 
@@ -550,12 +567,16 @@
 .benchmark-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
+
   gap: 10vw;
 }
 
 .benchmark-content h2 {
+  margin: 0;
+
   font-size: clamp(4rem, 8vw, 9rem);
   font-weight: 700;
+
   line-height: 0.85;
   letter-spacing: -0.07em;
 }
@@ -606,7 +627,9 @@
 
 .dataset-row span:hover {
   background: #ffffff;
+
   color: #0a0a0a;
+
   transform: scale(1.05);
 }
 
@@ -638,14 +661,16 @@
 
 .footer strong {
   color: #ffffff;
+
   font-size: 12px;
 }
 
 /* =========================
-   RESPONSIVE
+   TABLET
 ========================= */
 
 @media (max-width: 1000px) {
+
   .nav-links {
     display: none;
   }
@@ -670,39 +695,160 @@
   }
 }
 
+/* =========================
+   PHONE
+========================= */
+
 @media (max-width: 650px) {
+
+  /* NAVBAR */
+
   .navbar {
-    padding: 22px 6vw;
+    padding: 20px 6vw;
   }
 
+  .brand {
+    font-size: 12px;
+  }
+
+  .brand-mark {
+    width: 25px;
+    height: 25px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-action {
+    font-size: 10px;
+  }
+
+
+  /* HERO */
+
   .hero {
-    min-height: 850px;
-    padding: 80px 6vw;
+    min-height: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    padding: 70px 6vw 75px;
+  }
+
+  .hero-content {
+    width: 100%;
+    max-width: none;
+  }
+
+  .hero-label {
+    margin-bottom: 28px;
+
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
   }
 
   .hero h1 {
-    font-size: clamp(3.5rem, 17vw, 6rem);
+    width: 100%;
+    max-width: none;
+
+    font-size: clamp(3.3rem, 15.8vw, 5.5rem);
+
+    line-height: 0.86;
+    letter-spacing: -0.065em;
+
+    overflow-wrap: normal;
   }
 
   .hero-description {
+    max-width: 100%;
+
     margin-top: 30px;
+
     font-size: 13px;
+    line-height: 1.75;
   }
+
+
+  /* BUTTONS */
 
   .hero-actions {
+    width: 100%;
+
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+
+    gap: 12px;
+
+    margin-top: 30px;
   }
 
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+    min-height: 50px;
+
+    padding: 0 20px;
+  }
+
+
+  /* HERO CARD */
+
   .hero-card {
-    right: 6vw;
-    bottom: 40px;
-    width: min(310px, 88vw);
+    position: relative;
+
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    max-width: 310px;
+
+    margin: 48px auto 0;
+
+    padding: 22px;
+
+    border-radius: 14px;
+  }
+
+  .card-value {
+    margin-top: 25px;
+
+    font-size: 62px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+
+  .card-line {
+    margin: 22px 0;
+  }
+
+  .card-stats {
+    gap: 10px;
+  }
+
+  .card-stats strong {
+    font-size: 15px;
+  }
+
+  .card-stats span {
+    font-size: 7px;
   }
 
   .hero-index {
     display: none;
   }
+
+
+  /* SECTIONS */
 
   .intro-section,
   .systems-section,
@@ -712,11 +858,33 @@
 
   .section-label {
     margin-bottom: 50px;
+
+    font-size: 9px;
+  }
+
+
+  /* INTRO */
+
+  .intro-content {
+    grid-template-columns: 1fr;
+
+    gap: 40px;
   }
 
   .intro-content h2 {
     font-size: 3rem;
+    line-height: 0.95;
   }
+
+  .intro-content p {
+    align-self: auto;
+
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+
+  /* SYSTEMS */
 
   .systems-grid {
     grid-template-columns: 1fr;
@@ -724,23 +892,104 @@
 
   .system-card {
     min-height: 260px;
+
+    padding: 28px;
   }
 
   .system-card h3 {
     margin-top: 55px;
+
+    font-size: 22px;
+  }
+
+  .system-card p {
+    font-size: 12px;
+  }
+
+
+  /* BENCHMARK */
+
+  .benchmark-section {
+    min-height: auto;
+  }
+
+  .benchmark-content {
+    grid-template-columns: 1fr;
+
+    gap: 45px;
   }
 
   .benchmark-content h2 {
     font-size: 5rem;
   }
 
+  .benchmark-copy p {
+    font-size: 13px;
+  }
+
   .dataset-row {
     flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 35px;
   }
+
+  .dataset-row span {
+    width: 62px;
+    height: 62px;
+  }
+
+
+  /* FOOTER */
 
   .footer {
     flex-direction: column;
     align-items: flex-start;
+
     gap: 30px;
+
+    padding: 40px 6vw;
+  }
+}
+
+
+/* =========================
+   VERY SMALL PHONES
+========================= */
+
+@media (max-width: 380px) {
+
+  .hero {
+    padding-top: 55px;
+  }
+
+  .hero h1 {
+    font-size: 3.15rem;
+  }
+
+  .hero-description {
+    font-size: 12px;
+  }
+
+  .hero-card {
+    max-width: 100%;
+  }
+
+  .card-value {
+    font-size: 55px;
+  }
+
+  .intro-content h2 {
+    font-size: 2.65rem;
+  }
+
+  .benchmark-content h2 {
+    font-size: 4.3rem;
+  }
+
+  .dataset-row span {
+    width: 58px;
+    height: 58px;
   }
 }
