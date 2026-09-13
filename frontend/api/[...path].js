@@ -6,6 +6,7 @@ export default async function handler(req, res) {
     );
 
     let path = requestUrl.pathname;
+    console.log("Incoming path:", path);
 
     // Remove the /api prefix
     if (path.startsWith("/api")) {
