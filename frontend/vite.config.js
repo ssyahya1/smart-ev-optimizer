@@ -4,4 +4,15 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+
+  server: {
+    host: "0.0.0.0",
+    proxy: {
+      "/api": {
+        target: "https://smart-ev-optimizer-production.up.railway.app",
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 })
