@@ -59,10 +59,6 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use("/api", apiLimiter);
-
-
-
 app.use(
   express.json({
     limit: "1mb",
@@ -111,6 +107,7 @@ pool.query("SELECT NOW()")
 
 
 app.use("/api/auth",authRoute);
+app.use("/api", apiLimiter);
 app.use("/api/vehicles", vehicleRoute);
 app.use("/api/charging-bays", chargingBayRoute);
 app.use("/api/grid-slots", gridSlotRoute);
