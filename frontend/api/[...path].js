@@ -1,23 +1,22 @@
 export default async function handler(req, res) {
-  const path = req.query.path;
+  const { path } = req.query;
 
   const pathString = Array.isArray(path)
     ? path.join("/")
-    : path;
+    : path || "";
 
-  const targetUrl = `https://smart-ev-optimizer-production.up.railway.app/api/${pathString}`;
-
-  const headers = {
-    ...req.headers,
-    host: "smart-ev-optimizer-production.up.railway.app",
-  };
-
-  delete headers["content-length"];
+  const targetUrl =
+    `https://smart-ev-optimizer-production.up.railway.app/api/${pathString}`;
 
   try {
     const response = await fetch(targetUrl, {
       method: req.method,
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        ...(req.headers.cookie
+          ? { Cookie: req.headers.cookie }
+          : {}),
+      },
       body:
         req.method === "GET" || req.method === "HEAD"
           ? undefined
@@ -30,8 +29,6 @@ export default async function handler(req, res) {
       res.setHeader("Set-Cookie", setCookie);
     }
 
-    res.status(response.status);
-
     const contentType = response.headers.get("content-type");
 
     if (contentType) {
@@ -40,11 +37,12 @@ export default async function handler(req, res) {
 
     const data = await response.text();
 
-    res.send(data);
+    res.status(response.status).send(data);
   } catch (error) {
     console.error("API proxy error:", error);
 
     res.status(500).json({
+      success: false,
       message: "API proxy error",
     });
   }
