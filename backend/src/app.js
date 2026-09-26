@@ -17,7 +17,7 @@ import routingRoute from "./routes/routingRoute.js";
 import journeyRoute from "./routes/journeyRoute.js";
 import resourceAllocationRoute from "./routes/resourceAllocationRoute.js";
 import benchmarkRoute from "./routes/benchmarkRoute.js";
-
+import adminRoute from "./routes/adminRoute.js";
 
 dotenv.config();
 
@@ -106,13 +106,13 @@ pool.query("SELECT NOW()")
 
 
 
-app.use("/api/auth",authRoute);
 app.use("/api", apiLimiter);
+app.use("/api/auth",authRoute);
 app.use("/api/vehicles", vehicleRoute);
 app.use("/api/charging-bays", chargingBayRoute);
 app.use("/api/grid-slots", gridSlotRoute);
 app.use("/api/charging-sessions",chargingSessionRoute);
-
+app.use("/api/admin", adminRoute);
 app.use("/api/assignment", assignmentRoute);
 app.use("/api/scheduling",schedulingRoute);
 app.use("/api/power",powerRoute);

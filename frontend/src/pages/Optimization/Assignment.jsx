@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { apiRequest } from "../../services/api";
 import "./Assignment.css";
 
@@ -12,11 +13,12 @@ function Assignment() {
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState("");
 
-  const getVehicleId = (vehicle) =>
-    vehicle.id ?? vehicle.vehicle_id ?? vehicle.vehicleId;
-
   const getBayId = (bay) =>
     bay.id ?? bay.bay_id ?? bay.bayId;
+
+  const availableBays = bays.filter(
+    (bay) => String(bay.status || "").toLowerCase() === "available"
+  );
 
   const getBayNumber = (bay) =>
     bay.bay_number ??
@@ -36,51 +38,50 @@ function Assignment() {
     bay.type ??
     "—";
 
-  const loadData = async () => {
-    try {
-      setLoadingData(true);
-      setError("");
+  const getVehicleLabel = (vehicleId) => {
+    const vehicle = vehicles.find(
+      (item) => String(item.id ?? item.vehicle_id) === String(vehicleId)
+    );
+    return vehicle?.vehicle_number ?? `Vehicle ${vehicleId}`;
+  };
 
-      const [vehicleData, bayData] = await Promise.all([
-        apiRequest("/api/vehicles"),
-        apiRequest("/api/charging-bays"),
-      ]);
-
-      let loadedVehicles = [];
-      let loadedBays = [];
-
-      if (Array.isArray(vehicleData)) {
-        loadedVehicles = vehicleData;
-      } else if (Array.isArray(vehicleData.vehicles)) {
-        loadedVehicles = vehicleData.vehicles;
-      } else if (Array.isArray(vehicleData.data)) {
-        loadedVehicles = vehicleData.data;
-      }
-
-      if (Array.isArray(bayData)) {
-        loadedBays = bayData;
-      } else if (Array.isArray(bayData.chargingBays)) {
-        loadedBays = bayData.chargingBays;
-      } else if (Array.isArray(bayData.bays)) {
-        loadedBays = bayData.bays;
-      } else if (Array.isArray(bayData.data)) {
-        loadedBays = bayData.data;
-      }
-
-      setVehicles(loadedVehicles);
-      setBays(loadedBays);
-    } catch (err) {
-      setError(
-        err.message ||
-          "Unable to load vehicles and charging bays."
-      );
-    } finally {
-      setLoadingData(false);
-    }
+  const getBayLabel = (bayId) => {
+    const bay = bays.find((item) => String(getBayId(item)) === String(bayId));
+    return bay ? getBayNumber(bay) : `Bay ${bayId}`;
   };
 
   useEffect(() => {
-    loadData();
+    let isMounted = true;
+
+    Promise.all([
+        apiRequest("/api/vehicles"),
+        apiRequest("/api/charging-bays"),
+      ])
+      .then(([vehicleData, bayData]) => {
+        if (!isMounted) return;
+
+        const loadedVehicles = Array.isArray(vehicleData)
+          ? vehicleData
+          : vehicleData.vehicles ?? vehicleData.data ?? [];
+        const loadedBays = Array.isArray(bayData)
+          ? bayData
+          : bayData.chargingBays ?? bayData.bays ?? bayData.data ?? [];
+
+        setVehicles(Array.isArray(loadedVehicles) ? loadedVehicles : []);
+        setBays(Array.isArray(loadedBays) ? loadedBays : []);
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setError(err.message || "Unable to load vehicles and charging bays.");
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoadingData(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const runAssignment = async (event) => {
@@ -91,12 +92,12 @@ function Assignment() {
     }
 
     if (vehicles.length === 0) {
-      setError("No vehicles are available for optimization.");
+      setError("No vehicles are ready for a charging plan.");
       return;
     }
 
-    if (bays.length === 0) {
-      setError("No charging bays are available for optimization.");
+    if (availableBays.length === 0) {
+      setError("No charging bays are currently available.");
       return;
     }
 
@@ -104,109 +105,65 @@ function Assignment() {
       setLoading(true);
       setError("");
 
-      const assignmentVehicles = vehicles.map((vehicle) => ({
-        id: Number(getVehicleId(vehicle)),
-        priority: vehicle.priority,
-        arrival_time: vehicle.arrival_time,
-        deadline: vehicle.deadline,
-        initial_soc: Number(vehicle.initial_soc),
-        battery_capacity_kwh: Number(
-          vehicle.battery_capacity_kwh
-        ),
-      }));
-
-      const assignmentBays = bays.map((bay) => ({
-        id: Number(getBayId(bay)),
-        status: bay.status,
-        max_power_kw: Number(getBayPower(bay)),
-      }));
-
       const data = await apiRequest("/api/assignment", {
         method: "POST",
-        body: JSON.stringify({
-          vehicles: assignmentVehicles,
-          chargingBays: assignmentBays,
-        }),
       });
-
-      console.log("Assignment API result:", data);
 
       if (!data?.success) {
         throw new Error(
           data?.message ||
-            "Assignment optimization failed."
+            "Unable to create a bay recommendation."
         );
       }
 
-      // Keep the successful result in React state.
       setResult({
         success: true,
-        greedy: {
-          assignments:
-            data.greedy?.assignments ?? [],
-          unassignedVehicles:
-            data.greedy?.unassignedVehicles ?? [],
-          operations:
-            data.greedy?.operations ?? 0,
+        recommendedPlan: {
+          assignments: data.recommendedPlan?.assignments ?? [],
+          unassignedVehicles: data.recommendedPlan?.unassignedVehicles ?? [],
         },
-        priorityQueue: {
-          assignments:
-            data.priorityQueue?.assignments ?? [],
-          unassignedVehicles:
-            data.priorityQueue?.unassignedVehicles ?? [],
-          operations:
-            data.priorityQueue?.operations ?? 0,
+        alternativePlan: {
+          assignments: data.alternativePlan?.assignments ?? [],
+          unassignedVehicles: data.alternativePlan?.unassignedVehicles ?? [],
         },
       });
     } catch (err) {
-      console.error("Assignment error:", err);
       setError(
         err.message ||
-          "Unable to run bay assignment."
+          "Unable to create a bay recommendation."
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const greedy = result?.greedy;
-  const priorityQueue = result?.priorityQueue;
+  const recommendedPlan = result?.recommendedPlan;
+  const recommendedAssignments =
+    recommendedPlan?.assignments ?? [];
 
-  const greedyAssignments =
-    greedy?.assignments ?? [];
-
-  const priorityAssignments =
-    priorityQueue?.assignments ?? [];
-
-  const greedyUnassigned =
-    greedy?.unassignedVehicles ?? [];
-
-  const priorityUnassigned =
-    priorityQueue?.unassignedVehicles ?? [];
+  const recommendedUnassigned =
+    recommendedPlan?.unassignedVehicles ?? [];
 
   return (
     <main className="assignment-page">
       <header className="assignment-header">
         <div>
           <span className="assignment-label">
-            SMART EV / OPTIMIZATION ENGINE
+            CHARGING / BAY RECOMMENDATIONS
           </span>
 
           <h1>
-            Bay <span>assignment.</span>
+            Charging <span>plan.</span>
           </h1>
 
           <p>
-            Compare Greedy and Priority Queue strategies
-            for intelligent charging-bay allocation.
+            Find the best available bay for each vehicle that needs charging.
           </p>
         </div>
 
         <div className="algorithm-badge">
-          <span>COMPARISON</span>
-          <strong>
-            GREEDY vs PRIORITY QUEUE
-          </strong>
+          <span>CHARGING PLAN</span>
+          <strong>READY WHEN YOU ARE</strong>
         </div>
       </header>
 
@@ -219,10 +176,10 @@ function Assignment() {
       <section className="assignment-layout">
         <article className="assignment-control-card">
           <span className="section-label">
-            01 — OPTIMIZATION INPUT
+            PLAN DETAILS
           </span>
 
-          <h2>Assignment dataset</h2>
+          <h2>Fleet and bay availability</h2>
 
           {loadingData ? (
             <div className="assignment-message">
@@ -239,36 +196,42 @@ function Assignment() {
                 </div>
 
                 <div>
-                  <span>CHARGING BAYS</span>
+                  <span>AVAILABLE BAYS</span>
                   <strong>
-                    {bays.length}
+                    {availableBays.length}
                   </strong>
                 </div>
               </div>
 
               <p className="assignment-description">
-                The complete vehicle and charging-bay
-                dataset will be processed by both
-                assignment algorithms.
+                We’ll recommend available bays for vehicles that need charging.
               </p>
 
-              <button
-                type="button"
-                className="run-assignment-button"
-                onClick={runAssignment}
-                disabled={
-                  loading ||
-                  loadingData ||
-                  vehicles.length === 0 ||
-                  bays.length === 0
-                }
-              >
-                {loading
-                  ? "OPTIMIZING..."
-                  : "RUN BOTH ALGORITHMS"}
-
-                {!loading && <span>↗</span>}
-              </button>
+              {vehicles.length === 0 ? (
+                <div className="plan-prerequisite">
+                  <p>Add a vehicle before creating a charging plan.</p>
+                  <Link className="run-assignment-button" to="/vehicles">
+                    Add your first vehicle <span>↗</span>
+                  </Link>
+                </div>
+              ) : availableBays.length === 0 ? (
+                <div className="plan-prerequisite">
+                  <p>All charging bays are in use or unavailable.</p>
+                  <Link className="run-assignment-button" to="/bays">
+                    Review charging bays <span>↗</span>
+                  </Link>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="run-assignment-button"
+                  onClick={runAssignment}
+                  disabled={loading}
+                >
+                  {loading ? "Preparing plan..." : "Recommend charging bays"}
+                  {!loading && <span>↗</span>}
+                </button>
+              )}
             </>
           )}
         </article>
@@ -277,24 +240,24 @@ function Assignment() {
           <div className="card-heading">
             <div>
               <span className="section-label">
-                02 — AVAILABLE INFRASTRUCTURE
+                BAY AVAILABILITY
               </span>
 
               <h2>Charging bays</h2>
             </div>
 
             <span className="bay-count">
-              {bays.length} BAYS
+              {availableBays.length} AVAILABLE
             </span>
           </div>
 
           <div className="bay-list">
-            {bays.length === 0 ? (
+            {availableBays.length === 0 ? (
               <div className="assignment-message">
-                No charging bays available.
+                No charging bays are currently available.
               </div>
             ) : (
-              bays.map((bay) => {
+              availableBays.map((bay) => {
                 const id = getBayId(bay);
 
                 return (
@@ -327,15 +290,15 @@ function Assignment() {
         <div className="result-heading">
           <div>
             <span className="section-label">
-              03 — ALGORITHM COMPARISON
+              RECOMMENDATION
             </span>
 
-            <h2>Assignment results</h2>
+            <h2>Suggested charging plan</h2>
           </div>
 
           {result && (
             <span className="result-status">
-              ● COMPLETE
+              PLAN READY
             </span>
           )}
         </div>
@@ -346,12 +309,11 @@ function Assignment() {
 
             <div>
               <strong>
-                Ready for optimization
+                Your recommendation will appear here
               </strong>
 
               <p>
-                Run the dataset through both algorithms
-                to compare their assignment performance.
+                Create a charging plan to see the best available bay for each vehicle.
               </p>
             </div>
           </div>
@@ -360,13 +322,13 @@ function Assignment() {
             <article className="algorithm-card">
               <div className="algorithm-card-header">
                 <div>
-                  <span>ALGORITHM 01</span>
+                  <span>CHARGING RECOMMENDATION</span>
 
-                  <h3>Greedy</h3>
+                  <h3>Recommended bay matches</h3>
                 </div>
 
                 <span className="algorithm-tag">
-                  LOCAL OPTIMUM
+                  {recommendedAssignments.length} VEHICLES
                 </span>
               </div>
 
@@ -375,7 +337,7 @@ function Assignment() {
                   <span>ASSIGNED</span>
 
                   <strong>
-                    {greedyAssignments.length}
+                    {recommendedAssignments.length}
                   </strong>
                 </div>
 
@@ -383,150 +345,51 @@ function Assignment() {
                   <span>UNASSIGNED</span>
 
                   <strong>
-                    {greedyUnassigned.length}
+                    {recommendedUnassigned.length}
                   </strong>
                 </div>
 
-                <div>
-                  <span>OPERATIONS</span>
-
-                  <strong>
-                    {greedy?.operations ?? 0}
-                  </strong>
-                </div>
               </div>
 
               <div className="assignment-list">
                 <span>ASSIGNMENTS</span>
 
-                {greedyAssignments.length > 0 ? (
-                  greedyAssignments.map(
+                {recommendedAssignments.length > 0 ? (
+                  recommendedAssignments.map(
                     (assignment, index) => (
                       <div
                         className="assignment-row"
-                        key={`greedy-${index}`}
+                        key={`recommended-${index}`}
                       >
                         <span>
-                          Vehicle{" "}
-                          {assignment.vehicleId}
+                          {getVehicleLabel(assignment.vehicleId)}
                         </span>
 
                         <strong>
-                          Bay {assignment.bayId}
+                          {getBayLabel(assignment.bayId)}
                         </strong>
                       </div>
                     )
                   )
                 ) : (
-                  <p>No assignments.</p>
+                  <p>No vehicles could be matched to an available bay.</p>
                 )}
               </div>
 
-              {greedyUnassigned.length > 0 && (
+              {recommendedUnassigned.length > 0 && (
                 <div className="assignment-list">
                   <span>
                     UNASSIGNED VEHICLES
                   </span>
 
-                  {greedyUnassigned.map(
+                  {recommendedUnassigned.map(
                     (vehicleId) => (
                       <div
                         className="assignment-row"
-                        key={`greedy-unassigned-${vehicleId}`}
+                        key={`recommended-unassigned-${vehicleId}`}
                       >
                         <span>
-                          Vehicle {vehicleId}
-                        </span>
-
-                        <strong>
-                          Unassigned
-                        </strong>
-                      </div>
-                    )
-                  )}
-                </div>
-              )}
-            </article>
-
-            <article className="algorithm-card">
-              <div className="algorithm-card-header">
-                <div>
-                  <span>ALGORITHM 02</span>
-
-                  <h3>Priority Queue</h3>
-                </div>
-
-                <span className="algorithm-tag">
-                  PRIORITY AWARE
-                </span>
-              </div>
-
-              <div className="algorithm-stats">
-                <div>
-                  <span>ASSIGNED</span>
-
-                  <strong>
-                    {priorityAssignments.length}
-                  </strong>
-                </div>
-
-                <div>
-                  <span>UNASSIGNED</span>
-
-                  <strong>
-                    {priorityUnassigned.length}
-                  </strong>
-                </div>
-
-                <div>
-                  <span>OPERATIONS</span>
-
-                  <strong>
-                    {priorityQueue?.operations ?? 0}
-                  </strong>
-                </div>
-              </div>
-
-              <div className="assignment-list">
-                <span>ASSIGNMENTS</span>
-
-                {priorityAssignments.length > 0 ? (
-                  priorityAssignments.map(
-                    (assignment, index) => (
-                      <div
-                        className="assignment-row"
-                        key={`priority-${index}`}
-                      >
-                        <span>
-                          Vehicle{" "}
-                          {assignment.vehicleId}
-                        </span>
-
-                        <strong>
-                          Bay {assignment.bayId}
-                        </strong>
-                      </div>
-                    )
-                  )
-                ) : (
-                  <p>No assignments.</p>
-                )}
-              </div>
-
-              {priorityUnassigned.length > 0 && (
-                <div className="assignment-list">
-                  <span>
-                    UNASSIGNED VEHICLES
-                  </span>
-
-                  {priorityUnassigned.map(
-                    (vehicleId) => (
-                      <div
-                        className="assignment-row"
-                        key={`priority-unassigned-${vehicleId}`}
-                      >
-                        <span>
-                          Vehicle {vehicleId}
+                          {getVehicleLabel(vehicleId)}
                         </span>
 
                         <strong>

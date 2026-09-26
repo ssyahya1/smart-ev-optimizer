@@ -52,7 +52,7 @@ function Journey() {
 
   const runJourney = async () => {
     if (source === destination) {
-      setError("Source and destination must be different.");
+      setError("Choose two different locations.");
       return;
     }
 
@@ -116,10 +116,6 @@ function Journey() {
     return value !== undefined ? value : "—";
   };
 
-  const getOperations = (algorithm) => {
-    return result?.[algorithm]?.operations ?? "—";
-  };
-
   return (
     <div className="journey-page">
       <div className="journey-shell">
@@ -127,37 +123,36 @@ function Journey() {
         <header className="journey-header">
           <div>
             <span className="journey-eyebrow">
-              ALGORITHM 05
+              FLEET JOURNEYS
             </span>
 
-            <h1>Multi-Stage Journey</h1>
+            <h1>Plan a fleet journey</h1>
 
             <p>
-              Compare A* and Bellman-Ford for intelligent
-              multi-stage EV journey optimization.
+              Choose a start and destination to see route choices across connected sites.
             </p>
           </div>
 
           <div className="journey-badge">
             <span></span>
-            JOURNEY ENGINE
+            JOURNEY PLANNER
           </div>
         </header>
 
         <section className="journey-controls">
 
           <div className="control-heading">
-            <span>JOURNEY CONFIGURATION</span>
+            <span>JOURNEY DETAILS</span>
 
             <small>
-              Weighted network with heuristic guidance
+              Pick a start and destination
             </small>
           </div>
 
           <div className="controls-grid">
 
             <label>
-              <span>Source Node</span>
+              <span>Starting location</span>
 
               <select
                 value={source}
@@ -172,7 +167,7 @@ function Journey() {
             </label>
 
             <label>
-              <span>Destination Node</span>
+              <span>Destination</span>
 
               <select
                 value={destination}
@@ -196,15 +191,15 @@ function Journey() {
               }
             >
               {loading
-                ? "OPTIMIZING..."
-                : "OPTIMIZE JOURNEY"}
+                ? "Finding route..."
+                : "Find route"}
             </button>
 
           </div>
 
           {source === destination && (
             <p className="control-warning">
-              Source and destination must be different.
+              Choose two different locations.
             </p>
           )}
 
@@ -214,12 +209,12 @@ function Journey() {
 
           <div className="section-heading">
             <div>
-              <span>JOURNEY NETWORK</span>
-              <h2>Multi-Stage Route Graph</h2>
+              <span>CONNECTED SITES</span>
+              <h2>Available connections</h2>
             </div>
 
             <div className="node-count">
-              {nodes.length} NODES
+              {nodes.length} LOCATIONS
             </div>
           </div>
 
@@ -234,7 +229,7 @@ function Journey() {
                   <strong>{node}</strong>
 
                   <span>
-                    h = {heuristic[node]}
+                    About {heuristic[node]} km from destination
                   </span>
                 </div>
 
@@ -266,8 +261,8 @@ function Journey() {
         <section className="heuristic-card">
 
           <div>
-            <span>HEURISTIC VALUES</span>
-            <h2>A* Guidance</h2>
+            <span>ESTIMATED DISTANCES</span>
+            <h2>Distance to destination</h2>
           </div>
 
           <div className="heuristic-list">
@@ -285,7 +280,7 @@ function Journey() {
 
         {error && (
           <div className="journey-error">
-            <strong>Journey Error</strong>
+            <strong>Route unavailable</strong>
             <span>{error}</span>
           </div>
         )}
@@ -301,27 +296,27 @@ function Journey() {
                   01
                 </span>
 
-                <h2>A*</h2>
+                <h2>Suggested route</h2>
 
                 <p>
-                  Heuristic Search
+                  Option A
                 </p>
               </div>
 
               <div className="algorithm-tag">
-                HEURISTIC
+                ROUTE OPTION
               </div>
 
             </div>
 
             <div className="result-block">
 
-              <span>OPTIMAL PATH</span>
+              <span>SUGGESTED ROUTE</span>
 
               <strong>
                 {result
                   ? getPath("aStar")
-                  : "Run algorithm"}
+                  : "Find route"}
               </strong>
 
             </div>
@@ -338,14 +333,6 @@ function Journey() {
                 </strong>
               </div>
 
-              <div>
-                <span>OPERATIONS</span>
-
-                <strong>
-                  {getOperations("aStar")}
-                </strong>
-              </div>
-
             </div>
 
           </article>
@@ -359,27 +346,27 @@ function Journey() {
                   02
                 </span>
 
-                <h2>Bellman-Ford</h2>
+                <h2>Alternative route</h2>
 
                 <p>
-                  Dynamic Relaxation
+                  Option B
                 </p>
               </div>
 
               <div className="algorithm-tag">
-                WEIGHTED
+                ROUTE OPTION
               </div>
 
             </div>
 
             <div className="result-block">
 
-              <span>OPTIMAL PATH</span>
+              <span>ALTERNATIVE ROUTE</span>
 
               <strong>
                 {result
                   ? getPath("bellmanFord")
-                  : "Run algorithm"}
+                  : "Find route"}
               </strong>
 
             </div>
@@ -396,14 +383,6 @@ function Journey() {
                 </strong>
               </div>
 
-              <div>
-                <span>OPERATIONS</span>
-
-                <strong>
-                  {getOperations("bellmanFord")}
-                </strong>
-              </div>
-
             </div>
 
           </article>
@@ -414,17 +393,15 @@ function Journey() {
           <section className="comparison-card">
 
             <div>
-              <span>JOURNEY COMPARISON</span>
+              <span>ROUTE OPTIONS</span>
 
-              <h2>
-                Algorithm Performance
-              </h2>
+              <h2>Compare route options</h2>
             </div>
 
             <div className="comparison-row">
 
               <div>
-                <span>A* PATH</span>
+                <span>OPTION A</span>
 
                 <strong>
                   {getPath("aStar")}
@@ -432,7 +409,7 @@ function Journey() {
               </div>
 
               <div>
-                <span>BELLMAN-FORD PATH</span>
+                <span>OPTION B</span>
 
                 <strong>
                   {getPath("bellmanFord")}

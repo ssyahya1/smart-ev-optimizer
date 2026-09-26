@@ -157,7 +157,7 @@ function Power() {
       if (!data?.success) {
         throw new Error(
           data?.message ||
-            "Power optimization failed."
+            "Unable to prepare a power plan."
         );
       }
 
@@ -204,7 +204,7 @@ function Power() {
       <header className="power-header">
         <div>
           <span className="power-label">
-            SMART EV / OPTIMIZATION ENGINE
+            CHARGING / SITE POWER
           </span>
 
           <h1>
@@ -212,18 +212,15 @@ function Power() {
           </h1>
 
           <p>
-            Resolve transformer power contention by
-            comparing priority-based Max-Heap
-            allocation with fair Round-Robin
-            dynamic throttling.
+            Share available site power across vehicles while respecting charging priorities.
           </p>
         </div>
 
         <div className="power-badge">
-          <span>COMPARISON</span>
+          <span>POWER PLAN</span>
 
           <strong>
-            MAX-HEAP vs ROUND-ROBIN
+            READY WHEN YOU ARE
           </strong>
         </div>
       </header>
@@ -237,10 +234,10 @@ function Power() {
       <section className="power-layout">
         <article className="power-control-card">
           <span className="section-label">
-            01 — OPTIMIZATION INPUT
+            PLAN DETAILS
           </span>
 
-          <h2>Transformer capacity</h2>
+          <h2>Available site power</h2>
 
           {loadingData ? (
             <div className="power-message">
@@ -250,7 +247,7 @@ function Power() {
             <>
               <div className="power-input">
                 <label htmlFor="availablePower">
-                  AVAILABLE POWER
+                  AVAILABLE SITE POWER
                 </label>
 
                 <div className="power-input-wrap">
@@ -281,7 +278,7 @@ function Power() {
                 </div>
 
                 <div>
-                  <span>VALID REQUESTS</span>
+                  <span>CHARGING REQUESTS</span>
                   <strong>
                     {powerVehicles.length}
                   </strong>
@@ -299,9 +296,7 @@ function Power() {
               </div>
 
               <p className="power-description">
-                Vehicle power demand is calculated
-                from battery capacity, initial SoC,
-                arrival time and charging deadline.
+                Review how available power can be shared across current vehicle requests.
               </p>
 
               <button
@@ -315,8 +310,8 @@ function Power() {
                 }
               >
                 {loading
-                  ? "OPTIMIZING..."
-                  : "RUN BOTH ALGORITHMS"}
+                  ? "Preparing plan..."
+                  : "Create power plan"}
 
                 {!loading && (
                   <span>↗</span>
@@ -330,7 +325,7 @@ function Power() {
           <div className="card-heading">
             <div>
               <span className="section-label">
-                02 — POWER DEMAND
+                POWER REQUESTS
               </span>
 
               <h2>Charging requests</h2>
@@ -384,7 +379,7 @@ function Power() {
         <div className="result-heading">
           <div>
             <span className="section-label">
-              03 — ALGORITHM COMPARISON
+              POWER PLAN
             </span>
 
             <h2>Allocation results</h2>
@@ -407,9 +402,7 @@ function Power() {
               </strong>
 
               <p>
-                Run the transformer dataset through
-                both algorithms to compare how power
-                contention is resolved.
+                Create a plan to see how much power can be assigned to each vehicle.
               </p>
             </div>
           </div>
@@ -419,10 +412,10 @@ function Power() {
               <div className="algorithm-card-header">
                 <div>
                   <span>
-                    ALGORITHM 01
+                    OPTION A
                   </span>
 
-                  <h3>Max-Heap</h3>
+                  <h3>Suggested power plan</h3>
                 </div>
 
                 <span className="algorithm-tag">
@@ -452,13 +445,6 @@ function Power() {
                   </strong>
                 </div>
 
-                <div>
-                  <span>OPERATIONS</span>
-
-                  <strong>
-                    {maxHeap?.operations ?? 0}
-                  </strong>
-                </div>
               </div>
 
               <AllocationList
@@ -472,10 +458,10 @@ function Power() {
               <div className="algorithm-card-header">
                 <div>
                   <span>
-                    ALGORITHM 02
+                    OPTION B
                   </span>
 
-                  <h3>Round-Robin</h3>
+                  <h3>Alternative power plan</h3>
                 </div>
 
                 <span className="algorithm-tag">
@@ -505,13 +491,6 @@ function Power() {
                   </strong>
                 </div>
 
-                <div>
-                  <span>OPERATIONS</span>
-
-                  <strong>
-                    {roundRobin?.operations ?? 0}
-                  </strong>
-                </div>
               </div>
 
               <AllocationList
@@ -530,7 +509,7 @@ function Power() {
 function AllocationList({ allocations }) {
   return (
     <div className="allocation-list">
-      <span>POWER ALLOCATIONS</span>
+      <span>POWER SHARED</span>
 
       {allocations.length === 0 ? (
         <p>No allocations.</p>

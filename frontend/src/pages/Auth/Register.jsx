@@ -41,7 +41,7 @@ function Register() {
       });
 
       navigate("/login", {
-        state: { message: "Account created. Sign in to enter the optimizer." },
+        state: { message: "Your account is ready. Sign in to continue." },
       });
     } catch (requestError) {
       setError(requestError.message || "Unable to create account");
@@ -70,15 +70,14 @@ function Register() {
 
       <section className="login-container">
         <div className="login-intro">
-          <span className="login-label">NEW OPERATOR</span>
+          <span className="login-label">GET STARTED</span>
           <h1>
-            Build your
+            Create your
             <br />
-            <span>command.</span>
+            <span>account.</span>
           </h1>
           <p>
-            Create an operator account to manage fleet charging, optimization,
-            and grid operations from one system.
+            Create an account to manage your vehicles, charging bays, and sessions.
           </p>
         </div>
 
@@ -90,7 +89,7 @@ function Register() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="name">FULL NAME</label>
+              <label htmlFor="name">Full name</label>
               <input
                 id="name"
                 name="name"
@@ -105,7 +104,7 @@ function Register() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">EMAIL</label>
+              <label htmlFor="email">Email address</label>
               <input
                 id="email"
                 name="email"
@@ -118,7 +117,7 @@ function Register() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">PASSWORD</label>
+              <label htmlFor="password">Password</label>
               <div className="password-wrapper">
                 <input
                   id="password"
@@ -141,7 +140,7 @@ function Register() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">CONFIRM PASSWORD</label>
+              <label htmlFor="confirmPassword">Confirm password</label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -157,14 +156,14 @@ function Register() {
             {error && <div className="login-error">{error}</div>}
 
             <button type="submit" className="login-button" disabled={loading}>
-              {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
+              {loading ? "Creating account..." : "Create account"}
               {!loading && <span>↗</span>}
             </button>
           </form>
 
           <div className="login-footer">
-            <span>ROLE: OPERATOR</span>
-            <Link to="/login" className="auth-switch-link">SIGN IN</Link>
+            <span>Your fleet workspace</span>
+            <Link to="/login" className="auth-switch-link">Sign in</Link>
           </div>
         </div>
       </section>

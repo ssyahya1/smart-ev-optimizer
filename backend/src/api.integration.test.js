@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import request from "supertest";
+import pool from "./config/database.js";
 
 const testPort = 5101;
 const baseUrl = `http://127.0.0.1:${testPort}`;
@@ -13,6 +14,11 @@ let vehicleId;
 let chargingBayId;
 let gridSlotId;
 let chargingSessionId;
+
+const setTestRole = (role) => pool.query(
+    "UPDATE users SET role = $1 WHERE email = $2",
+    [role, testEmail]
+);
 
 const vehiclePayload = {
     vehicle_number: `API-TEST-${Date.now()}`,
@@ -78,17 +84,22 @@ beforeAll(async () => {
 
 afterAll(async () => {
     if (api) {
-        if (chargingSessionId) {
-            await api.delete(`/api/charging-sessions/${chargingSessionId}`);
-        }
-        if (vehicleId) {
-            await api.delete(`/api/vehicles/${vehicleId}`);
-        }
-        if (chargingBayId) {
-            await api.delete(`/api/charging-bays/${chargingBayId}`);
-        }
-        if (gridSlotId) {
-            await api.delete(`/api/grid-slots/${gridSlotId}`);
+        await setTestRole("admin");
+        try {
+            if (chargingSessionId) {
+                await api.delete(`/api/charging-sessions/${chargingSessionId}`);
+            }
+            if (vehicleId) {
+                await api.delete(`/api/vehicles/${vehicleId}`);
+            }
+            if (chargingBayId) {
+                await api.delete(`/api/charging-bays/${chargingBayId}`);
+            }
+            if (gridSlotId) {
+                await api.delete(`/api/grid-slots/${gridSlotId}`);
+            }
+        } finally {
+            await setTestRole("user");
         }
     }
 
@@ -180,6 +191,21 @@ describe("Express API integration", () => {
         expect(adminCreation.status).toBe(403);
     });
 
+    test("restricts shared infrastructure writes to administrators", async () => {
+        const responses = await Promise.all([
+            api.post("/api/charging-bays").send({}),
+            api.put("/api/charging-bays/1").send({}),
+            api.delete("/api/charging-bays/1"),
+            api.post("/api/grid-slots").send({}),
+            api.put("/api/grid-slots/1").send({}),
+            api.delete("/api/grid-slots/1")
+        ]);
+
+        expect(responses.map((response) => response.status)).toEqual([
+            403, 403, 403, 403, 403, 403
+        ]);
+    });
+
     test("performs vehicle CRUD", async () => {
         const created = await api.post("/api/vehicles/registervehicle").send(vehiclePayload);
         const listed = await api.get("/api/vehicles");
@@ -216,6 +242,7 @@ describe("Express API integration", () => {
     });
 
     test("performs charging-bay CRUD", async () => {
+        await setTestRole("admin");
         const created = await api.post("/api/charging-bays").send(bayPayload);
         chargingBayId = created.body.chargingBay.id;
 
@@ -234,9 +261,11 @@ describe("Express API integration", () => {
         expect(deleted.status).toBe(200);
         expect((await api.get(`/api/charging-bays/${chargingBayId}`)).status).toBe(404);
         chargingBayId = undefined;
+        await setTestRole("user");
     });
 
     test("validates charging-bay request bodies", async () => {
+        await setTestRole("admin");
         const response = await api.post("/api/charging-bays").send({
             bay_number: "",
             charger_type: "invalid",
@@ -245,9 +274,11 @@ describe("Express API integration", () => {
 
         expect(response.status).toBe(400);
         expect(response.body.message).toBe("Validation Failed");
+        await setTestRole("user");
     });
 
     test("performs grid-slot CRUD", async () => {
+        await setTestRole("admin");
         const payload = {
             slot_time: `2026-09-11T${String((Date.now() % 10) + 10).padStart(2, "0")}:00:00`,
             max_capacity_kw: 200,
@@ -272,9 +303,11 @@ describe("Express API integration", () => {
         expect(deleted.status).toBe(200);
         expect((await api.get(`/api/grid-slots/${gridSlotId}`)).status).toBe(404);
         gridSlotId = undefined;
+        await setTestRole("user");
     });
 
     test("validates grid-slot request bodies", async () => {
+        await setTestRole("admin");
         const response = await api.post("/api/grid-slots").send({
             max_capacity_kw: -1,
             electricity_price: -1
@@ -282,9 +315,11 @@ describe("Express API integration", () => {
 
         expect(response.status).toBe(400);
         expect(response.body.message).toBe("Validation Failed");
+        await setTestRole("user");
     });
 
     test("performs charging-session CRUD with related resources", async () => {
+        await setTestRole("admin");
         const vehicleResponse = await api.post("/api/vehicles/registervehicle").send({
             ...vehiclePayload,
             vehicle_number: `SESSION-${Date.now()}`
@@ -338,6 +373,113 @@ describe("Express API integration", () => {
         expect(deleted.status).toBe(200);
         expect((await api.get(`/api/charging-sessions/${chargingSessionId}`)).status).toBe(404);
         chargingSessionId = undefined;
+        await setTestRole("user");
+    });
+
+    test("prevents another user from accessing vehicles and charging sessions", async () => {
+        const secondApi = request.agent(baseUrl);
+        const secondEmail = `api-owner-test-${Date.now()}@example.test`;
+        const ownerVehicleNumber = `OWNER-${Date.now()}`;
+        const otherVehicleNumber = `OTHER-${Date.now()}`;
+        let ownerVehicleId;
+        let otherVehicleId;
+        let ownerBayId;
+        let ownerSessionId;
+
+        try {
+            await setTestRole("admin");
+            const ownerVehicle = await api.post("/api/vehicles/registervehicle").send({
+                ...vehiclePayload,
+                vehicle_number: ownerVehicleNumber
+            });
+            ownerVehicleId = ownerVehicle.body.vehicle.id;
+
+            const ownerBay = await api.post("/api/charging-bays").send({
+                ...bayPayload,
+                bay_number: `OWNER-BAY-${Date.now()}`
+            });
+            ownerBayId = ownerBay.body.chargingBay.id;
+
+            const ownerSession = await api.post("/api/charging-sessions").send({
+                vehicle_id: ownerVehicleId,
+                charging_bay_id: ownerBayId,
+                grid_slot_id: null,
+                start_time: "2026-09-11T10:00:00",
+                end_time: null,
+                power_kw: 50,
+                energy_delivered_kwh: 0,
+                status: "scheduled"
+            });
+            ownerSessionId = ownerSession.body.chargingSession.id;
+
+            expect(ownerVehicle.status).toBe(201);
+            expect(ownerBay.status).toBe(201);
+            expect(ownerSession.status).toBe(201);
+
+            const registration = await secondApi.post("/api/auth/register").send({
+                name: "Second API User",
+                email: secondEmail,
+                password: testPassword
+            });
+            expect(registration.status).toBe(201);
+            const login = await secondApi.post("/api/auth/login").send({
+                email: secondEmail,
+                password: testPassword
+            });
+            expect(login.status).toBe(200);
+
+            const otherVehicle = await secondApi.post("/api/vehicles/registervehicle").send({
+                ...vehiclePayload,
+                vehicle_number: otherVehicleNumber
+            });
+            otherVehicleId = otherVehicle.body.vehicle.id;
+
+            expect((await secondApi.get(`/api/vehicles/${ownerVehicleId}`)).status).toBe(404);
+            expect((await secondApi.put(`/api/vehicles/${ownerVehicleId}`).send({
+                ...vehiclePayload,
+                vehicle_number: ownerVehicleNumber
+            })).status).toBe(404);
+            expect((await secondApi.delete(`/api/vehicles/${ownerVehicleId}`)).status).toBe(404);
+
+            const foreignSession = await secondApi.post("/api/charging-sessions").send({
+                vehicle_id: ownerVehicleId,
+                charging_bay_id: ownerBayId,
+                grid_slot_id: null,
+                start_time: "2026-09-11T10:00:00",
+                end_time: null,
+                power_kw: 50,
+                energy_delivered_kwh: 0,
+                status: "scheduled"
+            });
+            expect(foreignSession.status).toBe(403);
+
+            const ownedSessionPayload = {
+                vehicle_id: otherVehicleId,
+                charging_bay_id: ownerBayId,
+                grid_slot_id: null,
+                start_time: "2026-09-11T11:00:00",
+                end_time: null,
+                power_kw: 40,
+                energy_delivered_kwh: 0,
+                status: "scheduled"
+            };
+            expect((await secondApi.get("/api/charging-sessions")).body.chargingSessions)
+                .toEqual([]);
+            expect((await secondApi.get(`/api/charging-sessions/${ownerSessionId}`)).status).toBe(404);
+            expect((await secondApi.put(`/api/charging-sessions/${ownerSessionId}`)
+                .send(ownedSessionPayload)).status).toBe(404);
+            expect((await secondApi.delete(`/api/charging-sessions/${ownerSessionId}`)).status)
+                .toBe(404);
+            expect((await api.get(`/api/charging-sessions/${ownerSessionId}`)).status).toBe(200);
+        } finally {
+            await setTestRole("admin");
+            if (ownerSessionId) await api.delete(`/api/charging-sessions/${ownerSessionId}`);
+            if (ownerVehicleId) await api.delete(`/api/vehicles/${ownerVehicleId}`);
+            if (ownerBayId) await api.delete(`/api/charging-bays/${ownerBayId}`);
+            await setTestRole("user");
+            if (otherVehicleId) await secondApi.delete(`/api/vehicles/${otherVehicleId}`);
+            await pool.query("DELETE FROM users WHERE email = $1", [secondEmail]);
+        }
     });
 
     test("validates charging-session request bodies", async () => {
@@ -348,6 +490,21 @@ describe("Express API integration", () => {
 
         expect(response.status).toBe(400);
         expect(response.body.message).toBe("Validation Failed");
+    });
+
+    test("rejects journey networks that exceed the calculation limit", async () => {
+        const graph = Object.fromEntries(
+            Array.from({ length: 101 }, (_, index) => [`Location-${index}`, []])
+        );
+        const response = await api.post("/api/journey").send({
+            graph,
+            source: "Location-0",
+            destination: "Location-100",
+            heuristic: {}
+        });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Invalid journey optimization data");
     });
 
     test("runs all optimization endpoints and validates their envelopes", async () => {
@@ -399,7 +556,11 @@ describe("Express API integration", () => {
         expect(responses.map((response) => response.status)).toEqual([
             200, 200, 200, 200, 200, 200, 200
         ]);
-        expect(responses[0].body).toMatchObject({ success: true, greedy: expect.any(Object), priorityQueue: expect.any(Object) });
+        expect(responses[0].body).toMatchObject({
+            success: true,
+            recommendedPlan: expect.any(Object),
+            alternativePlan: expect.any(Object)
+        });
         expect(responses[1].body).toMatchObject({ success: true, greedy: expect.any(Object), dynamicProgramming: expect.any(Object) });
         expect(responses[2].body).toMatchObject({ success: true, maxHeap: expect.any(Object), roundRobin: expect.any(Object) });
         expect(responses[3].body).toMatchObject({ success: true, bfs: expect.any(Object), dijkstra: expect.any(Object) });
@@ -420,7 +581,9 @@ describe("Express API integration", () => {
         ]);
         const notFound = await request(baseUrl).get("/api/does-not-exist");
 
-        expect(invalidResponses.every((response) => response.status === 400)).toBe(true);
+        expect(invalidResponses.map((response) => response.status)).toEqual([
+            200, 400, 400, 400, 400, 400, 400
+        ]);
         expect(notFound.status).toBe(404);
         expect(notFound.body).toEqual({ success: false, message: "Route not found" });
     });

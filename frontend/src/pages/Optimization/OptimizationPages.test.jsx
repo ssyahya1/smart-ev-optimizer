@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import Assignment from "./Assignment";
 import Scheduling from "./Scheduling";
@@ -46,41 +47,43 @@ describe("Assignment", () => {
     apiRequest
       .mockResolvedValueOnce({ vehicles: [vehicle] })
       .mockResolvedValueOnce({ chargingBays: [bay] });
-    render(<Assignment />);
+    render(<MemoryRouter><Assignment /></MemoryRouter>);
 
     expect(await screen.findByText("BAY-02")).toBeInTheDocument();
     expect(screen.getByText("150 kW")).toBeInTheDocument();
 
     apiRequest.mockResolvedValueOnce({
       success: true,
-      greedy: {
+      recommendedPlan: {
         assignments: [{ vehicleId: 1, bayId: 2 }],
         unassignedVehicles: [],
-        operations: 4,
       },
-      priorityQueue: {
+      alternativePlan: {
         assignments: [{ vehicleId: 1, bayId: 2 }],
         unassignedVehicles: [],
-        operations: 5,
       },
     });
-    fireEvent.click(screen.getByRole("button", { name: /run both algorithms/i }));
+    fireEvent.click(screen.getByRole("button", { name: /recommend charging bays/i }));
 
-    expect(await screen.findByText("● COMPLETE")).toBeInTheDocument();
-    expect(screen.getAllByText("Vehicle 1").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Bay 2").length).toBeGreaterThan(0);
+    expect(apiRequest).toHaveBeenCalledWith("/api/assignment", {
+      method: "POST",
+    });
+    expect(await screen.findByText("PLAN READY")).toBeInTheDocument();
+    expect(screen.getByText("EV-001")).toBeInTheDocument();
+    expect(screen.getAllByText("BAY-02").length).toBeGreaterThan(0);
+    expect(screen.queryByText("Alternative plan")).not.toBeInTheDocument();
   });
 
   test("renders the empty assignment state and prevents submission", async () => {
     apiRequest
       .mockResolvedValueOnce({ vehicles: [] })
       .mockResolvedValueOnce({ chargingBays: [] });
-    render(<Assignment />);
+    render(<MemoryRouter><Assignment /></MemoryRouter>);
 
-    expect(await screen.findByText("No charging bays available."))
+    expect(await screen.findByText("No charging bays are currently available."))
       .toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /run both algorithms/i }))
-      .toBeDisabled();
+    expect(screen.getByRole("link", { name: /add your first vehicle/i }))
+      .toHaveAttribute("href", "/vehicles");
   });
 
   test("shows assignment API errors", async () => {
@@ -88,13 +91,26 @@ describe("Assignment", () => {
       .mockResolvedValueOnce({ vehicles: [vehicle] })
       .mockResolvedValueOnce({ chargingBays: [bay] })
       .mockRejectedValueOnce(new Error("Assignment unavailable"));
-    render(<Assignment />);
+    render(<MemoryRouter><Assignment /></MemoryRouter>);
     await screen.findByText("BAY-02");
 
-    fireEvent.click(screen.getByRole("button", { name: /run both algorithms/i }));
+    fireEvent.click(screen.getByRole("button", { name: /recommend charging bays/i }));
 
     expect(await screen.findByText("Assignment unavailable"))
       .toBeInTheDocument();
+  });
+
+  test("does not count occupied bays as available", async () => {
+    apiRequest
+      .mockResolvedValueOnce({ vehicles: [vehicle] })
+      .mockResolvedValueOnce({ chargingBays: [{ ...bay, status: "occupied" }] });
+    render(<MemoryRouter><Assignment /></MemoryRouter>);
+
+    expect(await screen.findByText("No charging bays are currently available."))
+      .toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /review charging bays/i }))
+      .toHaveAttribute("href", "/bays");
+    expect(screen.queryByText("BAY-02")).not.toBeInTheDocument();
   });
 });
 
@@ -113,10 +129,10 @@ describe("Scheduling", () => {
       greedy: { scheduled: [{ id: 3 }], rejected: [], operations: 2 },
       dynamicProgramming: { scheduled: [{ id: 3 }], rejected: [], operations: 3 },
     });
-    fireEvent.click(screen.getByRole("button", { name: /run both algorithms/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create charging schedule/i }));
 
     expect(await screen.findByText("● COMPLETE")).toBeInTheDocument();
-    expect(screen.getAllByText("Job 3").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Session 3").length).toBeGreaterThan(0);
   });
 
   test("shows the no-valid-jobs state and blocks scheduling", async () => {
@@ -125,9 +141,9 @@ describe("Scheduling", () => {
       .mockResolvedValueOnce({ chargingSessions: [] });
     render(<Scheduling />);
 
-    expect(await screen.findByText("No valid scheduling jobs available."))
+    expect(await screen.findByText("No sessions are ready to schedule."))
       .toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /run both algorithms/i }))
+    expect(screen.getByRole("button", { name: /create charging schedule/i }))
       .toBeDisabled();
   });
 
@@ -144,7 +160,7 @@ describe("Scheduling", () => {
       .mockRejectedValueOnce(new Error("Scheduling unavailable"));
     render(<Scheduling />);
     await screen.findByText("Session 3");
-    fireEvent.click(screen.getByRole("button", { name: /run both algorithms/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create charging schedule/i }));
 
     expect(await screen.findByText("Scheduling unavailable"))
       .toBeInTheDocument();
@@ -172,7 +188,7 @@ describe("Power", () => {
         operations: 2,
       },
     });
-    fireEvent.click(screen.getByRole("button", { name: /run both algorithms/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create power plan/i }));
 
     expect(await screen.findByText("● COMPLETE")).toBeInTheDocument();
     expect(screen.getAllByText("15.00 kW").length).toBeGreaterThan(0);
@@ -185,7 +201,7 @@ describe("Power", () => {
 
     expect(await screen.findByText("No valid power requests available."))
       .toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /run both algorithms/i }))
+    expect(screen.getByRole("button", { name: /create power plan/i }))
       .toBeDisabled();
   });
 
@@ -200,7 +216,7 @@ describe("Power", () => {
       .mockRejectedValueOnce(new Error("Power service unavailable"));
     render(<Power />);
     await screen.findByText("Vehicle 1");
-    fireEvent.click(screen.getByRole("button", { name: /run both algorithms/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create power plan/i }));
 
     expect(await screen.findByText("Power service unavailable"))
       .toBeInTheDocument();
@@ -208,8 +224,8 @@ describe("Power", () => {
 });
 
 describe.each([
-  ["Routing", Routing, "RUN ROUTING", "routing", { bfs: { path: ["A", "C"], distance: 1, operations: 2 }, dijkstra: { path: ["A", "C"], distance: 2, operations: 3 } }],
-  ["Journey", Journey, "OPTIMIZE JOURNEY", "journey", { aStar: { path: ["A", "C"], distance: 2, operations: 2 }, bellmanFord: { path: ["A", "C"], distance: 2, operations: 3 } }],
+  ["Routing", Routing, "Find route", "routing", { bfs: { path: ["A", "C"], distance: 1, operations: 2 }, dijkstra: { path: ["A", "C"], distance: 2, operations: 3 } }],
+  ["Journey", Journey, "Find route", "journey", { aStar: { path: ["A", "C"], distance: 2, operations: 2 }, bellmanFord: { path: ["A", "C"], distance: 2, operations: 3 } }],
 ])("%s", (_name, Page, runLabel, endpoint, result) => {
   test("renders, submits the default graph, and displays results", async () => {
     apiRequest.mockResolvedValueOnce({ success: true, ...result });
@@ -236,7 +252,7 @@ describe.each([
 
     const selects = screen.getAllByRole("combobox");
     fireEvent.change(selects[1], { target: { value: "A" } });
-    expect(screen.getByText("Source and destination must be different.")
+    expect(screen.getByText("Choose two different locations.")
     ).toBeInTheDocument();
   });
 
@@ -272,7 +288,7 @@ describe("ResourceAllocation", () => {
 
     const selects = screen.getAllByRole("combobox");
     fireEvent.change(selects[1], { target: { value: "Source" } });
-    expect(screen.getByText("Source and sink must be different.")
+    expect(screen.getByText("Choose two different locations.")
     ).toBeInTheDocument();
   });
 });

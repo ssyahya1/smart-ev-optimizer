@@ -29,7 +29,7 @@ describe("Vehicles", () => {
     }));
 
     render(<Vehicles />);
-    expect(screen.getByText("LOADING FLEET DATA...")).toBeInTheDocument();
+    expect(screen.getByText("Loading vehicles…")).toBeInTheDocument();
 
     resolveRequest({ vehicles: [vehicle] });
 
@@ -43,7 +43,7 @@ describe("Vehicles", () => {
 
     render(<Vehicles />);
 
-    expect(await screen.findByText("NO VEHICLES FOUND")).toBeInTheDocument();
+    expect(await screen.findByText("No vehicles yet")).toBeInTheDocument();
   });
 
   test("renders the API error state", async () => {
@@ -58,7 +58,7 @@ describe("Vehicles", () => {
   test("keeps the create form from submitting incomplete required fields", async () => {
     apiRequest.mockResolvedValueOnce({ vehicles: [] });
     render(<Vehicles />);
-    await screen.findByText("NO VEHICLES FOUND");
+    await screen.findByText("No vehicles yet");
 
     fireEvent.click(screen.getByRole("button", { name: /add vehicle/i }));
     fireEvent.click(screen.getByRole("button", { name: /create vehicle/i }));
@@ -72,7 +72,7 @@ describe("Vehicles", () => {
       .mockResolvedValueOnce({ vehicle })
       .mockResolvedValueOnce({ vehicles: [vehicle] });
     render(<Vehicles />);
-    await screen.findByText("NO VEHICLES FOUND");
+    await screen.findByText("No vehicles yet");
 
     fireEvent.click(screen.getByRole("button", { name: /add vehicle/i }));
     fireEvent.change(screen.getByPlaceholderText("EV-001"), {
@@ -106,7 +106,7 @@ describe("Vehicles", () => {
       .mockResolvedValueOnce({ vehicles: [] })
       .mockRejectedValueOnce(new Error("Vehicle creation failed"));
     render(<Vehicles />);
-    await screen.findByText("NO VEHICLES FOUND");
+    await screen.findByText("No vehicles yet");
 
     fireEvent.click(screen.getByRole("button", { name: /add vehicle/i }));
     fireEvent.change(screen.getByPlaceholderText("EV-001"), {

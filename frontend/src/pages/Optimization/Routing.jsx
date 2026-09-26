@@ -42,7 +42,7 @@ function Routing() {
 
   const runRouting = async () => {
     if (source === destination) {
-      setError("Source and destination must be different.");
+      setError("Choose two different locations.");
       return;
     }
 
@@ -62,7 +62,7 @@ function Routing() {
 
       setResult(data);
     } catch (err) {
-      setError(err.message || "Unable to run routing algorithms.");
+      setError(err.message || "No route could be found. Please try another destination.");
     } finally {
       setLoading(false);
     }
@@ -91,10 +91,6 @@ function Routing() {
     return value !== undefined ? value : "—";
   };
 
-  const getOperations = (algorithm) => {
-    return result?.[algorithm]?.operations ?? "—";
-  };
-
   return (
     <div className="routing-page">
       <div className="routing-shell">
@@ -102,29 +98,28 @@ function Routing() {
         <header className="routing-header">
           <div>
             <span className="routing-eyebrow">
-              ALGORITHM 04
+              FLEET ROUTES
             </span>
 
-            <h1>Fleet Route Optimization</h1>
+            <h1>Find a fleet route</h1>
 
             <p>
-              Compare BFS and Dijkstra for efficient EV fleet
-              routing across the physical network.
+              Choose where to start and finish to see available route options.
             </p>
           </div>
 
           <div className="routing-badge">
             <span></span>
-            ROUTING ENGINE
+            ROUTE PLANNER
           </div>
         </header>
 
         <section className="routing-controls">
           <div className="control-heading">
             <div>
-              <span>NETWORK CONFIGURATION</span>
+              <span>ROUTE DETAILS</span>
               <small>
-                Weighted depot and charging network
+                Charging sites and connected locations
               </small>
             </div>
           </div>
@@ -132,7 +127,7 @@ function Routing() {
           <div className="controls-grid">
 
             <label>
-              <span>Source Node</span>
+              <span>Starting location</span>
 
               <select
                 value={source}
@@ -147,7 +142,7 @@ function Routing() {
             </label>
 
             <label>
-              <span>Destination Node</span>
+              <span>Destination</span>
 
               <select
                 value={destination}
@@ -168,14 +163,14 @@ function Routing() {
               onClick={runRouting}
               disabled={loading || source === destination}
             >
-              {loading ? "OPTIMIZING..." : "RUN ROUTING"}
+              {loading ? "Finding route..." : "Find route"}
             </button>
 
           </div>
 
           {source === destination && (
             <p className="control-warning">
-              Source and destination must be different.
+              Choose two different locations.
             </p>
           )}
         </section>
@@ -184,12 +179,12 @@ function Routing() {
 
           <div className="section-title">
             <div>
-              <span>NETWORK GRAPH</span>
-              <h2>Fleet Transportation Network</h2>
+              <span>SITE CONNECTIONS</span>
+              <h2>Connected locations</h2>
             </div>
 
             <div className="node-count">
-              {nodes.length} NODES
+              {nodes.length} LOCATIONS
             </div>
           </div>
 
@@ -200,7 +195,7 @@ function Routing() {
                 <div className="node-header">
                   <strong>{node}</strong>
                   <span>
-                    {graph[node].length} connections
+                    {graph[node].length} routes
                   </span>
                 </div>
 
@@ -224,7 +219,7 @@ function Routing() {
 
         {error && (
           <div className="routing-error">
-            <strong>Routing Error</strong>
+            <strong>Route unavailable</strong>
             <span>{error}</span>
           </div>
         )}
@@ -239,21 +234,21 @@ function Routing() {
                   01
                 </span>
 
-                <h2>BFS</h2>
+                <h2>Option A</h2>
 
-                <p>Breadth-First Search</p>
+                <p>Available route</p>
               </div>
 
               <div className="algorithm-tag">
-                UNWEIGHTED
+                DIRECT
               </div>
             </div>
 
             <div className="result-block">
-              <span>OPTIMAL PATH</span>
+              <span>SUGGESTED ROUTE</span>
 
               <strong>
-                {result ? getPath("bfs") : "Run algorithm"}
+                {result ? getPath("bfs") : "Find route"}
               </strong>
             </div>
 
@@ -263,13 +258,6 @@ function Routing() {
                 <span>DISTANCE</span>
                 <strong>
                   {result ? `${getDistance("bfs")} km` : "—"}
-                </strong>
-              </div>
-
-              <div>
-                <span>OPERATIONS</span>
-                <strong>
-                  {getOperations("bfs")}
                 </strong>
               </div>
 
@@ -285,23 +273,23 @@ function Routing() {
                   02
                 </span>
 
-                <h2>Dijkstra</h2>
+                <h2>Option B</h2>
 
-                <p>Weighted Shortest Path</p>
+                <p>Distance-focused route</p>
               </div>
 
               <div className="algorithm-tag">
-                WEIGHTED
+                SHORTEST DISTANCE
               </div>
             </div>
 
             <div className="result-block">
-              <span>OPTIMAL PATH</span>
+              <span>ALTERNATIVE ROUTE</span>
 
               <strong>
                 {result
                   ? getPath("dijkstra")
-                  : "Run algorithm"}
+                  : "Find route"}
               </strong>
             </div>
 
@@ -316,13 +304,6 @@ function Routing() {
                 </strong>
               </div>
 
-              <div>
-                <span>OPERATIONS</span>
-                <strong>
-                  {getOperations("dijkstra")}
-                </strong>
-              </div>
-
             </div>
 
           </article>
@@ -333,21 +314,21 @@ function Routing() {
           <section className="comparison-card">
 
             <div>
-              <span>ROUTE COMPARISON</span>
-              <h2>Algorithm Performance</h2>
+              <span>ROUTE OPTIONS</span>
+              <h2>Compare available routes</h2>
             </div>
 
             <div className="comparison-row">
 
               <div>
-                <span>BFS PATH</span>
+                <span>OPTION A</span>
                 <strong>
                   {getPath("bfs")}
                 </strong>
               </div>
 
               <div>
-                <span>DIJKSTRA PATH</span>
+                <span>OPTION B</span>
                 <strong>
                   {getPath("dijkstra")}
                 </strong>

@@ -170,16 +170,15 @@ function GridSlots() {
       <header className="grid-slots-header">
         <div>
           <span className="grid-slots-label">
-            SMART EV / GRID OPERATIONS
+            ENERGY / AVAILABILITY
           </span>
 
           <h1>
-            Grid <span>slots.</span>
+            Energy availability
           </h1>
 
           <p>
-            Monitor transformer capacity, grid load,
-            and time-of-use electricity pricing.
+            Review available charging power, current demand, and electricity prices by time.
           </p>
         </div>
 
@@ -199,25 +198,25 @@ function GridSlots() {
 
       <section className="grid-stats">
         <article className="grid-stat-card">
-          <span>TOTAL SLOTS</span>
+          <span>Energy windows</span>
           <strong>{slots.length}</strong>
-          <small>Configured grid periods</small>
+          <small>Available time periods</small>
         </article>
 
         <article className="grid-stat-card">
-          <span>TOTAL CAPACITY</span>
+          <span>Available power</span>
           <strong>{totalCapacity}</strong>
-          <small>kW available capacity</small>
+          <small>Maximum charging power (kW)</small>
         </article>
 
         <article className="grid-stat-card">
-          <span>CURRENT LOAD</span>
+          <span>Power in use</span>
           <strong>{totalLoad}</strong>
-          <small>kW active demand</small>
+          <small>Current demand (kW)</small>
         </article>
 
         <article className="grid-stat-card">
-          <span>AVERAGE PRICE</span>
+          <span>Average energy price</span>
           <strong>
             {averagePrice.toFixed(2)}
           </strong>
@@ -228,14 +227,13 @@ function GridSlots() {
       <section className="grid-overview">
         <div>
           <span className="section-label">
-            01 — TRANSFORMER STATUS
+            SITE ENERGY USE
           </span>
 
-          <h2>Grid utilization</h2>
+          <h2>Power in use</h2>
 
           <p>
-            Current aggregate power consumption across
-            configured grid slots.
+            Share of available charging power being used.
           </p>
         </div>
 
@@ -269,7 +267,7 @@ function GridSlots() {
           >
             <div className="form-group">
               <label htmlFor="slot_time">
-                SLOT TIME
+                Time period
               </label>
 
               <input
@@ -284,7 +282,7 @@ function GridSlots() {
 
             <div className="form-group">
               <label htmlFor="max_power_kw">
-                MAX POWER (KW)
+                Maximum charging power (kW)
               </label>
 
               <input
@@ -302,7 +300,7 @@ function GridSlots() {
 
             <div className="form-group">
               <label htmlFor="current_load_kw">
-                CURRENT LOAD (KW)
+                Current power in use (kW)
               </label>
 
               <input
@@ -320,7 +318,7 @@ function GridSlots() {
 
             <div className="form-group">
               <label htmlFor="price_per_kwh">
-                PRICE / KWH
+                Electricity price per kWh
               </label>
 
               <input
@@ -340,7 +338,7 @@ function GridSlots() {
               type="submit"
               className="save-slot-button"
             >
-              Create Slot ↗
+              Add energy window ↗
             </button>
           </form>
         </section>
@@ -350,35 +348,35 @@ function GridSlots() {
         <div className="table-heading">
           <div>
             <span className="section-label">
-              03 — GRID SCHEDULE
+              ENERGY AVAILABILITY
             </span>
 
-            <h2>Power slots</h2>
+            <h2>Available time periods</h2>
           </div>
 
           <span className="live-indicator">
-            ● LIVE DATA
+            ● CURRENT DATA
           </span>
         </div>
 
         {loading ? (
           <div className="grid-message">
-            Loading grid slots...
+            Loading energy availability…
           </div>
         ) : slots.length === 0 ? (
           <div className="grid-message">
-            No grid slots found.
+            No energy windows yet. Add one to show available charging power.
           </div>
         ) : (
           <div className="grid-table-wrapper">
             <table className="grid-table">
               <thead>
                 <tr>
-                  <th>TIME</th>
-                  <th>CAPACITY</th>
-                  <th>LOAD</th>
-                  <th>UTILIZATION</th>
-                  <th>PRICE / KWH</th>
+                  <th>TIME PERIOD</th>
+                  <th>AVAILABLE POWER</th>
+                  <th>POWER IN USE</th>
+                  <th>IN USE</th>
+                  <th>PRICE PER KWH</th>
                   <th>ACTION</th>
                 </tr>
               </thead>

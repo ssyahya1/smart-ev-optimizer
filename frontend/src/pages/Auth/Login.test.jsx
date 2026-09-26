@@ -29,16 +29,16 @@ describe("Login", () => {
   test("renders the login form", () => {
     renderLogin();
 
-    expect(screen.getByRole("heading", { name: /enter theoptimizer/i }))
+    expect(screen.getByRole("heading", { name: /welcome\s*back/i }))
       .toBeInTheDocument();
-    expect(screen.getByLabelText("EMAIL")).toBeInTheDocument();
-    expect(screen.getByLabelText("PASSWORD")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+    expect(screen.getByLabelText("Password")).toBeInTheDocument();
   });
 
   test("keeps required fields from submitting empty credentials", () => {
     renderLogin();
 
-    fireEvent.click(screen.getByRole("button", { name: /enter system/i }));
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(loginMock).not.toHaveBeenCalled();
   });
@@ -47,13 +47,13 @@ describe("Login", () => {
     loginMock.mockResolvedValueOnce({ user: { email: "user@example.com" } });
     renderLogin();
 
-    fireEvent.change(screen.getByLabelText("EMAIL"), {
+    fireEvent.change(screen.getByLabelText("Email address"), {
       target: { value: "user@example.com" },
     });
-    fireEvent.change(screen.getByLabelText("PASSWORD"), {
+    fireEvent.change(screen.getByLabelText("Password"), {
       target: { value: "password123" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /enter system/i }));
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     await waitFor(() => {
       expect(loginMock).toHaveBeenCalledWith("user@example.com", "password123");
@@ -65,13 +65,13 @@ describe("Login", () => {
     loginMock.mockRejectedValueOnce(new Error("Invalid credentials"));
     renderLogin();
 
-    fireEvent.change(screen.getByLabelText("EMAIL"), {
+    fireEvent.change(screen.getByLabelText("Email address"), {
       target: { value: "user@example.com" },
     });
-    fireEvent.change(screen.getByLabelText("PASSWORD"), {
+    fireEvent.change(screen.getByLabelText("Password"), {
       target: { value: "wrong-password" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /enter system/i }));
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(await screen.findByText("Invalid credentials")).toBeInTheDocument();
     expect(navigateMock).not.toHaveBeenCalled();

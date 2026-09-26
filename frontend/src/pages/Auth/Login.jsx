@@ -66,20 +66,19 @@ function Login() {
           <span className="login-label">SECURE ACCESS</span>
 
           <h1>
-            Enter the
+            Welcome
             <br />
-            <span>optimizer.</span>
+            <span>back.</span>
           </h1>
 
           <p>
-            Access fleet charging operations, algorithmic
-            optimization, and real-time grid management.
+            Sign in to manage your vehicles, charging bays, and sessions.
           </p>
         </div>
 
         <div className="login-card">
           <div className="card-top">
-            <span>OPERATOR LOGIN</span>
+            <span>YOUR WORKSPACE</span>
             <span className="secure-indicator">● SECURE</span>
           </div>
 
@@ -89,7 +88,7 @@ function Login() {
             )}
 
             <div className="form-group">
-              <label htmlFor="email">EMAIL</label>
+              <label htmlFor="email">Email address</label>
 
               <input
                 id="email"
@@ -103,7 +102,7 @@ function Login() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">PASSWORD</label>
+              <label htmlFor="password">Password</label>
 
               <div className="password-wrapper">
                 <input
@@ -137,19 +136,18 @@ function Login() {
               className="login-button"
               disabled={loading}
             >
-              {loading ? "AUTHENTICATING..." : "ENTER SYSTEM"}
+              {loading ? "Signing in..." : "Sign in"}
               {!loading && <span>↗</span>}
             </button>
           </form>
 
           <Link to="/register" className="create-account-link">
             <span>NEW TO SMART EV?</span>
-            <strong>CREATE ACCOUNT <span>↗</span></strong>
+            <strong>Create account <span>↗</span></strong>
           </Link>
 
           <div className="login-footer">
-            <span>JWT AUTHENTICATION</span>
-            <span>HTTPONLY COOKIE</span>
+            <span>Fleet charging, clearly managed.</span>
           </div>
         </div>
       </section>

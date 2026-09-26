@@ -1,6 +1,6 @@
-import pool from "../config/database.js";
-import {z} from "zod";
 
+import pool from "../config/database.js";
+import { z } from "zod";
 
 const vehicleSchema = z.object({
     vehicle_number: z.string().trim().min(1).max(50),
@@ -12,76 +12,82 @@ const vehicleSchema = z.object({
 });
 
 
-export const registerVehicle = async(req,res,next)=>{
-    try{
+
+export const registerVehicle = async (req, res, next) => {
+    try {
         const {
-                vehicle_number,
-                arrival_time,
-                initial_soc,
-                battery_capacity_kwh,
-                priority,
-                deadline
-            } = req.body;
+            vehicle_number,
+            arrival_time,
+            initial_soc,
+            battery_capacity_kwh,
+            priority,
+            deadline
+        } = req.body;
+
         const result = vehicleSchema.safeParse({
-                vehicle_number,
-                arrival_time,
-                initial_soc,
-                battery_capacity_kwh,
-                priority,
-                deadline
-    });
-     if (!result.success) {
+            vehicle_number,
+            arrival_time,
+            initial_soc,
+            battery_capacity_kwh,
+            priority,
+            deadline
+        });
+
+        if (!result.success) {
             return res.status(400).json({
                 message: "Validation Failed",
                 error: result.error
             });
         }
+
         const addVehicle = await pool.query(
             `
             INSERT INTO vehicles
-                (vehicle_number,
-                arrival_time,
-                initial_soc,
-                battery_capacity_kwh,
-                priority,
-                deadline )
+                (
+                    vehicle_number,
+                    arrival_time,
+                    initial_soc,
+                    battery_capacity_kwh,
+                    priority,
+                    deadline,
+                    user_id
+                )
             VALUES
-                ($1, $2, $3,$4,$5,$6)
+                ($1, $2, $3, $4, $5, $6, $7)
 
             RETURNING
+                id,
                 vehicle_number,
                 arrival_time,
                 initial_soc,
                 battery_capacity_kwh,
                 priority,
-                deadline
+                deadline,
+                user_id
             `,
             [
-                
-                
                 vehicle_number,
                 arrival_time,
                 initial_soc,
                 battery_capacity_kwh,
                 priority,
-                deadline
+                deadline,
+                req.user.id
             ]
         );
-         res.status(201).json({
-            message:
-                "Vehicle created successfully",
+
+        return res.status(201).json({
+            message: "Vehicle created successfully",
             vehicle: addVehicle.rows[0]
         });
-}
-catch(error){
-    next(error);
-} 
+
+    } catch (error) {
+        next(error);
+    }
 };
 
 
 
-
-// GET ALL VEHICLES
 export const getVehicles = async (req, res, next) => {
     try {
         const result = await pool.query(
@@ -95,8 +101,10 @@ export const getVehicles = async (req, res, next) => {
                 priority,
                 deadline
             FROM vehicles
+            WHERE user_id = $1
             ORDER BY id
-            `
+            `,
+            [req.user.id]
         );
 
         return res.status(200).json({
@@ -109,7 +117,7 @@ export const getVehicles = async (req, res, next) => {
 };
 
 
-// GET VEHICLE BY ID
+
 export const getVehicleById = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -126,8 +134,9 @@ export const getVehicleById = async (req, res, next) => {
                 deadline
             FROM vehicles
             WHERE id = $1
+            AND user_id = $2
             `,
-            [id]
+            [id, req.user.id]
         );
 
         if (result.rows.length === 0) {
@@ -146,7 +155,7 @@ export const getVehicleById = async (req, res, next) => {
 };
 
 
-// UPDATE VEHICLE
+
 export const updateVehicle = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -187,6 +196,8 @@ export const updateVehicle = async (req, res, next) => {
                 priority = $5,
                 deadline = $6
             WHERE id = $7
+            AND user_id = $8
+
             RETURNING
                 id,
                 vehicle_number,
@@ -203,7 +214,8 @@ export const updateVehicle = async (req, res, next) => {
                 battery_capacity_kwh,
                 priority,
                 deadline,
-                id
+                id,
+                req.user.id
             ]
         );
 
@@ -224,7 +236,7 @@ export const updateVehicle = async (req, res, next) => {
 };
 
 
-// DELETE VEHICLE
+
 export const deleteVehicle = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -233,9 +245,13 @@ export const deleteVehicle = async (req, res, next) => {
             `
             DELETE FROM vehicles
             WHERE id = $1
-            RETURNING id, vehicle_number
+            AND user_id = $2
+
+            RETURNING
+                id,
+                vehicle_number
             `,
-            [id]
+            [id, req.user.id]
         );
 
         if (result.rows.length === 0) {

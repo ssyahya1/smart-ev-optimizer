@@ -1,6 +1,7 @@
 import express from "express";
 
 import { authMiddleware } from "../middleware/authMiddleware.js";
+import { adminMiddleware } from "../middleware/adminMiddleware.js";
 
 import {
     registerChargingBay,
@@ -12,34 +13,19 @@ import {
 
 const router = express.Router();
 
-router.post(
-    "/",
-    authMiddleware,
-    registerChargingBay
-);
 
-router.get(
-    "/",
-    authMiddleware,
-    getChargingBays
-);
+router.use(authMiddleware);
 
-router.get(
-    "/:id",
-    authMiddleware,
-    getChargingBayById
-);
 
-router.put(
-    "/:id",
-    authMiddleware,
-    updateChargingBay
-);
+router.get("/", getChargingBays);
 
-router.delete(
-    "/:id",
-    authMiddleware,
-    deleteChargingBay
-);
+router.get("/:id", getChargingBayById);
+
+
+router.post("/", adminMiddleware, registerChargingBay);
+
+router.put("/:id", adminMiddleware, updateChargingBay);
+
+router.delete("/:id", adminMiddleware, deleteChargingBay);
 
 export default router;

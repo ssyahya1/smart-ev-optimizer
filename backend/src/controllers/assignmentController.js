@@ -1,37 +1,8 @@
 import { z } from "zod";
+import pool from "../config/database.js";
 
 import { greedyAssignment } from "../algorithms/assignment/greedyAssignment.js";
 import { priorityQueueAssignment } from "../algorithms/assignment/priorityQueueAssignment.js";
-
-const assignmentRequestSchema = z.object({
-    vehicles: z.array(
-        z.object({
-            id: z.number().int().positive(),
-            battery_capacity_kwh: z.number().positive(),
-            initial_soc: z.number().min(0).max(100),
-            arrival_time: z.string().min(1),
-            deadline: z.string().min(1),
-            priority: z.enum([
-                "Emergency",
-                "High",
-                "Medium",
-                "Low"
-            ])
-        })
-    ).min(1).max(1000),
-
-    chargingBays: z.array(
-        z.object({
-            id: z.number().int().positive(),
-            status: z.enum([
-                "available",
-                "occupied",
-                "maintenance"
-            ]),
-            max_power_kw: z.number().positive()
-        })
-    ).min(1).max(100)
-});
 
 const assignmentSchema = z.object({
     vehicles: z.array(
@@ -47,7 +18,7 @@ const assignmentSchema = z.object({
 
             required_power_kw: z.number().positive()
         })
-    ).min(1).max(1000),
+    ).max(1000),
 
     chargingBays: z.array(
         z.object({
@@ -61,34 +32,37 @@ const assignmentSchema = z.object({
 
             max_power_kw: z.number().positive()
         })
-    ).min(1).max(100)
+    ).max(100)
 });
 
 
-export const runAssignment = (req, res, next) => {
-
+export const runAssignment = async (req, res, next) => {
     try {
+        const [vehicleResult, bayResult] = await Promise.all([
+            pool.query(
+                `
+                SELECT id, battery_capacity_kwh, initial_soc,
+                       arrival_time, deadline, priority
+                FROM vehicles
+                WHERE user_id = $1
+                ORDER BY id
+                LIMIT 1000
+                `,
+                [req.user.id]
+            ),
+            pool.query(
+                `
+                SELECT id, status, max_power_kw
+                FROM charging_bays
+                WHERE status = 'available'
+                ORDER BY max_power_kw, id
+                LIMIT 100
+                `
+            )
+        ]);
 
-        /*
-         * The frontend sends the existing vehicle data.
-         *
-         * required_power_kw is calculated here because
-         * it is an algorithm-specific value and is not
-         * stored permanently in the database.
-         */
-
-        const requestValidation =
-            assignmentRequestSchema.safeParse(req.body);
-
-        if (!requestValidation.success) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid assignment data",
-                errors: requestValidation.error.flatten()
-            });
-        }
-
-        const { vehicles, chargingBays } = requestValidation.data;
+        const vehicles = vehicleResult.rows;
+        const chargingBays = bayResult.rows;
 
 
         /*
@@ -230,10 +204,7 @@ export const runAssignment = (req, res, next) => {
         } = validation.data;
 
 
-        /*
-         * Run both algorithms so the frontend can
-         * compare their results.
-         */
+        // Keep both strategies internal and return plan-oriented fields.
 
         const greedyResult =
             greedyAssignment(
@@ -250,13 +221,15 @@ export const runAssignment = (req, res, next) => {
 
 
         return res.status(200).json({
-
             success: true,
-
-            greedy: greedyResult,
-
-            priorityQueue: priorityQueueResult
-
+            recommendedPlan: {
+                assignments: priorityQueueResult.assignments,
+                unassignedVehicles: priorityQueueResult.unassignedVehicles,
+            },
+            alternativePlan: {
+                assignments: greedyResult.assignments,
+                unassignedVehicles: greedyResult.unassignedVehicles,
+            },
         });
 
     } catch (error) {

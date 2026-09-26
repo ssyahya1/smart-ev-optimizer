@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, test, vi } from "vitest";
-import Dashboard from "./Dashboard";
+import Dashboard from "./DashboardOverview";
 
 const logoutMock = vi.fn();
 
@@ -12,19 +12,23 @@ vi.mock("../../context/AuthContext", () => ({
   }),
 }));
 
+vi.mock("../../services/api", () => ({
+  apiRequest: vi.fn().mockResolvedValue([]),
+}));
+
 describe("Dashboard", () => {
-  test("renders the dashboard navigation and important overview values", () => {
+  test("renders the operational overview and everyday navigation", () => {
     render(
       <MemoryRouter>
         <Dashboard />
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: /control center/i }))
+    expect(screen.getByRole("heading", { name: /good day, operator/i }))
       .toBeInTheDocument();
-    expect(screen.getByText("Operator One")).toBeInTheDocument();
-    expect(screen.getByText("SYSTEM OPERATIONAL")).toBeInTheDocument();
-    expect(screen.getByText("Six algorithmic systems.")).toBeInTheDocument();
-    expect(screen.getByText("6")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /new charging session/i }))
+      .toHaveAttribute("href", "/sessions");
+    expect(screen.getByText("Charging right now")).toBeInTheDocument();
+    expect(screen.getByText("Your charging site")).toBeInTheDocument();
   });
 });

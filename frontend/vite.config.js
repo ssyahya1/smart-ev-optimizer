@@ -9,7 +9,8 @@ export default defineConfig({
     host: "0.0.0.0",
     proxy: {
       "/api": {
-        target: "https://smart-ev-optimizer-production.up.railway.app",
+        //target: "https://smart-ev-optimizer-production.up.railway.app",
+        target:"http://localhost:5000",
         changeOrigin: true,
         secure: true,
       },

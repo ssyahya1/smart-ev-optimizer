@@ -1,0 +1,845 @@
+.app-content .vehicles-page,
+.app-content .charging-bays-page,
+.app-content .charging-sessions-page,
+.app-content .grid-slots-page {
+  color: var(--color-ink);
+  background: transparent;
+}
+
+.vehicles-header,
+.charging-bays-header,
+.charging-sessions-header,
+.grid-slots-header {
+  align-items: flex-start;
+  padding-bottom: 27px;
+}
+
+.vehicles-header h1,
+.charging-bays-header h1,
+.charging-sessions-header h1,
+.grid-slots-header h1 {
+  color: var(--color-ink);
+  font-size: clamp(30px, 3vw, 38px);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.vehicles-header h1 span,
+.charging-bays-header h1 span,
+.charging-sessions-header h1 span,
+.grid-slots-header h1 span {
+  color: #6B6258;
+}
+
+.vehicles-header p,
+.charging-bays-header p,
+.charging-sessions-header p,
+.grid-slots-header p {
+  max-width: 600px;
+  margin-top: 10px;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.vehicles-label,
+.charging-bays-label,
+.charging-sessions-label,
+.grid-slots-label,
+.section-label {
+  color: #6B6258;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.add-vehicle-button,
+.add-bay-button,
+.add-session-button,
+.add-slot-button,
+.save-vehicle-button,
+.save-bay-button,
+.save-session-button,
+.save-slot-button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--black);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+
+.add-vehicle-button:hover,
+.add-bay-button:hover,
+.add-session-button:hover,
+.add-slot-button:hover,
+.save-vehicle-button:hover,
+.save-bay-button:hover,
+.save-session-button:hover,
+.save-slot-button:hover {
+  background: var(--black-soft);
+  transform: none;
+}
+
+.vehicle-stat-card,
+.bay-stat-card,
+.session-stat-card,
+.grid-stat-card,
+.vehicle-form-card,
+.bay-form-card,
+.session-form-section,
+.grid-form-section,
+.session-overview,
+.grid-overview {
+  border: 1px solid var(--color-line);
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: 0 3px 12px rgba(47, 38, 27, 0.045);
+}
+
+.vehicle-stat-card span,
+.bay-stat-card span,
+.session-stat-card span,
+.grid-stat-card span {
+  color: var(--color-muted);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+
+.vehicle-stat-card strong,
+.bay-stat-card strong,
+.session-stat-card strong,
+.grid-stat-card strong {
+  color: var(--color-ink);
+}
+
+.vehicle-stat-card small,
+.bay-stat-card small,
+.session-stat-card small,
+.grid-stat-card small,
+.session-overview p,
+.grid-overview p {
+  color: var(--color-muted);
+}
+
+.vehicle-form-card,
+.bay-form-card,
+.session-form-section,
+.grid-form-section {
+  padding: 24px;
+}
+
+.form-heading h2,
+.bay-form-heading h2,
+.table-heading h2,
+.bays-table-heading h2,
+.session-overview h2,
+.grid-overview h2 {
+  color: var(--color-ink);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.vehicle-form-group label,
+.bay-form-group label,
+.form-group label {
+  color: #4F483F;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.vehicle-form-group input,
+.vehicle-form-group select,
+.bay-form-group input,
+.bay-form-group select,
+.form-group input,
+.form-group select {
+  min-height: 44px;
+  border: 1px solid #D8CEC0;
+  border-radius: 5px;
+  outline: 0;
+  background: #ffffff;
+  color: var(--color-ink);
+  font-size: 14px;
+}
+
+.vehicle-form-group input::placeholder,
+.bay-form-group input::placeholder,
+.form-group input::placeholder {
+  color: #87958d;
+}
+
+.vehicle-form-group select option,
+.bay-form-group select option,
+.form-group select option {
+  background: #ffffff;
+  color: var(--color-ink);
+}
+
+.vehicle-form-group input:focus,
+.vehicle-form-group select:focus,
+.bay-form-group input:focus,
+.bay-form-group select:focus,
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #A4773C;
+  box-shadow: 0 0 0 3px rgba(164, 119, 60, 0.16);
+}
+
+.vehicles-table-wrapper,
+.bays-table-wrapper,
+.sessions-table-wrapper,
+.grid-table-wrapper {
+  border: 1px solid var(--color-line);
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.vehicles-table th,
+.bays-table th,
+.sessions-table th,
+.grid-table th {
+  border-bottom-color: var(--color-line);
+  background: #F5F0E8;
+  color: #6B6258;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.vehicles-table td,
+.bays-table td,
+.sessions-table td,
+.grid-table td {
+  border-bottom-color: #E9E2D8;
+  color: #403A33;
+  font-size: 13px;
+}
+
+.vehicles-table tbody tr:hover,
+.bays-table tbody tr:hover,
+.sessions-table tbody tr:hover,
+.grid-table tbody tr:hover {
+  background: #F5F0E8;
+}
+
+.vehicle-name strong,
+.bay-name strong,
+.soc-value,
+.power-value {
+  color: var(--color-ink);
+}
+
+.vehicles-state,
+.bays-state,
+.sessions-message,
+.grid-state {
+  border: 1px dashed #CFC3B2;
+  border-radius: 7px;
+  background: #FAF8F3;
+  color: #4F483F;
+}
+
+.vehicles-state p,
+.bays-state p {
+  color: var(--color-muted);
+}
+
+.vehicles-error,
+.charging-bays-error,
+.sessions-error,
+.grid-error {
+  border-color: #E6CACA;
+  background: #FBF1EE;
+  color: var(--color-red);
+}
+
+.priority-badge,
+.bay-status,
+.session-status {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.delete-button,
+.delete-bay-button,
+.delete-session-button,
+.delete-slot-button {
+  border: 1px solid #E2C9C3;
+  border-radius: 4px;
+  background: #FBF4F1;
+  color: #A65353;
+  cursor: pointer;
+}
+
+.delete-button:hover,
+.delete-bay-button:hover,
+.delete-session-button:hover,
+.delete-slot-button:hover {
+  background: #F4E6E1;
+}
+
+@media (max-width: 767px) {
+  .vehicles-header,
+  .charging-bays-header,
+  .charging-sessions-header,
+  .grid-slots-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    padding-bottom: 23px;
+  }
+
+  .vehicle-stats,
+  .bay-stats,
+  .session-stats,
+  .grid-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .vehicle-stat-card,
+  .bay-stat-card,
+  .session-stat-card,
+  .grid-stat-card {
+    min-height: 120px;
+    padding: 15px;
+  }
+
+  .vehicle-stat-card strong,
+  .bay-stat-card strong,
+  .session-stat-card strong,
+  .grid-stat-card strong {
+    font-size: 28px;
+  }
+
+  .vehicle-form-card,
+  .bay-form-card,
+  .session-form-section,
+  .grid-form-section {
+    padding: 17px;
+  }
+
+  .vehicle-form-grid,
+  .bay-form-grid,
+  .session-form,
+  .grid-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .session-overview,
+  .grid-overview {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .vehicles-table-wrapper,
+  .bays-table-wrapper,
+  .sessions-table-wrapper,
+  .grid-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .vehicle-form-card,
+  .bay-form-card,
+  .session-form-section,
+  .grid-form-section {
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 390px) {
+  .vehicle-stats,
+  .bay-stats,
+  .session-stats,
+  .grid-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.login-page {
+  min-height: 100vh;
+  background: #f4f7f5;
+  color: var(--color-ink);
+}
+
+.login-background {
+  display: none;
+}
+
+.login-navbar {
+  border-bottom: 1px solid var(--color-line);
+  background: #ffffff;
+}
+
+.login-brand,
+.login-brand span:last-child {
+  color: var(--color-green-dark);
+}
+
+.login-brand-mark {
+  border-radius: 9px;
+  background: var(--color-lime);
+  color: var(--color-green-dark);
+}
+
+.back-link {
+  color: var(--color-green);
+}
+
+.login-label,
+.card-top > span:first-child {
+  color: #527064;
+  letter-spacing: 0.08em;
+}
+
+.login-intro h1 {
+  color: var(--color-green-dark);
+  font-size: 48px;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+.login-intro h1 span {
+  color: #638074;
+}
+
+.login-intro p {
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.vehicles-header h1 span,
+.charging-bays-header h1 span,
+.charging-sessions-header h1 span,
+.grid-slots-header h1 span {
+  color: #6B6258;
+}
+
+.app-content .vehicle-stat-card,
+.app-content .bay-stat-card,
+.app-content .session-stat-card,
+.app-content .grid-stat-card,
+.app-content .vehicle-form-card,
+.app-content .bay-form-card,
+.app-content .session-form-section,
+.app-content .grid-form-section,
+.app-content .session-overview,
+.app-content .grid-overview {
+  background: var(--cream);
+  box-shadow: 0 4px 14px rgba(47, 38, 27, 0.045);
+}
+
+.app-content .vehicles-table-wrapper,
+.app-content .bays-table-wrapper,
+.app-content .sessions-table-wrapper,
+.app-content .grid-table-wrapper {
+  width: 100%;
+  min-width: 0;
+  background: var(--cream);
+  box-shadow: 0 4px 14px rgba(47, 38, 27, 0.035);
+}
+
+.app-content .vehicles-page,
+.app-content .charging-bays-page,
+.app-content .charging-sessions-page,
+.app-content .grid-slots-page {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-content input,
+.app-content select,
+.app-content textarea,
+.login-page input {
+  min-height: 44px;
+}
+
+.app-content button,
+.login-page button,
+.site-page a {
+  touch-action: manipulation;
+}
+
+.login-page {
+  background: var(--beige-light);
+}
+
+.login-navbar {
+  background: var(--cream);
+}
+
+.login-brand,
+.login-brand span:last-child {
+  color: var(--black);
+}
+
+.login-brand-mark {
+  border: 0;
+  border-radius: 5px;
+  background: var(--beige);
+  color: var(--black);
+}
+
+.back-link {
+  color: var(--muted);
+}
+
+.login-intro h1 {
+  color: var(--black);
+  letter-spacing: 0;
+  line-height: 1.04;
+}
+
+.login-intro h1 span {
+  color: var(--muted);
+}
+
+.login-card {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--cream);
+  box-shadow: 0 12px 32px rgba(45, 35, 22, 0.08);
+  backdrop-filter: none;
+}
+
+.card-top,
+.login-label,
+.form-group label {
+  color: var(--muted);
+}
+
+.secure-indicator {
+  color: var(--success);
+}
+
+.form-group input {
+  min-height: 46px;
+  border-color: var(--border);
+  border-radius: 5px;
+  background: var(--white);
+  color: var(--text);
+}
+
+.form-group input::placeholder {
+  color: #8A8176;
+}
+
+.form-group input:focus {
+  border-color: var(--warning);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(164, 119, 60, 0.16);
+}
+
+.password-toggle {
+  min-width: 44px;
+  min-height: 44px;
+  border-color: var(--border);
+  border-radius: 5px;
+  background: var(--beige-light);
+  color: var(--muted);
+}
+
+.password-toggle:hover {
+  background: var(--beige);
+  color: var(--black);
+}
+
+.login-button {
+  min-height: 46px;
+  border-radius: 5px;
+  background: var(--black);
+  color: var(--cream);
+}
+
+.login-button:hover {
+  background: var(--black-soft);
+}
+
+.login-success {
+  border-color: #D8E1D4;
+  background: #F1F5EF;
+  color: var(--success);
+}
+
+.login-error {
+  border-color: #E6CACA;
+  background: #FBF1EE;
+  color: var(--danger);
+}
+
+.create-account-link,
+.auth-switch-link {
+  color: var(--black);
+}
+
+.login-footer,
+.login-index {
+  color: var(--muted);
+}
+
+.site-page {
+  background: var(--beige-light);
+  color: var(--text);
+}
+
+.site-header {
+  border-color: var(--border);
+  background: var(--cream);
+}
+
+.site-brand,
+.site-section-heading h2,
+.site-tool-item strong {
+  color: var(--black);
+}
+
+.site-brand-mark {
+  border-radius: 5px;
+  background: var(--beige);
+  color: var(--black);
+}
+
+.site-links,
+.site-overview-copy,
+.site-tool-item small,
+.site-footer {
+  color: var(--muted);
+}
+
+.site-sign-in {
+  border-color: var(--border);
+  border-radius: 5px;
+  color: var(--black);
+}
+
+.site-sign-in:hover,
+.site-tool-item:hover {
+  border-color: var(--border);
+  background: var(--beige);
+}
+
+.site-hero {
+  background: var(--black);
+}
+
+.site-hero-shade {
+  background: rgba(17, 17, 17, 0.58);
+}
+
+.site-kicker,
+.site-section-heading .site-kicker {
+  color: var(--beige);
+}
+
+.site-live-dot {
+  background: var(--beige);
+}
+
+.site-primary-action {
+  border-radius: 5px;
+  background: var(--beige);
+  color: var(--black);
+}
+
+.site-primary-action:hover {
+  background: #F0E7DA;
+}
+
+.site-secondary-action,
+.site-hero-caption {
+  color: var(--cream);
+}
+
+.site-section-heading h2 span {
+  color: var(--muted);
+}
+
+.site-tools,
+.site-tool-item {
+  border-color: var(--border);
+}
+
+.site-tool-number,
+.site-tool-arrow,
+.site-footer > a:last-child {
+  color: var(--muted);
+}
+
+@media (max-width: 767px) {
+  .login-navbar {
+    height: 68px;
+    padding: 0 18px;
+  }
+
+  .login-container {
+    min-height: calc(100vh - 68px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 34px 18px 42px;
+  }
+
+  .login-intro h1 {
+    font-size: 42px;
+  }
+
+  .login-label {
+    margin-bottom: 14px;
+  }
+
+  .login-intro p {
+    margin-top: 13px;
+    font-size: 14px;
+  }
+
+  .login-card {
+    width: 100%;
+    padding: 22px 18px;
+  }
+}
+
+.login-card {
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--color-ink);
+  box-shadow: 0 12px 34px rgba(23, 56, 42, 0.08);
+}
+
+.secure-indicator {
+  color: var(--color-green);
+}
+
+.login-page .form-group label {
+  color: #354a40;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.login-page .form-group input {
+  border: 1px solid #cbd8d0;
+  border-radius: 5px;
+  background: #ffffff;
+  color: var(--color-ink);
+}
+
+.login-page .form-group input:focus {
+  border-color: #438267;
+  box-shadow: 0 0 0 3px rgba(67, 130, 103, 0.14);
+}
+
+.password-toggle {
+  color: var(--color-green);
+}
+
+.login-button {
+  border-radius: 5px;
+  background: var(--color-green);
+  color: #ffffff;
+  letter-spacing: 0;
+}
+
+.login-button:hover {
+  background: var(--color-green-dark);
+}
+
+.create-account-link,
+.login-footer,
+.login-footer span,
+.auth-switch-link {
+  color: var(--color-muted);
+}
+
+.create-account-link strong,
+.auth-switch-link {
+  color: var(--color-green);
+}
+
+.login-success {
+  border-color: #c2dec8;
+  background: #eff8f0;
+  color: #28603a;
+}
+
+.login-error {
+  border-color: #edc6c2;
+  background: #fff4f2;
+  color: var(--color-red);
+}
+
+@media (max-width: 600px) {
+  .login-intro h1 {
+    font-size: 38px;
+  }
+}
+
+.login-page .form-group label {
+  color: var(--muted);
+}
+
+.login-page .form-group input {
+  border-color: var(--border);
+  background: var(--white);
+  color: var(--text);
+}
+
+.login-page .form-group input:focus {
+  border-color: var(--warning);
+  box-shadow: 0 0 0 3px rgba(164, 119, 60, 0.16);
+}
+
+.login-success {
+  border-color: #D8E1D4;
+  background: #F1F5EF;
+  color: var(--success);
+}
+
+.bay-status.charging,
+.bay-status.occupied,
+.vehicle-status.charging,
+.vehicle-status.active,
+.session-status.status-active,
+.session-status.status-completed {
+  color: var(--success);
+}
+
+.bay-status.available,
+.bay-status.idle,
+.vehicle-status.available,
+.vehicle-status.ready,
+.vehicle-status.idle {
+  color: var(--muted);
+}
+
+.bay-status.maintenance,
+.vehicle-status.emergency,
+.priority-badge.emergency,
+.priority-badge.high {
+  color: var(--warning);
+}
+
+.bay-status.offline,
+.session-status.status-cancelled {
+  color: var(--danger);
+}
+
+.priority-badge,
+.session-status {
+  border-color: var(--border);
+  background: var(--beige-light);
+  text-transform: none;
+  letter-spacing: 0;
+}

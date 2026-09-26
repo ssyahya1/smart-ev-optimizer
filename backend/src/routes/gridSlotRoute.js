@@ -1,6 +1,7 @@
 import express from "express";
 
 import { authMiddleware } from "../middleware/authMiddleware.js";
+import { adminMiddleware } from "../middleware/adminMiddleware.js";
 
 import {
     createGridSlot,
@@ -12,34 +13,16 @@ import {
 
 const router = express.Router();
 
-router.post(
-    "/",
-    authMiddleware,
-    createGridSlot
-);
 
-router.get(
-    "/",
-    authMiddleware,
-    getGridSlots
-);
+router.use(authMiddleware);
 
-router.get(
-    "/:id",
-    authMiddleware,
-    getGridSlotById
-);
 
-router.put(
-    "/:id",
-    authMiddleware,
-    updateGridSlot
-);
+router.get("/", getGridSlots);
+router.get("/:id", getGridSlotById);
 
-router.delete(
-    "/:id",
-    authMiddleware,
-    deleteGridSlot
-);
+
+router.post("/", adminMiddleware, createGridSlot);
+router.put("/:id", adminMiddleware, updateGridSlot);
+router.delete("/:id", adminMiddleware, deleteGridSlot);
 
 export default router;

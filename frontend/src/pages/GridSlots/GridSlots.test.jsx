@@ -27,7 +27,7 @@ describe("GridSlots", () => {
     }));
     render(<GridSlots />);
 
-    expect(screen.getByText("Loading grid slots...")).toBeInTheDocument();
+    expect(screen.getByText("Loading energy availability…")).toBeInTheDocument();
     resolveRequest({ gridSlots: [slot] });
 
     expect(await screen.findByText("2026-09-11T10:00")).toBeInTheDocument();
@@ -38,7 +38,8 @@ describe("GridSlots", () => {
   test("renders empty and API error states", async () => {
     apiRequest.mockResolvedValueOnce({ gridSlots: [] });
     render(<GridSlots />);
-    expect(await screen.findByText("No grid slots found.")).toBeInTheDocument();
+    expect(await screen.findByText("No energy windows yet. Add one to show available charging power."))
+      .toBeInTheDocument();
 
     apiRequest.mockRejectedValueOnce(new Error("Grid service unavailable"));
     render(<GridSlots />);
@@ -49,10 +50,10 @@ describe("GridSlots", () => {
   test("blocks submission when required slot fields are empty", async () => {
     apiRequest.mockResolvedValueOnce({ gridSlots: [] });
     render(<GridSlots />);
-    await screen.findByText("No grid slots found.");
+    await screen.findByText("No energy windows yet. Add one to show available charging power.");
 
     fireEvent.click(screen.getByRole("button", { name: /add grid slot/i }));
-    fireEvent.click(screen.getByRole("button", { name: /create slot/i }));
+    fireEvent.click(screen.getByRole("button", { name: /add energy window/i }));
 
     expect(apiRequest).toHaveBeenCalledTimes(1);
   });
@@ -63,22 +64,22 @@ describe("GridSlots", () => {
       .mockResolvedValueOnce({ gridSlot: slot })
       .mockResolvedValueOnce({ gridSlots: [slot] });
     render(<GridSlots />);
-    await screen.findByText("No grid slots found.");
+    await screen.findByText("No energy windows yet. Add one to show available charging power.");
 
     fireEvent.click(screen.getByRole("button", { name: /add grid slot/i }));
-    fireEvent.change(screen.getByLabelText("SLOT TIME"), {
+    fireEvent.change(screen.getByLabelText("Time period"), {
       target: { value: "2026-09-11T10:00" },
     });
-    fireEvent.change(screen.getByLabelText("MAX POWER (KW)"), {
+    fireEvent.change(screen.getByLabelText("Maximum charging power (kW)"), {
       target: { value: "200" },
     });
-    fireEvent.change(screen.getByLabelText("CURRENT LOAD (KW)"), {
+    fireEvent.change(screen.getByLabelText("Current power in use (kW)"), {
       target: { value: "50" },
     });
-    fireEvent.change(screen.getByLabelText("PRICE / KWH"), {
+    fireEvent.change(screen.getByLabelText("Electricity price per kWh"), {
       target: { value: "0.25" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /create slot/i }));
+    fireEvent.click(screen.getByRole("button", { name: /add energy window/i }));
 
     await waitFor(() => {
       expect(apiRequest).toHaveBeenCalledWith(
@@ -94,22 +95,22 @@ describe("GridSlots", () => {
       .mockResolvedValueOnce({ gridSlots: [] })
       .mockRejectedValueOnce(new Error("Grid slot creation failed"));
     render(<GridSlots />);
-    await screen.findByText("No grid slots found.");
+    await screen.findByText("No energy windows yet. Add one to show available charging power.");
 
     fireEvent.click(screen.getByRole("button", { name: /add grid slot/i }));
-    fireEvent.change(screen.getByLabelText("SLOT TIME"), {
+    fireEvent.change(screen.getByLabelText("Time period"), {
       target: { value: "2026-09-11T10:00" },
     });
-    fireEvent.change(screen.getByLabelText("MAX POWER (KW)"), {
+    fireEvent.change(screen.getByLabelText("Maximum charging power (kW)"), {
       target: { value: "200" },
     });
-    fireEvent.change(screen.getByLabelText("CURRENT LOAD (KW)"), {
+    fireEvent.change(screen.getByLabelText("Current power in use (kW)"), {
       target: { value: "50" },
     });
-    fireEvent.change(screen.getByLabelText("PRICE / KWH"), {
+    fireEvent.change(screen.getByLabelText("Electricity price per kWh"), {
       target: { value: "0.25" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /create slot/i }));
+    fireEvent.click(screen.getByRole("button", { name: /add energy window/i }));
 
     expect(await screen.findByText("Grid slot creation failed"))
       .toBeInTheDocument();

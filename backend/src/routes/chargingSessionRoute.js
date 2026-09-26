@@ -1,4 +1,3 @@
-
 import express from "express";
 
 import {
@@ -11,48 +10,18 @@ import {
 
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
-
 const router = express.Router();
 
+router.use(authMiddleware);
 
-// Create charging session
-router.post(
-    "/",
-    authMiddleware,
-    createChargingSession
-);
+router.post("/", createChargingSession);
 
+router.get("/", getChargingSessions);
 
-// Get all charging sessions
-router.get(
-    "/",
-    authMiddleware,
-    getChargingSessions
-);
+router.get("/:id", getChargingSessionById);
 
+router.put("/:id", updateChargingSession);
 
-// Get charging session by ID
-router.get(
-    "/:id",
-    authMiddleware,
-    getChargingSessionById
-);
-
-
-// Update charging session
-router.put(
-    "/:id",
-    authMiddleware,
-    updateChargingSession
-);
-
-
-// Delete charging session
-router.delete(
-    "/:id",
-    authMiddleware,
-    deleteChargingSession
-);
-
+router.delete("/:id", deleteChargingSession);
 
 export default router;

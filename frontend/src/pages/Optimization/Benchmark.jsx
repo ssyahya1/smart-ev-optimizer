@@ -4,10 +4,10 @@ import "./Benchmark.css";
 
 const datasetOptions = [20, 100, 500, 1000];
 
-const algorithms = [
+const planningAreas = [
   {
     key: "assignment",
-    title: "Bay Assignment",
+    title: "Bay matching",
     algorithms: [
       ["greedy", "Greedy"],
       ["priorityQueue", "Priority Queue"],
@@ -15,7 +15,7 @@ const algorithms = [
   },
   {
     key: "scheduling",
-    title: "Charge Scheduling",
+    title: "Session planning",
     algorithms: [
       ["greedy", "Greedy"],
       ["dynamicProgramming", "Dynamic Programming"],
@@ -23,7 +23,7 @@ const algorithms = [
   },
   {
     key: "power",
-    title: "Power Contention",
+    title: "Power sharing",
     algorithms: [
       ["maxHeap", "Max-Heap"],
       ["roundRobin", "Round-Robin"],
@@ -31,7 +31,7 @@ const algorithms = [
   },
   {
     key: "routing",
-    title: "Fleet Routing",
+    title: "Fleet routes",
     algorithms: [
       ["bfs", "BFS"],
       ["dijkstra", "Dijkstra"],
@@ -39,7 +39,7 @@ const algorithms = [
   },
   {
     key: "journey",
-    title: "Multi-Stage Journey",
+    title: "Multi-stop journeys",
     algorithms: [
       ["aStar", "A*"],
       ["bellmanFord", "Bellman-Ford"],
@@ -47,7 +47,7 @@ const algorithms = [
   },
   {
     key: "resourceAllocation",
-    title: "Resource Allocation",
+    title: "Grid capacity",
     algorithms: [
       ["fordFulkerson", "Ford-Fulkerson"],
       ["greedyBottleneck", "Greedy Bottleneck"],
@@ -61,14 +61,6 @@ function formatTime(value) {
   }
 
   return `${Number(value).toFixed(4)} ms`;
-}
-
-function formatNumber(value) {
-  if (value === undefined || value === null) {
-    return "—";
-  }
-
-  return Number(value).toLocaleString();
 }
 
 function Benchmarks() {
@@ -93,7 +85,7 @@ function Benchmarks() {
       setResult(data);
     } catch (err) {
       setError(
-        err.message || "Unable to run benchmark."
+        err.message || "Unable to compare plans."
       );
     } finally {
       setLoading(false);
@@ -107,20 +99,19 @@ function Benchmarks() {
         <header className="benchmarks-header">
           <div>
             <span className="benchmarks-eyebrow">
-              PERFORMANCE LAB
+              PLAN COMPARISON
             </span>
 
-            <h1>Algorithm Benchmarks</h1>
+            <h1>Plan generation report</h1>
 
             <p>
-              Measure execution time and operation counts
-              across every optimization strategy.
+              Compare planning time across different fleet sizes.
             </p>
           </div>
 
           <div className="benchmark-status">
             <span></span>
-            BENCHMARK ENGINE
+            READY TO COMPARE
           </div>
         </header>
 
@@ -128,12 +119,11 @@ function Benchmarks() {
 
           <div>
             <span className="control-label">
-              DATASET SIZE
+              FLEET SIZE
             </span>
 
             <p>
-              Select the workload used by the benchmark
-              engine.
+              Choose the number of vehicles to include.
             </p>
           </div>
 
@@ -160,15 +150,15 @@ function Benchmarks() {
             disabled={loading}
           >
             {loading
-              ? "RUNNING BENCHMARK..."
-              : "RUN BENCHMARK"}
+              ? "Comparing plans..."
+              : "Compare plans"}
           </button>
 
         </section>
 
         {error && (
           <div className="benchmark-error">
-            <strong>Benchmark Error</strong>
+            <strong>Couldn’t compare plans</strong>
             <span>{error}</span>
           </div>
         )}
@@ -177,11 +167,10 @@ function Benchmarks() {
           <section className="benchmark-empty">
             <div className="empty-number">06</div>
 
-            <h2>Performance comparison</h2>
+            <h2>Compare plan generation</h2>
 
             <p>
-              Choose a dataset size and run the benchmark
-              to compare all six algorithm pairs.
+              Choose a fleet size to see generation time across six planning areas.
             </p>
           </section>
         )}
@@ -191,7 +180,7 @@ function Benchmarks() {
             <div className="loading-line"></div>
 
             <span>
-              Generating dataset and executing algorithms...
+              Preparing plan comparison...
             </span>
           </section>
         )}
@@ -201,7 +190,7 @@ function Benchmarks() {
             <section className="benchmark-summary">
 
               <div>
-                <span>DATASET</span>
+                <span>FLEET SIZE</span>
                 <strong>
                   {Number(
                     result.datasetSize
@@ -211,13 +200,13 @@ function Benchmarks() {
               </div>
 
               <div>
-                <span>ALGORITHM PAIRS</span>
+                <span>PLANNING AREAS</span>
                 <strong>06</strong>
-                <small>comparisons</small>
+                <small>included</small>
               </div>
 
               <div>
-                <span>MEASUREMENT</span>
+                <span>TIME UNIT</span>
                 <strong>ms</strong>
                 <small>execution time</small>
               </div>
@@ -229,29 +218,28 @@ function Benchmarks() {
               <div className="results-heading">
                 <div>
                   <span>RESULTS</span>
-                  <h2>Performance Matrix</h2>
+                  <h2>Plan generation details</h2>
                 </div>
 
                 <span>
                   {Number(
                     result.datasetSize
                   ).toLocaleString()}{" "}
-                  VEHICLE DATASET
+                  VEHICLES
                 </span>
               </div>
 
               <div className="results-table">
 
                 <div className="table-head">
-                  <span>OPTIMIZATION</span>
-                  <span>ALGORITHM</span>
-                  <span>EXECUTION</span>
-                  <span>OPERATIONS</span>
+                  <span>PLANNING AREA</span>
+                  <span>OPTION</span>
+                  <span>GENERATION TIME</span>
                 </div>
 
-                {algorithms.map((group) =>
+                {planningAreas.map((group) =>
                   group.algorithms.map(
-                    ([algorithmKey, algorithmName], index) => {
+                    ([algorithmKey], index) => {
                       const data =
                         result[group.key]?.[
                           algorithmKey
@@ -273,11 +261,9 @@ function Benchmarks() {
                           <div className="algorithm-name">
                             <span>
                               {index === 0
-                                ? "A"
-                                : "B"}
+                                ? "Option A"
+                                : "Option B"}
                             </span>
-
-                            {algorithmName}
                           </div>
 
                           <div className="execution-value">
@@ -286,11 +272,6 @@ function Benchmarks() {
                             )}
                           </div>
 
-                          <div className="operations-value">
-                            {formatNumber(
-                              data?.operations
-                            )}
-                          </div>
                         </div>
                       );
                     }
@@ -303,7 +284,7 @@ function Benchmarks() {
 
             <section className="comparison-grid">
 
-              {algorithms.map((group) => {
+              {planningAreas.map((group) => {
                 const first =
                   result[group.key]?.[
                     group.algorithms[0][0]
@@ -325,9 +306,9 @@ function Benchmarks() {
                       </span>
 
                       <small>
-                        {group.algorithms[0][1]}
+                        Option A
                         {" / "}
-                        {group.algorithms[1][1]}
+                        Option B
                       </small>
                     </div>
 
@@ -335,7 +316,7 @@ function Benchmarks() {
 
                       <div>
                         <small>
-                          {group.algorithms[0][1]}
+                          Option A
                         </small>
 
                         <strong>
@@ -347,7 +328,7 @@ function Benchmarks() {
 
                       <div>
                         <small>
-                          {group.algorithms[1][1]}
+                          Option B
                         </small>
 
                         <strong>
@@ -359,27 +340,6 @@ function Benchmarks() {
 
                     </div>
 
-                    <div className="operation-comparison">
-
-                      <span>
-                        OPERATIONS
-                      </span>
-
-                      <strong>
-                        {formatNumber(
-                          first?.operations
-                        )}
-                      </strong>
-
-                      <span>VS</span>
-
-                      <strong>
-                        {formatNumber(
-                          second?.operations
-                        )}
-                      </strong>
-
-                    </div>
                   </article>
                 );
               })}
@@ -389,13 +349,10 @@ function Benchmarks() {
             <section className="benchmark-footer">
 
               <div>
-                <span>BENCHMARK NOTE</span>
+                <span>REPORT NOTE</span>
 
                 <p>
-                  Execution time is measured on the
-                  backend using high-resolution performance
-                  timing. Results can vary between runs
-                  depending on system workload.
+                  Generation time can vary slightly between runs depending on current system activity.
                 </p>
               </div>
 

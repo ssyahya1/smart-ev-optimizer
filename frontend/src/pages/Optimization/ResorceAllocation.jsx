@@ -39,7 +39,7 @@ function ResourceAllocation() {
 
   const runAllocation = async () => {
     if (source === sink) {
-      setError("Source and sink must be different.");
+      setError("Choose two different locations.");
       return;
     }
 
@@ -87,10 +87,6 @@ function ResourceAllocation() {
     );
   };
 
-  const getOperations = (algorithm) => {
-    return result?.[algorithm]?.operations ?? "—";
-  };
-
   const getAssignments = (algorithm) => {
     const data = result?.[algorithm];
 
@@ -109,37 +105,36 @@ function ResourceAllocation() {
         <header className="resource-header">
           <div>
             <span className="resource-eyebrow">
-              ALGORITHM 06
+              GRID CAPACITY
             </span>
 
-            <h1>Resource Allocation</h1>
+            <h1>Share available capacity</h1>
 
             <p>
-              Compare Ford-Fulkerson and Greedy Bottleneck
-              for capacity-constrained EV resource allocation.
+              See how much charging power can be delivered between selected locations.
             </p>
           </div>
 
           <div className="resource-badge">
             <span></span>
-            RESOURCE ENGINE
+            CAPACITY PLANNER
           </div>
         </header>
 
         <section className="resource-controls">
 
           <div className="control-heading">
-            <span>CAPACITY NETWORK</span>
+            <span>POWER AVAILABILITY</span>
 
             <small>
-              Source-to-sink resource distribution
+              Power capacity between locations
             </small>
           </div>
 
           <div className="controls-grid">
 
             <label>
-              <span>Source</span>
+              <span>Starting location</span>
 
               <select
                 value={source}
@@ -156,7 +151,7 @@ function ResourceAllocation() {
             </label>
 
             <label>
-              <span>Sink</span>
+              <span>Destination</span>
 
               <select
                 value={sink}
@@ -180,15 +175,15 @@ function ResourceAllocation() {
               }
             >
               {loading
-                ? "OPTIMIZING..."
-                : "ALLOCATE RESOURCES"}
+                ? "Preparing plan..."
+                : "Check available power"}
             </button>
 
           </div>
 
           {source === sink && (
             <p className="control-warning">
-              Source and sink must be different.
+              Choose two different locations.
             </p>
           )}
 
@@ -198,12 +193,12 @@ function ResourceAllocation() {
 
           <div className="section-heading">
             <div>
-              <span>RESOURCE NETWORK</span>
-              <h2>Capacity-Constrained Graph</h2>
+              <span>CONNECTED SITES</span>
+              <h2>Power connections</h2>
             </div>
 
             <div className="node-count">
-              {nodes.length} NODES
+              {nodes.length} LOCATIONS
             </div>
           </div>
 
@@ -219,7 +214,7 @@ function ResourceAllocation() {
                   <strong>{node}</strong>
 
                   <span>
-                    {graph[node].length} routes
+                    {graph[node].length} connections
                   </span>
                 </div>
 
@@ -244,7 +239,7 @@ function ResourceAllocation() {
 
                   {graph[node].length === 0 && (
                     <div className="empty-route">
-                      Terminal node
+                      End location
                     </div>
                   )}
 
@@ -259,7 +254,7 @@ function ResourceAllocation() {
 
         {error && (
           <div className="resource-error">
-            <strong>Allocation Error</strong>
+            <strong>Capacity unavailable</strong>
             <span>{error}</span>
           </div>
         )}
@@ -275,27 +270,27 @@ function ResourceAllocation() {
                   01
                 </span>
 
-                <h2>Ford-Fulkerson</h2>
+                <h2>Option A</h2>
 
                 <p>
-                  Maximum Flow
+                  Available charging power
                 </p>
               </div>
 
               <div className="algorithm-tag">
-                MAX FLOW
+                POWER AVAILABLE
               </div>
 
             </div>
 
             <div className="result-block">
 
-              <span>MAXIMUM FLOW</span>
+              <span>AVAILABLE POWER</span>
 
               <strong>
                 {result
                   ? `${getFlow("fordFulkerson")} kW`
-                  : "Run algorithm"}
+                  : "Check availability"}
               </strong>
 
             </div>
@@ -303,17 +298,7 @@ function ResourceAllocation() {
             <div className="algorithm-stats">
 
               <div>
-                <span>OPERATIONS</span>
-
-                <strong>
-                  {getOperations(
-                    "fordFulkerson"
-                  )}
-                </strong>
-              </div>
-
-              <div>
-                <span>ROUTE FLOWS</span>
+                <span>POWER CONNECTIONS</span>
 
                 <strong>
                   {getAssignments(
@@ -335,15 +320,15 @@ function ResourceAllocation() {
                   02
                 </span>
 
-                <h2>Greedy Bottleneck</h2>
+                <h2>Option B</h2>
 
                 <p>
-                  Local Capacity Selection
+                  Alternative capacity plan
                 </p>
               </div>
 
               <div className="algorithm-tag">
-                GREEDY
+                POWER PLAN
               </div>
 
             </div>
@@ -357,7 +342,7 @@ function ResourceAllocation() {
                   ? `${getFlow(
                       "greedyBottleneck"
                     )} kW`
-                  : "Run algorithm"}
+                  : "Check availability"}
               </strong>
 
             </div>
@@ -365,17 +350,7 @@ function ResourceAllocation() {
             <div className="algorithm-stats">
 
               <div>
-                <span>OPERATIONS</span>
-
-                <strong>
-                  {getOperations(
-                    "greedyBottleneck"
-                  )}
-                </strong>
-              </div>
-
-              <div>
-                <span>ROUTE FLOWS</span>
+                <span>POWER CONNECTIONS</span>
 
                 <strong>
                   {getAssignments(
@@ -394,17 +369,15 @@ function ResourceAllocation() {
           <section className="comparison-card">
 
             <div>
-              <span>ALGORITHM COMPARISON</span>
+              <span>CAPACITY OPTIONS</span>
 
-              <h2>
-                Allocation Performance
-              </h2>
+              <h2>Compare available power</h2>
             </div>
 
             <div className="comparison-row">
 
               <div>
-                <span>FORD-FULKERSON</span>
+                <span>OPTION A</span>
 
                 <strong>
                   {getFlow("fordFulkerson")} kW
@@ -412,7 +385,7 @@ function ResourceAllocation() {
               </div>
 
               <div>
-                <span>GREEDY BOTTLENECK</span>
+                <span>OPTION B</span>
 
                 <strong>
                   {getFlow(

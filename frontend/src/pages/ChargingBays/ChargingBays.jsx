@@ -50,8 +50,8 @@ function ChargingBays() {
   const stats = useMemo(() => {
     const total = bays.length;
 
-    const charging = bays.filter(
-      (bay) => String(bay.status || "").toLowerCase() === "occupied"
+    const charging = bays.filter((bay) =>
+      ["occupied", "charging"].includes(String(bay.status || "").toLowerCase())
     ).length;
 
     const available = bays.filter(
@@ -167,8 +167,16 @@ function ChargingBays() {
       return "Occupied";
     }
 
+    if (status === "charging") {
+      return "Charging";
+    }
+
     if (status === "maintenance") {
       return "Maintenance";
+    }
+
+    if (status === "offline") {
+      return "Offline";
     }
 
     return "Available";
@@ -179,16 +187,15 @@ function ChargingBays() {
       <header className="charging-bays-header">
         <div>
           <span className="charging-bays-label">
-            SMART EV / INFRASTRUCTURE
+            CHARGING / BAYS
           </span>
 
           <h1>
-            Charging <span>bays.</span>
+            Charging bays
           </h1>
 
           <p>
-            Monitor charger availability, power capacity, and bay utilization
-            across the EV fleet.
+            See which bays are ready, in use, or need attention.
           </p>
         </div>
 
@@ -207,25 +214,25 @@ function ChargingBays() {
 
       <div className="bay-stats">
         <article className="bay-stat-card">
-          <span>TOTAL BAYS</span>
+          <span>Charging bays</span>
           <strong>{stats.total}</strong>
-          <small>Installed charging infrastructure</small>
+          <small>Across your site</small>
         </article>
 
         <article className="bay-stat-card">
-          <span>OCCUPIED</span>
+          <span>In use</span>
           <strong>{stats.charging}</strong>
-          <small>Currently occupied</small>
+          <small>Charging or connected</small>
         </article>
 
         <article className="bay-stat-card">
-          <span>AVAILABLE</span>
+          <span>Available now</span>
           <strong>{stats.available}</strong>
-          <small>Ready for assignment</small>
+          <small>Ready for a vehicle</small>
         </article>
 
         <article className="bay-stat-card">
-          <span>DC FAST</span>
+          <span>Fast chargers</span>
           <strong>{stats.fastChargers}</strong>
           <small>High-power charging bays</small>
         </article>
@@ -246,10 +253,11 @@ function ChargingBays() {
           <form onSubmit={handleSubmit}>
             <div className="bay-form-grid">
               <div className="bay-form-group">
-                <label>BAY NUMBER</label>
+                <label htmlFor="bay_number">Bay name or number</label>
 
                 <input
                   name="bay_number"
+                  id="bay_number"
                   value={formData.bay_number}
                   onChange={handleChange}
                   placeholder="BAY-01"
@@ -259,10 +267,11 @@ function ChargingBays() {
               </div>
 
               <div className="bay-form-group">
-                <label>CHARGER TYPE</label>
+                <label htmlFor="charger_type">Charger type</label>
 
                 <select
                   name="charger_type"
+                  id="charger_type"
                   value={formData.charger_type}
                   onChange={handleChange}
                   required
@@ -273,10 +282,11 @@ function ChargingBays() {
               </div>
 
               <div className="bay-form-group">
-                <label>POWER LIMIT (KW)</label>
+                <label htmlFor="max_power_kw">Maximum charging power (kW)</label>
 
                 <input
                   name="max_power_kw"
+                  id="max_power_kw"
                   type="number"
                   min="0.1"
                   step="0.1"
@@ -288,10 +298,11 @@ function ChargingBays() {
               </div>
 
               <div className="bay-form-group">
-                <label>STATUS</label>
+                <label htmlFor="bay_status">Status</label>
 
                 <select
                   name="status"
+                  id="bay_status"
                   value={formData.status}
                   onChange={handleChange}
                   required
@@ -315,27 +326,27 @@ function ChargingBays() {
         <div className="bays-table-heading">
           <div>
             <span className="section-label">
-              01 — CHARGING INFRASTRUCTURE
+              BAY AVAILABILITY
             </span>
 
-            <h2>Bay operations</h2>
+            <h2>Charging bays</h2>
           </div>
 
           <span className="bay-count">
-            {bays.length.toString().padStart(2, "0")} BAYS
+            {bays.length} {bays.length === 1 ? "bay" : "bays"}
           </span>
         </div>
 
         {loading ? (
           <div className="bays-state">
-            <span>LOADING BAY DATA...</span>
+            <span>Loading charging bays…</span>
           </div>
         ) : bays.length === 0 ? (
           <div className="bays-state">
-            <span>NO CHARGING BAYS FOUND</span>
+            <span>No charging bays yet</span>
 
             <p>
-              Add your first charging bay to begin infrastructure management.
+              Add a bay to keep availability and charger details up to date.
             </p>
           </div>
         ) : (
@@ -346,7 +357,7 @@ function ChargingBays() {
                   <th>BAY</th>
                   <th>STATUS</th>
                   <th>CHARGER</th>
-                  <th>POWER LIMIT</th>
+                  <th>MAXIMUM POWER</th>
                   <th>VEHICLE</th>
                   <th>ACTION</th>
                 </tr>
@@ -381,7 +392,7 @@ function ChargingBays() {
                       </strong>
                     </td>
 
-                    <td>—</td>
+                    <td>{bay.vehicle?.vehicle_number ?? bay.vehicle_number ?? "—"}</td>
 
                     <td>
                       <button

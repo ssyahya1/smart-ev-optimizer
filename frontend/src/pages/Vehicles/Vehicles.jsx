@@ -180,16 +180,15 @@ function Vehicles() {
       <div className="vehicles-header">
         <div>
           <span className="vehicles-label">
-            SMART EV / FLEET
+            FLEET / VEHICLES
           </span>
 
           <h1>
-            Vehicles <span>overview.</span>
+            Your vehicles
           </h1>
 
           <p>
-            Monitor fleet availability, battery state, priority,
-            and charging requirements from one control surface.
+            Keep vehicle details, battery levels, and charging priorities in one place.
           </p>
         </div>
 
@@ -212,25 +211,25 @@ function Vehicles() {
 
       <div className="vehicle-stats">
         <article className="vehicle-stat-card">
-          <span>TOTAL VEHICLES</span>
+          <span>Vehicles in fleet</span>
           <strong>{stats.total}</strong>
           <small>Registered fleet</small>
         </article>
 
         <article className="vehicle-stat-card">
-          <span>HIGH PRIORITY</span>
+          <span>Needs attention</span>
           <strong>{stats.highPriority}</strong>
-          <small>Emergency / high priority</small>
+          <small>High-priority vehicles</small>
         </article>
 
         <article className="vehicle-stat-card">
-          <span>AVERAGE SOC</span>
+          <span>Average battery level</span>
           <strong>{stats.averageSoc.toFixed(1)}%</strong>
-          <small>Initial state of charge</small>
+          <small>Across your fleet</small>
         </article>
 
         <article className="vehicle-stat-card">
-          <span>DEADLINES</span>
+          <span>Ready-by times</span>
           <strong>{stats.vehiclesWithDeadlines}</strong>
           <small>Vehicles with deadlines</small>
         </article>
@@ -253,10 +252,11 @@ function Vehicles() {
           <form onSubmit={handleSubmit}>
             <div className="vehicle-form-grid">
               <div className="vehicle-form-group">
-                <label>VEHICLE ID</label>
+                <label htmlFor="vehicle_number">Vehicle name or number</label>
 
                 <input
                   name="vehicle_number"
+                  id="vehicle_number"
                   value={formData.vehicle_number}
                   onChange={handleChange}
                   placeholder="EV-001"
@@ -265,10 +265,11 @@ function Vehicles() {
               </div>
 
               <div className="vehicle-form-group">
-                <label>ARRIVAL TIME</label>
+                <label htmlFor="arrival_time">Arrival time</label>
 
                 <input
                   name="arrival_time"
+                  id="arrival_time"
                   type="datetime-local"
                   value={formData.arrival_time}
                   onChange={handleChange}
@@ -277,10 +278,11 @@ function Vehicles() {
               </div>
 
               <div className="vehicle-form-group">
-                <label>INITIAL SOC (%)</label>
+                <label htmlFor="initial_soc">Current battery level (%)</label>
 
                 <input
                   name="initial_soc"
+                  id="initial_soc"
                   type="number"
                   min="0"
                   max="100"
@@ -293,10 +295,11 @@ function Vehicles() {
               </div>
 
               <div className="vehicle-form-group">
-                <label>BATTERY CAPACITY (KWH)</label>
+                <label htmlFor="battery_capacity_kwh">Battery capacity (kWh)</label>
 
                 <input
                   name="battery_capacity_kwh"
+                  id="battery_capacity_kwh"
                   type="number"
                   min="1"
                   step="0.01"
@@ -308,10 +311,11 @@ function Vehicles() {
               </div>
 
               <div className="vehicle-form-group">
-                <label>PRIORITY</label>
+                <label htmlFor="priority">Charging priority</label>
 
                 <select
                   name="priority"
+                  id="priority"
                   value={formData.priority}
                   onChange={handleChange}
                 >
@@ -323,10 +327,11 @@ function Vehicles() {
               </div>
 
               <div className="vehicle-form-group">
-                <label>DEADLINE</label>
+                <label htmlFor="deadline">Ready by</label>
 
                 <input
                   name="deadline"
+                  id="deadline"
                   type="datetime-local"
                   value={formData.deadline}
                   onChange={handleChange}
@@ -350,25 +355,25 @@ function Vehicles() {
         <div className="table-heading">
           <div>
             <span className="section-label">
-              01 — FLEET REGISTER
+              VEHICLE REGISTER
             </span>
 
-            <h2>Vehicle operations</h2>
+            <h2>Fleet vehicles</h2>
           </div>
 
           <span className="vehicle-count">
-            {vehicles.length.toString().padStart(2, "0")} VEHICLES
+            {vehicles.length} {vehicles.length === 1 ? "vehicle" : "vehicles"}
           </span>
         </div>
 
         {loading ? (
           <div className="vehicles-state">
-            <span>LOADING FLEET DATA...</span>
+            <span>Loading vehicles…</span>
           </div>
         ) : vehicles.length === 0 ? (
           <div className="vehicles-state">
-            <span>NO VEHICLES FOUND</span>
-            <p>Add your first vehicle to begin fleet optimization.</p>
+            <span>No vehicles yet</span>
+            <p>Add a vehicle to keep its battery and charging details handy.</p>
           </div>
         ) : (
           <div className="vehicles-table-wrapper">
@@ -376,7 +381,7 @@ function Vehicles() {
               <thead>
                 <tr>
                   <th>VEHICLE</th>
-                  <th>SOC</th>
+                  <th>BATTERY LEVEL</th>
                   <th>BATTERY</th>
                   <th>PRIORITY</th>
                   <th>ARRIVAL</th>

@@ -1,12 +1,15 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
+import "./Layout.css";
 
 function Layout() {
   return (
-    <>
+    <div className="app-shell">
       <Navbar />
-      <Outlet />
-    </>
+      <main className="app-content">
+        <Outlet />
+      </main>
+    </div>
   );
 }
 

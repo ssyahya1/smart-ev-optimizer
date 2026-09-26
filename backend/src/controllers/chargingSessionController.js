@@ -2,7 +2,7 @@ import pool from "../config/database.js";
 import { z } from "zod";
 
 
-// Validation schema
+
 const chargingSessionSchema = z.object({
     vehicle_id: z.number().int().positive(),
     charging_bay_id: z.number().int().positive(),
@@ -20,7 +20,7 @@ const chargingSessionSchema = z.object({
 });
 
 
-// CREATE CHARGING SESSION
+
 export const createChargingSession = async (req, res, next) => {
     try {
         const {
@@ -52,10 +52,28 @@ export const createChargingSession = async (req, res, next) => {
             });
         }
 
+        
+        const vehicleResult = await pool.query(
+            `
+            SELECT id
+            FROM vehicles
+            WHERE id = $1
+              AND user_id = $2
+            `,
+            [vehicle_id, req.user.id]
+        );
+
+        if (vehicleResult.rows.length === 0) {
+            return res.status(403).json({
+                message: "You do not have access to this vehicle"
+            });
+        }
+
         const result = await pool.query(
             `
             INSERT INTO charging_sessions
                 (
+                    user_id,
                     vehicle_id,
                     charging_bay_id,
                     grid_slot_id,
@@ -66,9 +84,10 @@ export const createChargingSession = async (req, res, next) => {
                     status
                 )
             VALUES
-                ($1, $2, $3, $4, $5, $6, $7, $8)
+                ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING
                 id,
+                user_id,
                 vehicle_id,
                 charging_bay_id,
                 grid_slot_id,
@@ -79,6 +98,7 @@ export const createChargingSession = async (req, res, next) => {
                 status
             `,
             [
+                req.user.id,
                 vehicle_id,
                 charging_bay_id,
                 grid_slot_id,
@@ -101,13 +121,14 @@ export const createChargingSession = async (req, res, next) => {
 };
 
 
-// GET ALL CHARGING SESSIONS
+
 export const getChargingSessions = async (req, res, next) => {
     try {
         const result = await pool.query(
             `
             SELECT
                 id,
+                user_id,
                 vehicle_id,
                 charging_bay_id,
                 grid_slot_id,
@@ -117,8 +138,10 @@ export const getChargingSessions = async (req, res, next) => {
                 energy_delivered_kwh,
                 status
             FROM charging_sessions
+            WHERE user_id = $1
             ORDER BY start_time
-            `
+            `,
+            [req.user.id]
         );
 
         return res.status(200).json({
@@ -131,7 +154,7 @@ export const getChargingSessions = async (req, res, next) => {
 };
 
 
-// GET CHARGING SESSION BY ID
+
 export const getChargingSessionById = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -140,6 +163,7 @@ export const getChargingSessionById = async (req, res, next) => {
             `
             SELECT
                 id,
+                user_id,
                 vehicle_id,
                 charging_bay_id,
                 grid_slot_id,
@@ -150,8 +174,9 @@ export const getChargingSessionById = async (req, res, next) => {
                 status
             FROM charging_sessions
             WHERE id = $1
+              AND user_id = $2
             `,
-            [id]
+            [id, req.user.id]
         );
 
         if (result.rows.length === 0) {
@@ -170,7 +195,7 @@ export const getChargingSessionById = async (req, res, next) => {
 };
 
 
-// UPDATE CHARGING SESSION
+
 export const updateChargingSession = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -204,6 +229,23 @@ export const updateChargingSession = async (req, res, next) => {
             });
         }
 
+        
+        const vehicleResult = await pool.query(
+            `
+            SELECT id
+            FROM vehicles
+            WHERE id = $1
+              AND user_id = $2
+            `,
+            [vehicle_id, req.user.id]
+        );
+
+        if (vehicleResult.rows.length === 0) {
+            return res.status(403).json({
+                message: "You do not have access to this vehicle"
+            });
+        }
+
         const result = await pool.query(
             `
             UPDATE charging_sessions
@@ -217,8 +259,10 @@ export const updateChargingSession = async (req, res, next) => {
                 energy_delivered_kwh = $7,
                 status = $8
             WHERE id = $9
+              AND user_id = $10
             RETURNING
                 id,
+                user_id,
                 vehicle_id,
                 charging_bay_id,
                 grid_slot_id,
@@ -237,7 +281,8 @@ export const updateChargingSession = async (req, res, next) => {
                 power_kw,
                 energy_delivered_kwh,
                 status,
-                id
+                id,
+                req.user.id
             ]
         );
 
@@ -258,7 +303,7 @@ export const updateChargingSession = async (req, res, next) => {
 };
 
 
-// DELETE CHARGING SESSION
+
 export const deleteChargingSession = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -267,9 +312,10 @@ export const deleteChargingSession = async (req, res, next) => {
             `
             DELETE FROM charging_sessions
             WHERE id = $1
+              AND user_id = $2
             RETURNING id
             `,
-            [id]
+            [id, req.user.id]
         );
 
         if (result.rows.length === 0) {

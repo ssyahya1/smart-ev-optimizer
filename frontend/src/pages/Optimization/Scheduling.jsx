@@ -118,7 +118,7 @@ function Scheduling() {
       console.log("Scheduling API result:", data);
 
       if (!data?.success) {
-        throw new Error(data?.message || "Scheduling optimization failed.");
+        throw new Error(data?.message || "Unable to prepare a charging schedule.");
       }
 
       setResult({
@@ -166,7 +166,7 @@ function Scheduling() {
       <header className="scheduling-header">
         <div>
           <span className="scheduling-label">
-            SMART EV / OPTIMIZATION ENGINE
+            CHARGING / SESSION PLANNING
           </span>
 
           <h1>
@@ -174,15 +174,14 @@ function Scheduling() {
           </h1>
 
           <p>
-            Compare Greedy Interval Scheduling and Dynamic Programming for
-            intelligent charging-session scheduling.
+            Arrange charging sessions around vehicle priorities and ready-by times.
           </p>
         </div>
 
         <div className="scheduling-badge">
-          <span>COMPARISON</span>
+          <span>CHARGING PLAN</span>
 
-          <strong>GREEDY vs DYNAMIC PROGRAMMING</strong>
+          <strong>READY WHEN YOU ARE</strong>
         </div>
       </header>
 
@@ -190,9 +189,9 @@ function Scheduling() {
 
       <section className="scheduling-layout">
         <article className="scheduling-control-card">
-          <span className="section-label">01 — OPTIMIZATION INPUT</span>
+          <span className="section-label">PLAN DETAILS</span>
 
-          <h2>Scheduling dataset</h2>
+          <h2>Vehicles and sessions</h2>
 
           {loadingData ? (
             <div className="scheduling-message">
@@ -214,16 +213,14 @@ function Scheduling() {
                 </div>
 
                 <div>
-                  <span>VALID JOBS</span>
+                  <span>READY TO PLAN</span>
 
                   <strong>{jobs.length}</strong>
                 </div>
               </div>
 
               <p className="scheduling-description">
-                Charging sessions are combined with vehicle priority and
-                deadline data to create the scheduling jobs required by both
-                algorithms.
+                We’ll use charging session and vehicle details to prepare a practical schedule.
               </p>
 
               <button
@@ -232,7 +229,7 @@ function Scheduling() {
                 onClick={runScheduling}
                 disabled={loading || loadingData || jobs.length === 0}
               >
-                {loading ? "OPTIMIZING..." : "RUN BOTH ALGORITHMS"}
+                {loading ? "Preparing schedule..." : "Create charging schedule"}
 
                 {!loading && <span>↗</span>}
               </button>
@@ -243,18 +240,18 @@ function Scheduling() {
         <article className="jobs-overview-card">
           <div className="card-heading">
             <div>
-              <span className="section-label">02 — SCHEDULING JOBS</span>
+              <span className="section-label">UPCOMING SESSIONS</span>
 
               <h2>Charging sessions</h2>
             </div>
 
-            <span className="job-count">{jobs.length} JOBS</span>
+            <span className="job-count">{jobs.length} SESSIONS</span>
           </div>
 
           <div className="job-list">
             {jobs.length === 0 ? (
               <div className="scheduling-message">
-                No valid scheduling jobs available.
+                No sessions are ready to schedule.
               </div>
             ) : (
               jobs.map((job) => (
@@ -282,9 +279,9 @@ function Scheduling() {
       <section className="scheduling-result-section">
         <div className="result-heading">
           <div>
-            <span className="section-label">03 — ALGORITHM COMPARISON</span>
+            <span className="section-label">SCHEDULE</span>
 
-            <h2>Scheduling results</h2>
+            <h2>Suggested charging schedule</h2>
           </div>
 
           {result && <span className="result-status">● COMPLETE</span>}
@@ -295,26 +292,24 @@ function Scheduling() {
             <span>01</span>
 
             <div>
-              <strong>Ready for optimization</strong>
+              <strong>Ready to prepare a schedule</strong>
 
               <p>
-                Run the scheduling dataset through both algorithms to compare
-                their performance.
+                Create a schedule to see which sessions can be planned and which may need attention.
               </p>
             </div>
           </div>
         ) : (
           <div className="algorithm-results">
-            {/* GREEDY */}
             <article className="algorithm-card">
               <div className="algorithm-card-header">
                 <div>
-                  <span>ALGORITHM 01</span>
+                  <span>OPTION A</span>
 
-                  <h3>Greedy</h3>
+                  <h3>Suggested schedule</h3>
                 </div>
 
-                <span className="algorithm-tag">INTERVAL SCHEDULING</span>
+                <span className="algorithm-tag">SESSION PLAN</span>
               </div>
 
               <div className="algorithm-stats">
@@ -325,20 +320,15 @@ function Scheduling() {
                 </div>
 
                 <div>
-                  <span>REJECTED</span>
+                  <span>NEEDS ATTENTION</span>
 
                   <strong>{greedyRejected.length}</strong>
                 </div>
 
-                <div>
-                  <span>OPERATIONS</span>
-
-                  <strong>{greedy?.operations ?? 0}</strong>
-                </div>
               </div>
 
               <div className="scheduling-list">
-                <span>SCHEDULED JOBS</span>
+                <span>PLANNED SESSIONS</span>
 
                 {greedyScheduled.length > 0 ? (
                   greedyScheduled.map((job, index) => {
@@ -349,9 +339,9 @@ function Scheduling() {
 
                     return (
                       <div className="scheduling-row" key={`greedy-${index}`}>
-                        <span>Job {jobId}</span>
+                        <span>Session {jobId}</span>
 
-                        <strong>Scheduled</strong>
+                        <strong>Included</strong>
                       </div>
                     );
                   })
@@ -362,7 +352,7 @@ function Scheduling() {
 
               {greedyRejected.length > 0 && (
                 <div className="scheduling-list">
-                  <span>REJECTED JOBS</span>
+                  <span>SESSIONS TO REVIEW</span>
 
                   {greedyRejected.map((job, index) => {
                     const jobId =
@@ -375,9 +365,9 @@ function Scheduling() {
                         className="scheduling-row"
                         key={`greedy-rejected-${index}`}
                       >
-                        <span>Job {jobId}</span>
+                        <span>Session {jobId}</span>
 
-                        <strong>Rejected</strong>
+                        <strong>Not scheduled</strong>
                       </div>
                     );
                   })}
@@ -385,16 +375,15 @@ function Scheduling() {
               )}
             </article>
 
-            {/* DYNAMIC PROGRAMMING */}
             <article className="algorithm-card">
               <div className="algorithm-card-header">
                 <div>
-                  <span>ALGORITHM 02</span>
+                  <span>OPTION B</span>
 
-                  <h3>Dynamic Programming</h3>
+                  <h3>Alternative schedule</h3>
                 </div>
 
-                <span className="algorithm-tag">OPTIMAL SELECTION</span>
+                <span className="algorithm-tag">SESSION PLAN</span>
               </div>
 
               <div className="algorithm-stats">
@@ -405,20 +394,15 @@ function Scheduling() {
                 </div>
 
                 <div>
-                  <span>REJECTED</span>
+                  <span>NEEDS ATTENTION</span>
 
                   <strong>{dpRejected.length}</strong>
                 </div>
 
-                <div>
-                  <span>OPERATIONS</span>
-
-                  <strong>{dynamicProgramming?.operations ?? 0}</strong>
-                </div>
               </div>
 
               <div className="scheduling-list">
-                <span>SCHEDULED JOBS</span>
+                <span>PLANNED SESSIONS</span>
 
                 {dpScheduled.length > 0 ? (
                   dpScheduled.map((job, index) => {
@@ -429,9 +413,9 @@ function Scheduling() {
 
                     return (
                       <div className="scheduling-row" key={`dp-${index}`}>
-                        <span>Job {jobId}</span>
+                        <span>Session {jobId}</span>
 
-                        <strong>Scheduled</strong>
+                        <strong>Included</strong>
                       </div>
                     );
                   })
@@ -442,7 +426,7 @@ function Scheduling() {
 
               {dpRejected.length > 0 && (
                 <div className="scheduling-list">
-                  <span>REJECTED JOBS</span>
+                  <span>SESSIONS TO REVIEW</span>
 
                   {dpRejected.map((job, index) => {
                     const jobId =
@@ -455,9 +439,9 @@ function Scheduling() {
                         className="scheduling-row"
                         key={`dp-rejected-${index}`}
                       >
-                        <span>Job {jobId}</span>
+                        <span>Session {jobId}</span>
 
-                        <strong>Rejected</strong>
+                        <strong>Not scheduled</strong>
                       </div>
                     );
                   })}

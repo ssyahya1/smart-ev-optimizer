@@ -26,8 +26,12 @@ CREATE TABLE  IF NOT EXISTS vehicles (
     initial_soc NUMERIC(5,2) NOT NULL,
     battery_capacity_kwh NUMERIC(8,2) NOT NULL,
     priority VARCHAR(20) NOT NULL,
-    deadline TIMESTAMP NOT NULL
+    deadline TIMESTAMP NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
+
+ALTER TABLE vehicles
+    ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS charging_bays (
     id SERIAL PRIMARY KEY,
@@ -47,6 +51,10 @@ CREATE TABLE IF NOT EXISTS grid_slots (
 
 CREATE TABLE IF NOT EXISTS charging_sessions (
     id SERIAL PRIMARY KEY,
+
+    user_id INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
 
     vehicle_id INTEGER NOT NULL
         REFERENCES vehicles(id)
@@ -69,3 +77,39 @@ CREATE TABLE IF NOT EXISTS charging_sessions (
 
     status VARCHAR(20) NOT NULL DEFAULT 'scheduled'
 );
+
+ALTER TABLE charging_sessions
+    ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
+
+UPDATE charging_sessions AS session
+SET user_id = vehicle.user_id
+FROM vehicles AS vehicle
+WHERE session.vehicle_id = vehicle.id
+  AND session.user_id IS NULL;
+
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM vehicles WHERE user_id IS NULL) THEN
+        RAISE EXCEPTION 'Legacy vehicles require an explicit user_id before ownership can be enforced';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM charging_sessions AS session
+        LEFT JOIN vehicles AS vehicle ON vehicle.id = session.vehicle_id
+        WHERE session.user_id IS NULL
+           OR vehicle.id IS NULL
+           OR session.user_id <> vehicle.user_id
+    ) THEN
+        RAISE EXCEPTION 'Charging-session owners must match their vehicle owners';
+    END IF;
+
+    ALTER TABLE vehicles ALTER COLUMN user_id SET NOT NULL;
+    ALTER TABLE charging_sessions ALTER COLUMN user_id SET NOT NULL;
+END $$;
+
+CREATE INDEX IF NOT EXISTS vehicles_user_id_idx
+    ON vehicles(user_id);
+
+CREATE INDEX IF NOT EXISTS charging_sessions_user_start_idx
+    ON charging_sessions(user_id, start_time);

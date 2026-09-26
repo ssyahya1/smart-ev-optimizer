@@ -69,6 +69,12 @@ function ChargingSessions() {
   const getStatus = (session) =>
     session.status ?? "unknown";
 
+  const formatTime = (value) => {
+    if (!value) return "—";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  };
+
   const loadData = async () => {
     try {
       setLoading(true);
@@ -248,10 +254,7 @@ function ChargingSessions() {
 
     return (
       vehicle?.vehicle_number ??
-      vehicle?.vehicle_id ??
-      vehicle?.id ??
-      id ??
-      "—"
+      "Vehicle"
     );
   };
 
@@ -263,8 +266,7 @@ function ChargingSessions() {
 
     return (
       bay?.bay_number ??
-      id ??
-      "—"
+      "Bay"
     );
   };
 
@@ -280,8 +282,7 @@ function ChargingSessions() {
 
     return (
       slot?.slot_time ??
-      slot?.id ??
-      id
+      "Energy window"
     );
   };
 
@@ -290,16 +291,15 @@ function ChargingSessions() {
       <header className="charging-sessions-header">
         <div>
           <span className="charging-sessions-label">
-            SMART EV / CHARGING OPERATIONS
+            FLEET / CHARGING ACTIVITY
           </span>
 
           <h1>
-            Charging <span>sessions.</span>
+            Charging sessions
           </h1>
 
           <p>
-            Monitor active charging activity, power usage,
-            energy delivery, and session performance.
+            Follow active charging, review completed sessions, and track energy delivered.
           </p>
         </div>
 
@@ -319,21 +319,21 @@ function ChargingSessions() {
 
       <section className="session-stats">
         <article className="session-stat-card">
-          <span>TOTAL SESSIONS</span>
+          <span>Total sessions</span>
           <strong>{sessions.length}</strong>
-          <small>Recorded charging sessions</small>
+          <small>Active and completed</small>
         </article>
 
         <article className="session-stat-card">
-          <span>ACTIVE NOW</span>
+          <span>Charging now</span>
           <strong>{activeSessions.length}</strong>
           <small>Currently charging</small>
         </article>
 
         <article className="session-stat-card">
-          <span>ACTIVE POWER</span>
+          <span>Power in use</span>
           <strong>{totalPower.toFixed(1)}</strong>
-          <small>kW current draw</small>
+          <small>kW across active sessions</small>
         </article>
 
         <article className="session-stat-card">
@@ -346,14 +346,13 @@ function ChargingSessions() {
       <section className="session-overview">
         <div>
           <span className="section-label">
-            01 — SESSION MONITOR
+            LIVE ACTIVITY
           </span>
 
           <h2>Charging activity</h2>
 
           <p>
-            Real-time overview of vehicles currently
-            connected to the charging infrastructure.
+            Vehicles currently connected to a charging bay.
           </p>
         </div>
 
@@ -374,7 +373,7 @@ function ChargingSessions() {
         <section className="session-form-section">
           <div className="form-heading">
             <span className="section-label">
-              02 — NEW SESSION
+                NEW CHARGING SESSION
             </span>
 
             <h2>Start charging session</h2>
@@ -386,7 +385,7 @@ function ChargingSessions() {
           >
             <div className="form-group">
               <label htmlFor="vehicle_id">
-                VEHICLE
+                Vehicle
               </label>
 
               <select
@@ -419,7 +418,7 @@ function ChargingSessions() {
 
             <div className="form-group">
               <label htmlFor="charging_bay_id">
-                CHARGING BAY
+                Charging bay
               </label>
 
               <select
@@ -449,7 +448,7 @@ function ChargingSessions() {
 
             <div className="form-group">
               <label htmlFor="grid_slot_id">
-                GRID SLOT
+                Energy window
               </label>
 
               <select
@@ -478,7 +477,7 @@ function ChargingSessions() {
 
             <div className="form-group">
               <label htmlFor="start_time">
-                START TIME
+                Start time
               </label>
 
               <input
@@ -493,7 +492,7 @@ function ChargingSessions() {
 
             <div className="form-group">
               <label htmlFor="end_time">
-                END TIME
+               End time
               </label>
 
               <input
@@ -507,7 +506,7 @@ function ChargingSessions() {
 
             <div className="form-group">
               <label htmlFor="energy_delivered_kwh">
-                ENERGY (KWH)
+                Energy delivered (kWh)
               </label>
 
               <input
@@ -525,7 +524,7 @@ function ChargingSessions() {
 
             <div className="form-group">
               <label htmlFor="power_kw">
-                POWER (KW)
+                Charging power (kW)
               </label>
 
               <input
@@ -543,7 +542,7 @@ function ChargingSessions() {
 
             <div className="form-group">
               <label htmlFor="status">
-                STATUS
+                Session status
               </label>
 
               <select
@@ -574,7 +573,7 @@ function ChargingSessions() {
               type="submit"
               className="save-session-button"
             >
-              Create Session ↗
+              Create charging session ↗
             </button>
           </form>
         </section>
@@ -584,24 +583,24 @@ function ChargingSessions() {
         <div className="table-heading">
           <div>
             <span className="section-label">
-              03 — SESSION LOG
+              SESSION HISTORY
             </span>
 
             <h2>Charging sessions</h2>
           </div>
 
           <span className="live-indicator">
-            ● LIVE DATA
+            ● CURRENT DATA
           </span>
         </div>
 
         {loading ? (
           <div className="sessions-message">
-            Loading charging sessions...
+            Loading sessions…
           </div>
         ) : sessions.length === 0 ? (
           <div className="sessions-message">
-            No charging sessions found.
+            No charging sessions yet. Create one when a vehicle is ready to charge.
           </div>
         ) : (
           <div className="sessions-table-wrapper">
@@ -610,11 +609,11 @@ function ChargingSessions() {
                 <tr>
                   <th>VEHICLE</th>
                   <th>BAY</th>
-                  <th>GRID SLOT</th>
-                  <th>START</th>
-                  <th>END</th>
-                  <th>ENERGY</th>
-                  <th>POWER</th>
+                  <th>ENERGY WINDOW</th>
+                  <th>START TIME</th>
+                  <th>END TIME</th>
+                  <th>ENERGY DELIVERED</th>
+                  <th>CHARGING POWER</th>
                   <th>STATUS</th>
                   <th>ACTION</th>
                 </tr>
@@ -647,11 +646,11 @@ function ChargingSessions() {
                       </td>
 
                       <td>
-                        {getStartTime(session) || "—"}
+                        {formatTime(getStartTime(session))}
                       </td>
 
                       <td>
-                        {getEndTime(session) || "—"}
+                        {formatTime(getEndTime(session))}
                       </td>
 
                       <td>
@@ -673,6 +672,7 @@ function ChargingSessions() {
                       <td>
                         <button
                           className="delete-session-button"
+                          aria-label={`Delete session for ${getVehicleLabel(getVehicleId(session))}`}
                           onClick={() =>
                             handleDelete(
                               getSessionId(session)

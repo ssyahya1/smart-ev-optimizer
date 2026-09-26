@@ -27,7 +27,7 @@ describe("ChargingBays", () => {
     }));
     render(<ChargingBays />);
 
-    expect(screen.getByText("LOADING BAY DATA...")).toBeInTheDocument();
+    expect(screen.getByText("Loading charging bays…")).toBeInTheDocument();
     resolveRequest({ chargingBays: [bay] });
 
     expect(await screen.findByText("BAY-01")).toBeInTheDocument();
@@ -38,7 +38,7 @@ describe("ChargingBays", () => {
   test("renders empty and API error states", async () => {
     apiRequest.mockResolvedValueOnce({ chargingBays: [] });
     render(<ChargingBays />);
-    expect(await screen.findByText("NO CHARGING BAYS FOUND"))
+    expect(await screen.findByText("No charging bays yet"))
       .toBeInTheDocument();
 
     apiRequest.mockRejectedValueOnce(new Error("Bay service unavailable"));
@@ -50,7 +50,7 @@ describe("ChargingBays", () => {
   test("blocks the create form when required fields are empty", async () => {
     apiRequest.mockResolvedValueOnce({ chargingBays: [] });
     render(<ChargingBays />);
-    await screen.findByText("NO CHARGING BAYS FOUND");
+    await screen.findByText("No charging bays yet");
 
     fireEvent.click(screen.getByRole("button", { name: /add bay/i }));
     fireEvent.click(screen.getByRole("button", { name: /create charging bay/i }));
@@ -64,7 +64,7 @@ describe("ChargingBays", () => {
       .mockResolvedValueOnce({ chargingBay: bay })
       .mockResolvedValueOnce({ chargingBays: [bay] });
     render(<ChargingBays />);
-    await screen.findByText("NO CHARGING BAYS FOUND");
+    await screen.findByText("No charging bays yet");
 
     fireEvent.click(screen.getByRole("button", { name: /add bay/i }));
     fireEvent.change(screen.getByPlaceholderText("BAY-01"), {
@@ -89,7 +89,7 @@ describe("ChargingBays", () => {
       .mockResolvedValueOnce({ chargingBays: [] })
       .mockRejectedValueOnce(new Error("Bay creation failed"));
     render(<ChargingBays />);
-    await screen.findByText("NO CHARGING BAYS FOUND");
+    await screen.findByText("No charging bays yet");
 
     fireEvent.click(screen.getByRole("button", { name: /add bay/i }));
     fireEvent.change(screen.getByPlaceholderText("BAY-01"), {

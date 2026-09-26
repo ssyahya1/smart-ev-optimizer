@@ -8,14 +8,58 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #171717;
+  background: #F5F0E8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --black: #111111;
+  --black-soft: #1A1A1A;
+  --beige: #E8DDCB;
+  --beige-light: #F5F0E8;
+  --cream: #FAF8F3;
+  --white: #FFFFFF;
+  --text: #171717;
+  --muted: #6B6258;
+  --border: #D8CEC0;
+  --success: #557A5A;
+  --warning: #A4773C;
+  --danger: #A65353;
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-surface: var(--white);
+  --color-green: var(--black);
+  --color-green-dark: var(--black-soft);
+  --color-lime: var(--beige);
+  --color-amber: var(--warning);
+  --color-red: var(--danger);
+}
+
 body {
   min-width: 320px;
   margin: 0;
-  background: #0a0a0a;
-  color: #ffffff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #F5F0E8;
+  color: #171717;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #A4773C;
+  outline-offset: 3px;
 }

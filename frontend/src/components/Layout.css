@@ -1,0 +1,26 @@
+.app-shell {
+  min-height: 100vh;
+  background: #F5F0E8;
+  color: #171717;
+}
+
+.app-content {
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: 248px;
+  padding: 42px clamp(22px, 4vw, 58px) 56px;
+}
+
+@media (max-width: 767px) {
+  .app-content {
+    margin-left: 0;
+    padding: 84px 16px 32px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .app-content {
+    margin-left: 220px;
+    padding: 34px 24px 44px;
+  }
+}

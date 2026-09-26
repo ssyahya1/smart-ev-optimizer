@@ -29,27 +29,27 @@ describe("Register", () => {
   test("renders the account creation form", () => {
     renderRegister();
 
-    expect(screen.getByRole("heading", { name: /build yourcommand/i }))
+    expect(screen.getByRole("heading", { name: /create your\s*account/i }))
       .toBeInTheDocument();
-    expect(screen.getByLabelText("FULL NAME")).toBeInTheDocument();
-    expect(screen.getByLabelText("EMAIL")).toBeInTheDocument();
-    expect(screen.getByLabelText("PASSWORD")).toBeInTheDocument();
-    expect(screen.getByLabelText("CONFIRM PASSWORD")).toBeInTheDocument();
+    expect(screen.getByLabelText("Full name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+    expect(screen.getByLabelText("Password")).toBeInTheDocument();
+    expect(screen.getByLabelText("Confirm password")).toBeInTheDocument();
   });
 
   test("rejects mismatched passwords without calling the API", async () => {
     renderRegister();
 
-    fireEvent.change(screen.getByLabelText("FULL NAME"), {
+    fireEvent.change(screen.getByLabelText("Full name"), {
       target: { value: "Alex Morgan" },
     });
-    fireEvent.change(screen.getByLabelText("EMAIL"), {
+    fireEvent.change(screen.getByLabelText("Email address"), {
       target: { value: "alex@example.com" },
     });
-    fireEvent.change(screen.getByLabelText("PASSWORD"), {
+    fireEvent.change(screen.getByLabelText("Password"), {
       target: { value: "password123" },
     });
-    fireEvent.change(screen.getByLabelText("CONFIRM PASSWORD"), {
+    fireEvent.change(screen.getByLabelText("Confirm password"), {
       target: { value: "different123" },
     });
     fireEvent.click(screen.getByRole("button", { name: /create account/i }));
@@ -62,16 +62,16 @@ describe("Register", () => {
     apiRequest.mockResolvedValueOnce({ message: "User created successfully" });
     renderRegister();
 
-    fireEvent.change(screen.getByLabelText("FULL NAME"), {
+    fireEvent.change(screen.getByLabelText("Full name"), {
       target: { value: "Alex Morgan" },
     });
-    fireEvent.change(screen.getByLabelText("EMAIL"), {
+    fireEvent.change(screen.getByLabelText("Email address"), {
       target: { value: "alex@example.com" },
     });
-    fireEvent.change(screen.getByLabelText("PASSWORD"), {
+    fireEvent.change(screen.getByLabelText("Password"), {
       target: { value: "password123" },
     });
-    fireEvent.change(screen.getByLabelText("CONFIRM PASSWORD"), {
+    fireEvent.change(screen.getByLabelText("Confirm password"), {
       target: { value: "password123" },
     });
     fireEvent.click(screen.getByRole("button", { name: /create account/i }));
@@ -86,7 +86,7 @@ describe("Register", () => {
         }),
       });
       expect(navigateMock).toHaveBeenCalledWith("/login", {
-        state: { message: "Account created. Sign in to enter the optimizer." },
+        state: { message: "Your account is ready. Sign in to continue." },
       });
     });
   });

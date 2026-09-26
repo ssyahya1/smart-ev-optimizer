@@ -1,221 +1,97 @@
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import heroImage from "../../assets/hero.png";
 import "./LandingPage.css";
+
 function LandingPage() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <main className="landing-page">
-      {/* Navigation */}
-      <nav className="navbar">
-        <div className="brand">
-          <span className="brand-mark">+</span>
-          <span>SMART EV</span>
-        </div>
+    <main className="site-page">
+      <header className="site-header">
+        <Link className="site-brand" to="/" aria-label="Smart EV home">
+          <span className="site-brand-mark">E</span>
+          <span>Smart EV</span>
+        </Link>
+        <button
+          type="button"
+          className="site-menu-toggle"
+          aria-label={menuOpen ? "Close site navigation" : "Open site navigation"}
+          aria-expanded={menuOpen}
+          aria-controls="site-navigation"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+        <nav
+          className={`site-links${menuOpen ? " is-open" : ""}`}
+          id="site-navigation"
+          aria-label="Site navigation"
+        >
+          <a href="#overview" onClick={() => setMenuOpen(false)}>Overview</a>
+          <a href="#tools" onClick={() => setMenuOpen(false)}>What you can manage</a>
+        </nav>
+        <Link className="site-sign-in" to="/login" onClick={() => setMenuOpen(false)}>Sign in <span aria-hidden="true">→</span></Link>
+      </header>
+      {menuOpen && (
+        <button
+          className="site-nav-backdrop"
+          type="button"
+          aria-label="Close site navigation"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
 
-        <div className="nav-links">
-          <a href="#system">System</a>
-          <a href="#algorithms">Algorithms</a>
-          <a href="#benchmarks">Benchmarks</a>
-        </div>
-
-        <a href="/login" className="nav-action">
-          Login →
-        </a>
-      </nav>
-
-      {/* Hero */}
-      <section className="hero">
-        <div className="hero-background">
-          <div className="glow glow-one"></div>
-          <div className="glow glow-two"></div>
-          <div className="glow glow-three"></div>
-        </div>
-
-        <div className="hero-content">
-          <div className="hero-label">
-            <span className="status-dot"></span>
-            INTELLIGENT EV OPERATIONS
-          </div>
-
-          <h1>
-            SMART
-            <br />
-            EV FLEET
-            <br />
-            <span>OPTIMIZER</span>
-          </h1>
-
-          <p className="hero-description">
-            An algorithm-driven platform for intelligent EV charging,
-            fleet routing, grid operations, and resource optimization.
-          </p>
-
-          <div className="hero-actions">
-            <a href="/login" className="primary-button">
-              Enter Optimizer
-              <span>↗</span>
-            </a>
-
-            <a href="#system" className="secondary-button">
-              Explore System
-            </a>
+      <section className="site-hero">
+        <img className="site-hero-image" src={heroImage} alt="Electric car connected to a charging station" />
+        <div className="site-hero-shade" aria-hidden="true" />
+        <div className="site-hero-content">
+          <span className="site-kicker"><span className="site-live-dot" /> CHARGING, MADE CLEAR</span>
+          <h1>Smart EV<br />Charging</h1>
+          <p>One calm workspace for your vehicles, charging bays, and energy use.</p>
+          <div className="site-hero-actions">
+            <Link className="site-primary-action" to="/login">Open your workspace <span aria-hidden="true">→</span></Link>
+            <a className="site-secondary-action" href="#overview">Explore the platform</a>
           </div>
         </div>
-
-        {/* Floating system card */}
-        <div className="hero-card">
-          <div className="card-header">
-            <span>LIVE SYSTEM</span>
-            <span className="card-status">● ACTIVE</span>
-          </div>
-
-          <div className="card-value">01</div>
-
-          <div className="card-title">
-            Fleet Optimization
-          </div>
-
-          <div className="card-line"></div>
-
-          <div className="card-stats">
-            <div>
-              <strong>500</strong>
-              <span>VEHICLES</span>
-            </div>
-
-            <div>
-              <strong>30</strong>
-              <span>BAYS</span>
-            </div>
-
-            <div>
-              <strong>24/7</strong>
-              <span>CONTROL</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="hero-index">
-          <span>01</span>
-          <span>/</span>
-          <span>06</span>
-        </div>
+        <div className="site-hero-caption"><span>01</span><span>FLEET CHARGING OVERVIEW</span></div>
       </section>
 
-      {/* Intro */}
-      <section id="system" className="intro-section">
-        <div className="section-label">01 — THE SYSTEM</div>
-
-        <div className="intro-content">
-          <h2>
-            Turning complex EV fleet operations into
-            <span> intelligent decisions.</span>
-          </h2>
-
-          <p>
-            Smart EV combines algorithmic optimization with real-world
-            charging constraints to help fleets make faster and more
-            efficient operational decisions.
-          </p>
+      <section className="site-overview" id="overview">
+        <div className="site-section-heading">
+          <span className="site-kicker">BUILT FOR DAILY OPERATIONS</span>
+          <h2>Know what’s happening.<br /><span>Make the next move.</span></h2>
         </div>
+        <p className="site-overview-copy">See charging activity and availability at a glance, then move straight into the task that needs your attention.</p>
       </section>
 
-      {/* Optimization systems */}
-      <section id="algorithms" className="systems-section">
-        <div className="section-label">02 — OPTIMIZATION ENGINE</div>
-
-        <div className="systems-grid">
-          <article className="system-card">
-            <span>01</span>
-            <h3>Bay Assignment</h3>
-            <p>
-              Assign vehicles to suitable charging bays using
-              priority-aware strategies.
-            </p>
-          </article>
-
-          <article className="system-card">
-            <span>02</span>
-            <h3>Charge Scheduling</h3>
-            <p>
-              Schedule charging sessions around deadlines,
-              priorities, and available capacity.
-            </p>
-          </article>
-
-          <article className="system-card">
-            <span>03</span>
-            <h3>Power Allocation</h3>
-            <p>
-              Resolve grid power contention while respecting
-              transformer capacity.
-            </p>
-          </article>
-
-          <article className="system-card">
-            <span>04</span>
-            <h3>Route Optimization</h3>
-            <p>
-              Compare shortest-path strategies for efficient
-              fleet movement across the network.
-            </p>
-          </article>
-
-          <article className="system-card">
-            <span>05</span>
-            <h3>Journey Optimization</h3>
-            <p>
-              Optimize multi-stage journeys using informed and
-              dynamic graph algorithms.
-            </p>
-          </article>
-
-          <article className="system-card">
-            <span>06</span>
-            <h3>Resource Allocation</h3>
-            <p>
-              Maximize constrained resource utilization using
-              network flow optimization.
-            </p>
-          </article>
-        </div>
+      <section className="site-tools" id="tools" aria-label="Workspace sections">
+        <Link to="/vehicles" className="site-tool-item">
+          <span className="site-tool-number">01</span>
+          <span><strong>Vehicles</strong><small>Battery levels and fleet details</small></span>
+          <span className="site-tool-arrow" aria-hidden="true">→</span>
+        </Link>
+        <Link to="/bays" className="site-tool-item">
+          <span className="site-tool-number">02</span>
+          <span><strong>Charging bays</strong><small>Availability and charger capacity</small></span>
+          <span className="site-tool-arrow" aria-hidden="true">→</span>
+        </Link>
+        <Link to="/sessions" className="site-tool-item">
+          <span className="site-tool-number">03</span>
+          <span><strong>Charging sessions</strong><small>Active and completed charging</small></span>
+          <span className="site-tool-arrow" aria-hidden="true">→</span>
+        </Link>
       </section>
 
-      {/* Benchmark preview */}
-      <section id="benchmarks" className="benchmark-section">
-        <div className="section-label">03 — PERFORMANCE</div>
-
-        <div className="benchmark-content">
-          <div>
-            <h2>
-              Built to
-              <br />
-              <span>measure.</span>
-            </h2>
-          </div>
-
-          <div className="benchmark-copy">
-            <p>
-              Compare algorithmic approaches across increasing
-              dataset sizes and evaluate execution time,
-              operations, conflicts, and resource efficiency.
-            </p>
-
-            <div className="dataset-row">
-              <span>20</span>
-              <span>100</span>
-              <span>500</span>
-              <span>1000</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div>
-          <strong>SMART EV®</strong>
-          <span>Fleet Charging & Grid Operations Optimizer</span>
-        </div>
-
-        <span>DAA PROJECT — 2026</span>
+      <footer className="site-footer">
+        <Link className="site-brand" to="/">
+          <span className="site-brand-mark">E</span>
+          <span>Smart EV</span>
+        </Link>
+        <span>Fleet charging, clearly managed.</span>
+        <Link to="/login">Sign in <span aria-hidden="true">→</span></Link>
       </footer>
     </main>
   );

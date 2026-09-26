@@ -49,14 +49,14 @@ describe("ChargingSessions", () => {
     apiRequest.mockImplementation(() => new Promise(() => {}));
     render(<ChargingSessions />);
 
-    expect(screen.getByText("Loading charging sessions..."))
+    expect(screen.getByText("Loading sessions…"))
       .toBeInTheDocument();
   });
 
   test("renders empty and API error states", async () => {
     mockInitialData([]);
     render(<ChargingSessions />);
-    expect(await screen.findByText("No charging sessions found."))
+    expect(await screen.findByText("No charging sessions yet. Create one when a vehicle is ready to charge."))
       .toBeInTheDocument();
 
     apiRequest.mockRejectedValueOnce(new Error("Session service unavailable"));
@@ -68,10 +68,10 @@ describe("ChargingSessions", () => {
   test("blocks the session form when required fields are empty", async () => {
     mockInitialData([]);
     render(<ChargingSessions />);
-    await screen.findByText("No charging sessions found.");
+    await screen.findByText("No charging sessions yet. Create one when a vehicle is ready to charge.");
 
     fireEvent.click(screen.getByRole("button", { name: /new session/i }));
-    fireEvent.click(screen.getByRole("button", { name: /create session/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create charging session/i }));
 
     expect(apiRequest).toHaveBeenCalledTimes(4);
   });
@@ -81,28 +81,28 @@ describe("ChargingSessions", () => {
     apiRequest.mockResolvedValueOnce({ chargingSession: session });
     mockInitialData([session]);
     render(<ChargingSessions />);
-    await screen.findByText("No charging sessions found.");
+    await screen.findByText("No charging sessions yet. Create one when a vehicle is ready to charge.");
 
     fireEvent.click(screen.getByRole("button", { name: /new session/i }));
-    fireEvent.change(screen.getByLabelText("VEHICLE"), {
+    fireEvent.change(screen.getByLabelText("Vehicle"), {
       target: { value: "7" },
     });
-    fireEvent.change(screen.getByLabelText("CHARGING BAY"), {
+    fireEvent.change(screen.getByLabelText("Charging bay"), {
       target: { value: "3" },
     });
-    fireEvent.change(screen.getByLabelText("GRID SLOT"), {
+    fireEvent.change(screen.getByLabelText("Energy window"), {
       target: { value: "5" },
     });
-    fireEvent.change(screen.getByLabelText("START TIME"), {
+    fireEvent.change(screen.getByLabelText("Start time"), {
       target: { value: "2026-09-11T10:00" },
     });
-    fireEvent.change(screen.getByLabelText("ENERGY (KWH)"), {
+    fireEvent.change(screen.getByLabelText("Energy delivered (kWh)"), {
       target: { value: "12" },
     });
-    fireEvent.change(screen.getByLabelText("POWER (KW)"), {
+    fireEvent.change(screen.getByLabelText("Charging power (kW)"), {
       target: { value: "50" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /create session/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create charging session/i }));
 
     await waitFor(() => {
       expect(apiRequest).toHaveBeenCalledWith(
@@ -117,25 +117,25 @@ describe("ChargingSessions", () => {
     mockInitialData([]);
     apiRequest.mockRejectedValueOnce(new Error("Session creation failed"));
     render(<ChargingSessions />);
-    await screen.findByText("No charging sessions found.");
+    await screen.findByText("No charging sessions yet. Create one when a vehicle is ready to charge.");
 
     fireEvent.click(screen.getByRole("button", { name: /new session/i }));
-    fireEvent.change(screen.getByLabelText("VEHICLE"), {
+    fireEvent.change(screen.getByLabelText("Vehicle"), {
       target: { value: "7" },
     });
-    fireEvent.change(screen.getByLabelText("CHARGING BAY"), {
+    fireEvent.change(screen.getByLabelText("Charging bay"), {
       target: { value: "3" },
     });
-    fireEvent.change(screen.getByLabelText("START TIME"), {
+    fireEvent.change(screen.getByLabelText("Start time"), {
       target: { value: "2026-09-11T10:00" },
     });
-    fireEvent.change(screen.getByLabelText("ENERGY (KWH)"), {
+    fireEvent.change(screen.getByLabelText("Energy delivered (kWh)"), {
       target: { value: "12" },
     });
-    fireEvent.change(screen.getByLabelText("POWER (KW)"), {
+    fireEvent.change(screen.getByLabelText("Charging power (kW)"), {
       target: { value: "50" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /create session/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create charging session/i }));
 
     expect(await screen.findByText("Session creation failed"))
       .toBeInTheDocument();
