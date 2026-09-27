@@ -1,145 +1,362 @@
-# ⚡ Smart EV Fleet Charging and Grid Operations Optimizer
+# ⚡ Smart EV Fleet Charging & Grid Operations Optimizer
 
-A full-stack web application for intelligently managing **Electric Vehicle (EV) fleet charging, charging-bay assignment, grid power allocation, routing, journey planning, and resource optimization**.
+A full-stack web application built to explore how **Data Structures and Algorithms can be used to solve real-world EV fleet charging and smart-grid problems**.
 
-The system combines **Data Structures and Algorithms (DAA)** with a modern web architecture to demonstrate how algorithmic techniques can be applied to real-world Smart Grid and EV Fleet Management problems.
+The system allows users to manage electric vehicles, charging bays, grid slots, and charging sessions. It also includes different algorithms for vehicle assignment, charging scheduling, power allocation, routing, journey planning, and resource allocation.
+
+The project was developed as an academic project, but the goal was to build it like a real application rather than creating separate, disconnected algorithm demonstrations.
 
 ---
 
-## 📌 Project Overview
+## 📌 What is this project?
 
-Managing a large EV fleet requires more than simply assigning vehicles to charging stations.
+As the number of electric vehicles increases, managing their charging becomes more complicated.
 
-A practical EV charging management system must consider:
+Imagine a fleet where several vehicles arrive at the same time, but there are only a few charging bays available. Some vehicles may have a low battery, some may have a higher priority, and others may need to finish charging before a specific deadline.
 
-* Vehicle arrival times
-* Battery state of charge (SoC)
+At the same time, the electrical grid cannot provide unlimited power.
+
+This creates a number of problems:
+
+* Which vehicle should be charged first?
+* Which charging bay should a vehicle use?
+* How should limited grid power be distributed?
+* How should charging be scheduled around deadlines?
+* What is an efficient route between locations?
+* How can limited resources be allocated?
+
+This project tries to solve these problems using different Data Structures and Algorithms while providing a complete web-based system around them.
+
+---
+
+# 🎯 Main Goals
+
+The main goals of the project were to:
+
+* Build a complete EV fleet management system
+* Apply DAA concepts to practical problems
+* Implement and compare different algorithms
+* Manage charging infrastructure
+* Manage grid capacity
+* Provide secure user authentication
+* Implement role-based administration
+* Benchmark algorithm performance
+* Deploy the application online
+* Gain practical experience with full-stack development
+
+---
+
+# ✨ Features
+
+## 👤 User Management
+
+Users can:
+
+* Create an account
+* Log in securely
+* Maintain an authenticated session
+* Log out
+* Manage their own EV fleet
+* Access charging and optimization features
+
+Authentication uses JWTs with HttpOnly cookies and refresh-token support.
+
+---
+
+## 🚗 EV Fleet Management
+
+Users can manage their electric vehicles and store information such as:
+
+* Vehicle number
+* Arrival time
 * Battery capacity
-* Charging-bay availability
-* Charger power limits
-* Vehicle priorities
-* Charging deadlines
-* Grid capacity
-* Electricity prices
-* Routes and journey distances
-* Limited charging and grid resources
+* Initial State of Charge (SoC)
+* Priority
+* Charging deadline
 
-The **Smart EV Fleet Charging and Grid Operations Optimizer** addresses these challenges through multiple algorithmic modules.
-
-The application provides a web-based interface where users can interact with the system while the backend performs algorithmic processing and communicates with a PostgreSQL database.
-
----
-
-# 🏗️ System Architecture
-
-The application follows a **three-tier full-stack architecture** with an additional deployment/proxy layer.
+For example:
 
 ```text
-                         ┌──────────────────────────┐
-                         │        User / Admin       │
-                         │   Desktop / Mobile Web    │
-                         └────────────┬─────────────┘
-                                      │
-                                      ▼
-                         ┌──────────────────────────┐
-                         │       React Frontend      │
-                         │       Vite + CSS          │
-                         │                          │
-                         │ • Login / Register        │
-                         │ • Dashboard               │
-                         │ • Vehicles                │
-                         │ • Charging Bays           │
-                         │ • Grid Slots              │
-                         │ • Sessions                │
-                         │ • Algorithms              │
-                         │ • Benchmarks              │
-                         └────────────┬─────────────┘
-                                      │
-                              HTTPS / REST API
-                                      │
-                                      ▼
-                    ┌──────────────────────────────────┐
-                    │        Vercel API Rewrite        │
-                    │                                  │
-                    │  /api/* → Railway Backend        │
-                    │  Same-origin browser requests    │
-                    └───────────────┬──────────────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────────┐
-                         │    Express / Node.js     │
-                         │        Backend           │
-                         │                          │
-                         │ • Authentication         │
-                         │ • Authorization          │
-                         │ • REST APIs              │
-                         │ • Validation             │
-                         │ • Algorithms             │
-                         │ • Rate Limiting          │
-                         │ • Security Middleware    │
-                         └────────────┬─────────────┘
-                                      │
-                                      ▼
-                         ┌──────────────────────────┐
-                         │       PostgreSQL         │
-                         │                          │
-                         │ • Users                  │
-                         │ • Vehicles               │
-                         │ • Charging Bays          │
-                         │ • Grid Slots             │
-                         │ • Charging Sessions      │
-                         └──────────────────────────┘
+Vehicle
+├── Vehicle Number
+├── Arrival Time
+├── Battery Capacity
+├── Initial SoC
+├── Priority
+└── Charging Deadline
 ```
+
+This information is later used by the optimization algorithms.
 
 ---
 
-# 🔄 Request Flow
+## 🔌 Charging Bay Management
 
-A typical request follows this architecture:
+The system manages charging infrastructure including:
+
+* Charging bay number
+* Charger type
+* Maximum charging power
+* Availability status
+
+These values are used when determining whether a vehicle can be assigned to a particular charging bay.
+
+---
+
+## ⚡ Grid Slot Management
+
+Grid slots represent the available electricity capacity during different time periods.
+
+Each grid slot can contain:
+
+* Time
+* Maximum grid capacity
+* Electricity price
+
+This allows the system to take grid limitations into account when performing power allocation and charging-related operations.
+
+---
+
+## 🔋 Charging Sessions
+
+Charging sessions connect vehicles with charging bays and grid slots.
 
 ```text
-User
-  │
-  ▼
-React Frontend
-  │
-  │  GET /api/vehicles
-  ▼
-Vercel
-  │
-  │  API Rewrite
-  ▼
-Railway
-  │
-  ▼
-Express Route
-  │
-  ├── Authentication
-  ├── Authorization
-  ├── Validation
-  └── Controller / Algorithm
-          │
-          ▼
-      PostgreSQL
-          │
-          ▼
-      JSON Response
-          │
-          ▼
-     React Frontend
+Vehicle
+   │
+   ▼
+Charging Bay
+   │
+   ▼
+Grid Slot
+   │
+   ▼
+Charging Session
 ```
 
-The frontend uses same-origin `/api/...` requests in production. Vercel forwards these requests to the Railway backend, avoiding the cross-site cookie restrictions that affected mobile browsers.
+A charging session can contain:
+
+* Vehicle
+* Charging bay
+* Grid slot
+* Start time
+* End time
+* Charging power
 
 ---
 
-# 🧩 Main System Components
+# 👨‍💼 Admin Dashboard
 
-## 1. Authentication & Authorization
+The project also includes a separate administrator interface.
 
-The system uses JWT-based authentication with **HttpOnly cookies**.
+The admin dashboard is intentionally different from the normal user interface.
 
-### Authentication flow
+### Admins can manage:
+
+* Users
+* User roles
+* All vehicles in the system
+* Charging sessions
+* Charging bays
+* Grid slots
+* System information
+
+Normal users only see their own fleet-related features.
+
+Admins are not treated as normal fleet users in the frontend. When an administrator logs in, they are taken directly to the admin dashboard.
+
+```text
+                    Login
+                      │
+             ┌────────┴────────┐
+             │                 │
+          User               Admin
+             │                 │
+             ▼                 ▼
+       User Dashboard     Admin Dashboard
+             │                 │
+             ▼                 ▼
+       Personal Fleet     System Management
+```
+
+The frontend uses role-based routing and navigation, while the backend independently verifies administrator permissions.
+
+---
+
+# 🧠 Data Structures & Algorithms
+
+The main academic part of this project is the use of different Data Structures and Algorithms to solve EV and smart-grid problems.
+
+Instead of implementing algorithms separately, they are connected to actual application features.
+
+---
+
+## 🚗 1. EV-to-Charging-Bay Assignment
+
+### Algorithms
+
+* Greedy Assignment
+* Priority Queue Assignment
+
+The assignment module decides how EVs can be matched with available charging bays.
+
+The decision can take into account:
+
+* Vehicle priority
+* Arrival time
+* Battery requirements
+* Charging requirements
+* Available charging bays
+
+A priority queue is useful when higher-priority vehicles need to be considered before lower-priority vehicles.
+
+---
+
+## ⏱️ 2. Charging Schedule Optimization
+
+### Algorithms
+
+* Greedy Scheduling
+* Dynamic Programming
+
+The scheduling module works with charging requirements and deadlines.
+
+The purpose is to determine how vehicles can be scheduled within the available charging time and resources.
+
+The project allows the two approaches to be compared so that their behavior and performance can be studied.
+
+---
+
+## ⚡ 3. Grid Power Allocation
+
+### Algorithms
+
+* Max Heap
+* Round Robin
+
+The power allocation module distributes available grid power between charging vehicles.
+
+```text
+Available Grid Power
+        │
+        ▼
+   Power Manager
+      /     \
+     /       \
+ Max Heap   Round Robin
+     │          │
+     └────┬─────┘
+          ▼
+    Charging Vehicles
+```
+
+The max-heap approach can prioritize vehicles, while round-robin allocation provides a more cyclic distribution of resources.
+
+---
+
+## 🗺️ 4. EV Routing
+
+### Algorithms
+
+* Breadth-First Search (BFS)
+* Dijkstra's Algorithm
+
+The routing module treats locations and connections as a graph.
+
+BFS can be used for unweighted paths, while Dijkstra's algorithm can be used when different connections have different costs.
+
+---
+
+## 🧭 5. Journey Planning
+
+### Algorithms
+
+* A* Search
+* Bellman-Ford
+
+These algorithms are used for graph-based journey planning.
+
+A* uses a heuristic to guide the search toward a destination, while Bellman-Ford works with weighted graphs and provides a different approach to shortest-path problems.
+
+---
+
+## 🔗 6. Resource Allocation
+
+### Algorithms
+
+* Ford-Fulkerson
+* Greedy Bottleneck Allocation
+
+This module focuses on allocating limited resources.
+
+Ford-Fulkerson is used for maximum-flow style problems, while the greedy approach focuses on allocating resources around bottlenecks.
+
+---
+
+# 📊 Algorithm Comparison
+
+| Problem             | Algorithm 1    | Algorithm 2         |
+| ------------------- | -------------- | ------------------- |
+| EV Assignment       | Greedy         | Priority Queue      |
+| Charging Scheduling | Greedy         | Dynamic Programming |
+| Power Allocation    | Max Heap       | Round Robin         |
+| Routing             | BFS            | Dijkstra            |
+| Journey Planning    | A*             | Bellman-Ford        |
+| Resource Allocation | Ford-Fulkerson | Greedy Bottleneck   |
+
+The purpose of having two approaches for several problems is to understand how different algorithms behave when applied to the same type of problem.
+
+---
+
+# 📈 Benchmarking
+
+The project includes a benchmarking module to see how the algorithms perform as the input size increases.
+
+### Vehicle sizes
+
+```text
+20
+100
+500
+1,000
+```
+
+### Charging-bay sizes
+
+```text
+5
+15
+30
+50
+```
+
+### Graph sizes
+
+```text
+20
+100
+500
+1,000 nodes
+```
+
+The benchmarks can be used to examine:
+
+* Execution time
+* Scalability
+* Algorithmic efficiency
+* Performance with larger inputs
+
+This is particularly useful for comparing the practical behavior of the algorithms with their expected computational complexity.
+
+---
+
+# 🔐 Authentication & Security
+
+Security was treated as an important part of the application rather than something added at the end.
+
+The application uses JWT authentication with HttpOnly cookies.
+
+### Login flow
 
 ```text
 Login
@@ -151,10 +368,10 @@ Validate credentials
 Verify password using bcrypt
   │
   ▼
-Generate Access Token
+Generate access token
   │
   ▼
-Generate Refresh Token
+Generate refresh token
   │
   ▼
 Set HttpOnly cookies
@@ -169,369 +386,229 @@ Authenticated session
 * HttpOnly cookies
 * Secure cookies in production
 * SameSite cookie configuration
-* Refresh-token support
+* Access and refresh tokens
 * Refresh-token rotation
-* Logout / token revocation
-* Password hashing with bcrypt
-* Role-based authorization
-* Request validation using Zod
+* Refresh-token revocation
+* bcrypt password hashing
+* Zod request validation
 * Helmet security headers
 * CORS configuration
-* Express rate limiting
-
-The access token has a short lifetime, while the refresh token provides longer-lived sessions without requiring the user to repeatedly log in.
-
----
-
-# 🚗 EV Fleet Management
-
-The vehicle module stores important information about each EV:
-
-* Vehicle number
-* Arrival time
-* Initial state of charge
-* Battery capacity
-* Priority
-* Charging deadline
-
-Example:
-
-```text
-Vehicle
-├── Vehicle Number
-├── Arrival Time
-├── Initial SoC
-├── Battery Capacity
-├── Priority
-└── Deadline
-```
-
-This information is used by the optimization algorithms to make charging decisions.
-
----
-
-# 🔌 Charging Bay Management
-
-Charging bays contain:
-
-* Bay number
-* Charger type
-* Maximum charging power
-* Availability status
-
-Example:
-
-```text
-Charging Bay
-├── Bay Number
-├── Charger Type
-├── Maximum Power (kW)
-└── Status
-```
-
-The assignment algorithms use these constraints when matching EVs with charging bays.
-
----
-
-# ⚡ Grid Slot Management
-
-Grid slots represent available grid capacity during specific time periods.
-
-Each slot contains:
-
-* Slot time
-* Maximum grid capacity
-* Electricity price
-
-This allows the system to consider both **power constraints** and **electricity cost**.
-
----
-
-# 🔋 Charging Sessions
-
-Charging sessions connect:
-
-```text
-Vehicle
-      │
-      ▼
-Charging Bay
-      │
-      ▼
-Grid Slot
-      │
-      ▼
-Charging Session
-```
-
-A charging session records information such as:
-
-* Vehicle
-* Charging bay
-* Grid slot
-* Start time
-* End time
-* Charging power
-
----
-
-# 🧠 DAA Algorithm Modules
-
-The project demonstrates multiple Data Structures and Algorithms concepts.
-
-## 1. EV-to-Charging-Bay Assignment
-
-### Algorithms
-
-* Greedy Assignment
-* Priority Queue Assignment
-
-### Purpose
-
-Assign EVs to suitable charging bays while considering vehicle priority and charging constraints.
-
-```text
-EV Fleet
-   │
-   ├── Priority
-   ├── Arrival Time
-   ├── SoC
-   └── Charging Requirements
-          │
-          ▼
-   Assignment Algorithm
-          │
-          ▼
-    Charging Bays
-```
-
----
-
-## 2. Charging Schedule Optimization
-
-### Algorithms
-
-* Greedy Scheduling
-* Dynamic Programming
-
-### Purpose
-
-Determine an effective charging schedule while considering deadlines, available time, and charging requirements.
-
----
-
-## 3. Grid Power Allocation
-
-### Algorithms
-
-* Max Heap Power Allocation
-* Round-Robin Power Allocation
-
-### Purpose
-
-Distribute available grid power between charging vehicles while respecting grid capacity.
-
-```text
-Available Grid Power
-        │
-        ▼
- ┌───────────────┐
- │ Power Manager │
- └───────┬───────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
- Max Heap   Round Robin
-    │         │
-    └────┬────┘
-         ▼
- Charging Vehicles
-```
-
----
-
-## 4. EV Routing
-
-### Algorithms
-
-* Breadth-First Search (BFS)
-* Dijkstra's Algorithm
-
-### Purpose
-
-Find routes through a graph representing locations, charging stations, or road connections.
-
----
-
-## 5. Journey Planning
-
-### Algorithms
-
-* A* Search
-* Bellman-Ford Algorithm
-
-### Purpose
-
-Calculate efficient routes while handling weighted graphs and different path-cost scenarios.
-
----
-
-## 6. Resource Allocation
-
-### Algorithms
-
-* Ford-Fulkerson
-* Greedy Bottleneck Allocation
-
-### Purpose
-
-Optimize the allocation of limited charging and grid resources.
-
----
-
-# 📊 Algorithm Comparison
-
-| Module              | Algorithm 1    | Algorithm 2         | Main Objective          |
-| ------------------- | -------------- | ------------------- | ----------------------- |
-| Assignment          | Greedy         | Priority Queue      | EV-to-bay assignment    |
-| Scheduling          | Greedy         | Dynamic Programming | Charging schedules      |
-| Power               | Max Heap       | Round Robin         | Grid power distribution |
-| Routing             | BFS            | Dijkstra            | Route calculation       |
-| Journey             | A*             | Bellman-Ford        | Journey optimization    |
-| Resource Allocation | Ford-Fulkerson | Greedy Bottleneck   | Resource optimization   |
-
-The paired algorithms allow the project to compare different algorithmic approaches to the same problem.
-
----
-
-# 🧪 Benchmarking
-
-The project includes benchmarking functionality to evaluate algorithm performance as the system size increases.
-
-### Vehicle benchmarks
-
-```text
-20
-100
-500
-1,000 vehicles
-```
-
-### Charging-bay benchmarks
-
-```text
-5
-15
-30
-50 bays
-```
-
-### Graph/node benchmarks
-
-```text
-20
-100
-500
-1,000 nodes
-```
-
-The benchmark module can be used to compare:
-
-* Execution time
-* Scalability
-* Algorithmic efficiency
-* Performance as input size increases
-
-This helps demonstrate the practical differences between the implemented algorithms.
-
----
-
-# 🛡️ Security Architecture
-
-Security is integrated throughout the application.
-
-```text
-                 Incoming Request
-                       │
-                       ▼
-                  HTTPS / CORS
-                       │
-                       ▼
-                    Helmet
-                       │
-                       ▼
-                Rate Limiting
-                       │
-                       ▼
-               Cookie Processing
-                       │
-                       ▼
-             JWT Authentication
-                       │
-                       ▼
-              Role Authorization
-                       │
-                       ▼
-               Request Validation
-                       │
-                       ▼
-                 API Controller
-                       │
-                       ▼
-                  PostgreSQL
-```
-
-### Implemented security controls
-
-* HttpOnly authentication cookies
-* Secure cookies in production
-* JWT access tokens
-* Refresh tokens
-* Token revocation
-* bcrypt password hashing
-* Zod input validation
-* Helmet
-* CORS with allowed origins
 * API rate limiting
 * Protected routes
-* Role-based access control
+* Role-based authorization
 * Parameterized PostgreSQL queries
+* User ownership checks
+
+The backend remains responsible for actually enforcing permissions. Frontend role checks are used mainly for navigation and user experience.
+
+---
+
+# 🏗️ System Architecture
+
+The application uses a frontend, backend, and database architecture.
+
+```text
+                 User / Admin
+                      │
+                      ▼
+              React + Vite
+                  Frontend
+                      │
+                      │ /api/*
+                      ▼
+                   Vercel
+                      │
+                API Rewrite
+                      │
+                      ▼
+              Node.js + Express
+                   Backend
+                      │
+          ┌───────────┼───────────┐
+          │           │           │
+     Auth & RBAC   Algorithms   Validation
+          │           │           │
+          └───────────┼───────────┘
+                      │
+                      ▼
+                 PostgreSQL
+```
+
+The production frontend uses `/api/*` requests, which are forwarded to the Railway backend.
+
+This allows the frontend and API to remain separately deployed while providing a same-origin API path to the browser.
+
+---
+
+# 🔄 Example Request Flow
+
+For example, when a user requests their vehicles:
+
+```text
+React Frontend
+      │
+      │ GET /api/vehicles
+      ▼
+    Vercel
+      │
+      │ API Rewrite
+      ▼
+   Railway
+      │
+      ▼
+Express Route
+      │
+      ├── Authentication
+      ├── Authorization
+      ├── Validation
+      └── Controller
+             │
+             ▼
+        PostgreSQL
+             │
+             ▼
+        JSON Response
+             │
+             ▼
+      React Frontend
+```
+
+---
+
+# 🗄️ Database
+
+The project uses **PostgreSQL** as its main database.
+
+The main tables are:
+
+* `users`
+* `vehicles`
+* `charging_bays`
+* `grid_slots`
+* `charging_sessions`
+* `refresh_tokens`
+
+The basic relationship is:
+
+```text
+Users
+  │
+  │ owns
+  ▼
+Vehicles
+  │
+  │ used in
+  ▼
+Charging Sessions
+  │
+  ├── Charging Bay
+  │
+  └── Grid Slot
+```
+
+User ownership is used to ensure that normal users can access their own fleet data, while authorized administrators can manage system-wide resources.
 
 ---
 
 # 🧪 Testing
 
-The backend includes automated tests using:
+Testing was included throughout the development process.
+
+### Backend testing
+
+The backend uses:
 
 * Vitest
 * Supertest
 
-Testing covers:
+Testing covers areas such as:
 
 * Authentication
 * API endpoints
-* Algorithm implementations
+* Algorithms
 * Edge cases
-* Security-related behavior
-* Database/API integration scenarios
+* Authorization
+* Database/API integration
 
-The project currently has a substantial automated test suite covering the backend and algorithmic components.
+### Frontend testing
+
+The frontend uses:
+
+* Vitest
+* React testing utilities
+
+Frontend tests cover areas such as:
+
+* Authentication
+* Route protection
+* Role-based access
+* Component behavior
+
+The latest frontend verification resulted in:
+
+```text
+13 test files
+70 tests passed
+Production build successful
+```
+
+---
+
+# 🌐 Deployment
+
+The project is deployed using separate services.
+
+```text
+┌─────────────────────────┐
+│         Vercel          │
+│     React Frontend      │
+└────────────┬────────────┘
+             │
+             │ /api/*
+             ▼
+┌─────────────────────────┐
+│        Railway          │
+│    Express Backend      │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│    Neon PostgreSQL      │
+│      Production DB      │
+└─────────────────────────┘
+```
+
+### Live application
+
+**Frontend**
+
+https://smart-ev-optimizer.vercel.app
+
+**Backend**
+
+https://smart-ev-optimizer-production.up.railway.app
+
+### Backend health check
+
+```text
+GET /api/health
+```
 
 ---
 
 # 🛠️ Technology Stack
 
-## Frontend
+### Frontend
 
 * React 19
 * Vite
 * JavaScript
 * JSX
 * CSS
-* Fetch API
 * React Router
+* Fetch API
 
-## Backend
+### Backend
 
 * Node.js
 * Express 5
@@ -545,21 +622,22 @@ The project currently has a substantial automated test suite covering the backen
 * express-rate-limit
 * cookie-parser
 
-## Database
+### Database
 
 * PostgreSQL
 * node-postgres (`pg`)
+* Neon PostgreSQL
 
-## Testing
+### Testing
 
 * Vitest
 * Supertest
 
-## Deployment
+### Deployment
 
-* Vercel — Frontend
-* Railway — Backend
-* PostgreSQL — Production database
+* Vercel
+* Railway
+* Neon
 
 ---
 
@@ -569,7 +647,6 @@ The project currently has a substantial automated test suite covering the backen
 smart-ev-optimizer/
 │
 ├── backend/
-│   │
 │   ├── src/
 │   │   ├── algorithms/
 │   │   │   ├── assignment/
@@ -579,114 +656,38 @@ smart-ev-optimizer/
 │   │   │   └── resourceAllocation/
 │   │   │
 │   │   ├── config/
-│   │   │   └── database.js
-│   │   │
 │   │   ├── controllers/
-│   │   │
 │   │   ├── middleware/
-│   │   │
 │   │   ├── routes/
-│   │   │   ├── authRoute.js
-│   │   │   ├── vehicleRoute.js
-│   │   │   ├── chargingBayRoute.js
-│   │   │   ├── gridSlotRoute.js
-│   │   │   ├── chargingSessionRoute.js
-│   │   │   ├── assignmentRoute.js
-│   │   │   ├── schedulingRoute.js
-│   │   │   ├── powerRoute.js
-│   │   │   ├── routingRoute.js
-│   │   │   ├── journeyRoute.js
-│   │   │   ├── resourceAllocationRoute.js
-│   │   │   └── benchmarkRoute.js
-│   │   │
 │   │   └── app.js
 │   │
 │   ├── tests/
-│   │
 │   ├── package.json
 │   └── .env.example
 │
 ├── frontend/
-│   │
 │   ├── api/
-│   │   └── [...path].js
-│   │
 │   ├── src/
 │   │   ├── components/
 │   │   ├── context/
 │   │   ├── pages/
+│   │   │   ├── Admin/
+│   │   │   ├── Auth/
+│   │   │   ├── Dashboard/
+│   │   │   ├── Vehicles/
+│   │   │   ├── ChargingBays/
+│   │   │   ├── ChargingSessions/
+│   │   │   └── Optimization/
+│   │   ├── routes/
 │   │   ├── services/
 │   │   └── App.jsx
 │   │
 │   ├── vite.config.js
 │   ├── vercel.json
-│   ├── package.json
-│   └── .env.example
+│   └── package.json
 │
 ├── .gitignore
 └── README.md
-```
-
----
-
-# 🔗 API Endpoints
-
-## Authentication
-
-```text
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/refresh
-POST /api/auth/logout
-GET  /api/auth/me
-```
-
-## Vehicles
-
-```text
-GET    /api/vehicles
-POST   /api/vehicles
-PUT    /api/vehicles/:id
-DELETE /api/vehicles/:id
-```
-
-## Charging Bays
-
-```text
-GET    /api/charging-bays
-POST   /api/charging-bays
-PUT    /api/charging-bays/:id
-DELETE /api/charging-bays/:id
-```
-
-## Grid Slots
-
-```text
-GET    /api/grid-slots
-POST   /api/grid-slots
-PUT    /api/grid-slots/:id
-DELETE /api/grid-slots/:id
-```
-
-## Charging Sessions
-
-```text
-GET    /api/charging-sessions
-POST   /api/charging-sessions
-PUT    /api/charging-sessions/:id
-DELETE /api/charging-sessions/:id
-```
-
-## Algorithm APIs
-
-```text
-POST /api/assignment
-POST /api/scheduling
-POST /api/power
-POST /api/routing
-POST /api/journey
-POST /api/resource-allocation
-POST /api/benchmark
 ```
 
 ---
@@ -696,13 +697,11 @@ POST /api/benchmark
 ## 1. Clone the repository
 
 ```bash
-git clone <your-github-repository-url>
+git clone <repository-url>
 cd smart-ev-optimizer
 ```
 
----
-
-## 2. Backend setup
+## 2. Start the backend
 
 ```bash
 cd backend
@@ -720,21 +719,19 @@ REFRESH_COOKIE_NAME=ev_optimizer_refresh_token
 NODE_ENV=development
 ```
 
-Start the backend:
+Run:
 
 ```bash
 npm run dev
 ```
 
-or:
+The backend runs on:
 
-```bash
-npm start
+```text
+http://localhost:5000
 ```
 
----
-
-## 3. Frontend setup
+## 3. Start the frontend
 
 Open another terminal:
 
@@ -744,7 +741,7 @@ npm install
 npm run dev
 ```
 
-The Vite development server will normally run at:
+The frontend normally runs on:
 
 ```text
 http://localhost:5173
@@ -752,149 +749,66 @@ http://localhost:5173
 
 ---
 
-# 🌐 Production Deployment
+# 📚 What I Learned From This Project
 
-## Frontend
+One of the main reasons for building this project was to understand how different parts of software development work together.
 
-The React/Vite frontend is deployed on Vercel.
+Through the project, I worked with:
 
-```text
-https://smart-ev-optimizer.vercel.app
-```
+* Data Structures and Algorithms
+* REST API development
+* React
+* Node.js and Express
+* PostgreSQL
+* Authentication
+* Authorization
+* JWT and refresh tokens
+* HttpOnly cookies
+* API security
+* Input validation
+* Rate limiting
+* Automated testing
+* Database relationships
+* Cloud deployment
+* Performance benchmarking
 
-## Backend
+More importantly, the project helped connect the theoretical concepts from DAA with a practical application.
 
-The Express backend is deployed on Railway.
+For example, a priority queue is no longer just a data-structure exercise; it can be used to decide which EV should be considered for charging first.
 
-```text
-https://smart-ev-optimizer-production.up.railway.app
-```
-
-## Health Check
-
-```text
-GET /api/health
-```
-
-Example response:
-
-```json
-{
-  "success": true,
-  "service": "smart-ev-optimizer-backend",
-  "status": "healthy"
-}
-```
+Similarly, graph algorithms such as Dijkstra and A* can be applied to actual routing and journey-planning problems.
 
 ---
 
-# 🔐 Production API Architecture
+# 🔮 Future Improvements
 
-The production frontend uses same-origin API requests:
-
-```text
-https://smart-ev-optimizer.vercel.app/api/*
-```
-
-Vercel rewrites these requests to:
-
-```text
-https://smart-ev-optimizer-production.up.railway.app/api/*
-```
-
-This architecture allows the browser to communicate with the API through the frontend's origin while the backend remains independently deployed on Railway.
-
-It also allows the HttpOnly authentication cookies to work correctly on mobile browsers without requiring third-party cookies to be enabled.
-
----
-
-# 🗄️ Database Design
-
-The core database contains the following entities:
-
-```text
-┌──────────────┐
-│    Users     │
-└──────┬───────┘
-       │
-       │ authentication
-       │
-       ▼
-┌──────────────┐
-│   Vehicles   │
-└──────┬───────┘
-       │
-       │ assigned to
-       ▼
-┌──────────────────┐
-│ Charging Bays    │
-└────────┬─────────┘
-         │
-         │ charging session
-         ▼
-┌──────────────────────┐
-│ Charging Sessions    │
-└──────────┬───────────┘
-           │
-           │ uses
-           ▼
-┌──────────────────┐
-│   Grid Slots     │
-└──────────────────┘
-```
-
----
-
-# 🎯 Academic Objectives
-
-The project demonstrates how Data Structures and Algorithms can be applied to a real-world Smart Grid problem.
-
-The major objectives are:
-
-1. Optimize EV charging-bay assignment.
-2. Develop efficient charging schedules.
-3. Allocate limited grid power.
-4. Calculate efficient routes.
-5. Optimize EV journeys.
-6. Allocate constrained resources.
-7. Compare algorithmic approaches.
-8. Benchmark scalability.
-9. Integrate algorithms into a practical full-stack application.
-10. Apply security principles to a production-style web system.
-
----
-
-# 📈 Future Improvements
-
-Potential future extensions include:
+There are several features that could be added in future versions:
 
 * Real-time EV telemetry
+* WebSocket-based live updates
 * Live charging status
 * Dynamic electricity pricing
 * Machine-learning-based demand prediction
 * Renewable-energy integration
-* Solar/battery storage optimization
-* Advanced scheduling optimization
+* Solar and battery storage optimization
+* Advanced charging schedules
 * Real-time traffic-aware routing
-* WebSocket-based live dashboard updates
-* More advanced grid optimization techniques
+* Energy consumption analytics
+* Historical fleet analytics
+* More advanced grid optimization
 
 ---
 
-# 👨‍💻 Project
+# 🎓 Academic Purpose
 
-**Smart EV Fleet Charging and Grid Operations Optimizer**
+This project was developed as an academic project with the goal of demonstrating how **Data Structures and Algorithms can be applied to a real-world Smart Grid and EV fleet management problem**.
 
-**Domain:** Smart Grid Energy Management & EV Fleet Logistics
+Rather than implementing algorithms as separate examples, the project integrates them into a complete web application with authentication, database management, security, testing, and deployment.
 
-**Architecture:** React + Node.js/Express + PostgreSQL
-
-**Authentication:** JWT + HttpOnly Cookies
-
-**Deployment:** Vercel + Railway
+This makes it possible to study both the theoretical side of the algorithms and their practical implementation in a working software system.
 
 ---
 
-## 📄 License
+# 📄 License
 
-This project is developed for academic and educational purposes.
+This project was developed for academic and educational purposes.
