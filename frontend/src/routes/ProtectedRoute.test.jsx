@@ -82,4 +82,29 @@ describe("ProtectedRoute", () => {
     expect(screen.queryByText("Admin content")).not.toBeInTheDocument();
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
+
+  test("redirects admins away from normal-user routes", () => {
+    authState.loading = false;
+    authState.isAuthenticated = true;
+    authState.user = { role: "admin" };
+
+    render(
+      <MemoryRouter initialEntries={["/vehicles"]}>
+        <Routes>
+          <Route
+            path="/vehicles"
+            element={(
+              <ProtectedRoute requiredRole="user">
+                <div>Fleet content</div>
+              </ProtectedRoute>
+            )}
+          />
+          <Route path="/admin" element={<div>Admin dashboard</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText("Fleet content")).not.toBeInTheDocument();
+    expect(screen.getByText("Admin dashboard")).toBeInTheDocument();
+  });
 });

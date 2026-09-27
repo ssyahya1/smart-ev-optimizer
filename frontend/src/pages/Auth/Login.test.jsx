@@ -61,6 +61,24 @@ describe("Login", () => {
     });
   });
 
+  test("redirects admins to the admin dashboard after sign in", async () => {
+    loginMock.mockResolvedValueOnce({ user: { email: "admin@example.com", role: "admin" } });
+    renderLogin();
+
+    fireEvent.change(screen.getByLabelText("Email address"), {
+      target: { value: "admin@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Password"), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(loginMock).toHaveBeenCalledWith("admin@example.com", "password123");
+      expect(navigateMock).toHaveBeenCalledWith("/admin");
+    });
+  });
+
   test("shows the login error when authentication fails", async () => {
     loginMock.mockRejectedValueOnce(new Error("Invalid credentials"));
     renderLogin();

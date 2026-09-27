@@ -33,9 +33,10 @@ function Login() {
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password);
+      const response = await login(formData.email, formData.password);
+      const role = response?.user?.role || response?.role;
 
-      navigate("/dashboard");
+      navigate(role === "admin" ? "/admin" : "/dashboard");
     } catch (err) {
       setError(err.message || "Unable to login");
     } finally {

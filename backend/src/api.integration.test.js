@@ -206,6 +206,22 @@ describe("Express API integration", () => {
         ]);
     });
 
+    test("serves the admin dashboard and user listing for administrators", async () => {
+        await setTestRole("admin");
+
+        const dashboard = await api.get("/api/admin/dashboard");
+        const users = await api.get("/api/admin/users?page=1&limit=10");
+
+        expect(dashboard.status).toBe(200);
+        expect(dashboard.body.success).toBe(true);
+        expect(dashboard.body.data.users.total).toEqual(expect.any(Number));
+        expect(users.status).toBe(200);
+        expect(users.body.success).toBe(true);
+        expect(users.body.data.users).toEqual(expect.any(Array));
+
+        await setTestRole("user");
+    });
+
     test("performs vehicle CRUD", async () => {
         const created = await api.post("/api/vehicles/registervehicle").send(vehiclePayload);
         const listed = await api.get("/api/vehicles");

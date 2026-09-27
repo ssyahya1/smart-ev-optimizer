@@ -18,4 +18,14 @@ const refreshLimiter = rateLimit({
     }
 });
 
-export { loginLimiter, refreshLimiter };
+const adminSensitiveLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 20,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    message: {
+        message: "Too many admin actions. Please try again later."
+    }
+});
+
+export { loginLimiter, refreshLimiter, adminSensitiveLimiter };

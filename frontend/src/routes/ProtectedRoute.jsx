@@ -25,8 +25,12 @@ function ProtectedRoute({ children, requiredRole }) {
     );
   }
 
+  if (!requiredRole && user?.role === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+
   if (requiredRole && user?.role !== requiredRole) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={user?.role === "admin" ? "/admin" : "/dashboard"} replace />;
   }
 
   return children;

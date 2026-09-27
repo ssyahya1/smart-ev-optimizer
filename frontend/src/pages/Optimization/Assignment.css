@@ -2,12 +2,10 @@
 .assignment-page {
   min-height: 100vh;
   padding: 48px 56px 80px;
-  background: #0a0a0a;
-  color: #ffffff;
+  background: #f5f0e8;
+  color: var(--color-ink);
   font-family: Inter, "Plus Jakarta Sans", Arial, sans-serif;
 }
-
-/* HEADER */
 
 .assignment-header {
   display: flex;
@@ -20,7 +18,7 @@
 .assignment-label {
   display: block;
   margin-bottom: 18px;
-  color: #777777;
+  color: var(--color-muted);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -28,6 +26,7 @@
 
 .assignment-header h1 {
   margin: 0;
+  color: var(--color-ink);
   font-size: clamp(48px, 6vw, 82px);
   line-height: 0.95;
   font-weight: 600;
@@ -35,13 +34,13 @@
 }
 
 .assignment-header h1 span {
-  color: #777777;
+  color: var(--color-muted);
 }
 
 .assignment-header p {
   max-width: 620px;
   margin: 24px 0 0;
-  color: #8a8a8a;
+  color: var(--color-muted);
   font-size: 15px;
   line-height: 1.7;
 }
@@ -49,37 +48,35 @@
 .algorithm-badge {
   min-width: 230px;
   padding: 18px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-line);
   border-radius: 14px;
-  background: #111111;
+  background: var(--beige-light);
+  box-shadow: 0 3px 12px rgba(47, 38, 27, 0.045);
 }
 
 .algorithm-badge span {
   display: block;
   margin-bottom: 8px;
-  color: #666666;
+  color: var(--color-muted);
   font-size: 10px;
   letter-spacing: 0.14em;
 }
 
 .algorithm-badge strong {
+  color: var(--color-ink);
   font-size: 12px;
   letter-spacing: 0.04em;
 }
 
-/* ERROR */
-
 .assignment-error {
   margin-bottom: 24px;
   padding: 15px 18px;
-  border: 1px solid rgba(255, 90, 90, 0.3);
+  border: 1px solid #edc6c2;
   border-radius: 12px;
-  background: rgba(255, 70, 70, 0.08);
-  color: #ff8c8c;
+  background: #fff4f2;
+  color: var(--color-red);
   font-size: 13px;
 }
-
-/* MAIN INPUT AREA */
 
 .assignment-layout {
   display: grid;
@@ -89,10 +86,12 @@
 
 .assignment-control-card,
 .bay-overview-card,
-.algorithm-card {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.algorithm-card,
+.assignment-result-section {
+  border: 1px solid var(--color-line);
   border-radius: 16px;
-  background: #111111;
+  background: var(--color-surface);
+  box-shadow: 0 3px 12px rgba(47, 38, 27, 0.045);
 }
 
 .assignment-control-card,
@@ -103,7 +102,7 @@
 .section-label {
   display: block;
   margin-bottom: 12px;
-  color: #666666;
+  color: var(--color-muted);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -113,6 +112,7 @@
 .bay-overview-card h2,
 .assignment-result-section h2 {
   margin: 0;
+  color: var(--color-ink);
   font-size: 24px;
   font-weight: 500;
   letter-spacing: -0.03em;
@@ -127,39 +127,38 @@
 
 .input-summary div {
   padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-line);
   border-radius: 12px;
-  background: #0d0d0d;
+  background: var(--beige-light);
 }
 
 .input-summary span {
   display: block;
   margin-bottom: 8px;
-  color: #666666;
+  color: var(--color-muted);
   font-size: 10px;
   letter-spacing: 0.12em;
 }
 
 .input-summary strong {
+  color: var(--color-ink);
   font-size: 32px;
   font-weight: 500;
 }
 
 .assignment-description {
   margin: 22px 0;
-  color: #777777;
+  color: var(--color-muted);
   font-size: 13px;
   line-height: 1.7;
 }
 
 .plan-prerequisite p {
   margin: 0 0 12px;
-  color: #8a8a8a;
+  color: var(--color-muted);
   font-size: 13px;
   line-height: 1.6;
 }
-
-/* BUTTON */
 
 .run-assignment-button {
   display: flex;
@@ -169,10 +168,10 @@
   width: 100%;
   min-height: 54px;
   padding: 0 20px;
-  border: 1px solid #ffffff;
+  border: 0;
   border-radius: 10px;
-  background: #ffffff;
-  color: #0a0a0a;
+  background: var(--black);
+  color: #ffffff;
   cursor: pointer;
   font-size: 12px;
   font-weight: 800;
@@ -182,7 +181,7 @@
 }
 
 .run-assignment-button:hover:not(:disabled) {
-  background: #dcdcdc;
+  background: var(--black-soft);
 }
 
 .run-assignment-button:active:not(:disabled) {
@@ -198,8 +197,6 @@
   font-size: 18px;
 }
 
-/* BAY OVERVIEW */
-
 .card-heading {
   display: flex;
   align-items: flex-start;
@@ -208,7 +205,7 @@
 }
 
 .bay-count {
-  color: #777777;
+  color: var(--color-muted);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -226,47 +223,41 @@
   align-items: center;
   gap: 20px;
   padding: 17px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid #e9efeb;
 }
 
 .bay-item:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid #e9efeb;
 }
 
 .bay-item strong {
   display: block;
   margin-bottom: 5px;
+  color: var(--color-ink);
   font-size: 14px;
   font-weight: 500;
 }
 
 .bay-item span {
-  color: #666666;
+  color: var(--color-muted);
   font-size: 11px;
 }
 
 .bay-power {
-  color: #ffffff;
+  color: var(--color-ink);
   font-size: 13px;
   white-space: nowrap;
 }
 
-/* MESSAGES */
-
 .assignment-message {
   padding: 25px 0;
-  color: #666666;
+  color: var(--color-muted);
   font-size: 12px;
 }
-
-/* RESULTS */
 
 .assignment-result-section {
   margin-top: 18px;
   padding: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  background: #111111;
 }
 
 .result-heading {
@@ -277,7 +268,7 @@
 }
 
 .result-status {
-  color: #8dffb0;
+  color: var(--success);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -289,31 +280,30 @@
   gap: 22px;
   margin-top: 28px;
   padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--color-line);
   border-radius: 12px;
-  background: #0d0d0d;
+  background: var(--beige-light);
 }
 
 .empty-result > span {
-  color: #555555;
+  color: var(--color-muted);
   font-size: 11px;
 }
 
 .empty-result strong {
   display: block;
   margin-bottom: 8px;
+  color: var(--color-ink);
   font-size: 14px;
   font-weight: 500;
 }
 
 .empty-result p {
   margin: 0;
-  color: #666666;
+  color: var(--color-muted);
   font-size: 12px;
   line-height: 1.6;
 }
-
-/* ALGORITHM RESULTS */
 
 .algorithm-results {
   display: grid;
@@ -333,13 +323,13 @@
   align-items: flex-start;
   gap: 20px;
   padding-bottom: 22px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #e9efeb;
 }
 
 .algorithm-card-header > div > span {
   display: block;
   margin-bottom: 7px;
-  color: #555555;
+  color: var(--color-muted);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -347,6 +337,7 @@
 
 .algorithm-card-header h3 {
   margin: 0;
+  color: var(--color-ink);
   font-size: 25px;
   font-weight: 500;
   letter-spacing: -0.03em;
@@ -354,16 +345,15 @@
 
 .algorithm-tag {
   padding: 7px 9px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-line);
   border-radius: 7px;
-  color: #777777;
+  background: var(--beige-light);
+  color: var(--color-muted);
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
   white-space: nowrap;
 }
-
-/* ALGORITHM STATS */
 
 .algorithm-stats {
   display: grid;
@@ -375,23 +365,22 @@
 .algorithm-stats div {
   padding: 15px 12px;
   border-radius: 9px;
-  background: #0d0d0d;
+  background: var(--beige-light);
 }
 
 .algorithm-stats span {
   display: block;
   margin-bottom: 7px;
-  color: #555555;
+  color: var(--color-muted);
   font-size: 8px;
   letter-spacing: 0.1em;
 }
 
 .algorithm-stats strong {
+  color: var(--color-ink);
   font-size: 22px;
   font-weight: 500;
 }
-
-/* ASSIGNMENT LIST */
 
 .assignment-list {
   margin-top: 24px;
@@ -400,7 +389,7 @@
 .assignment-list > span {
   display: block;
   margin-bottom: 10px;
-  color: #555555;
+  color: var(--color-muted);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -412,25 +401,23 @@
   justify-content: space-between;
   gap: 20px;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid #e9efeb;
   font-size: 12px;
 }
 
 .assignment-row span {
-  color: #888888;
+  color: var(--color-muted);
 }
 
 .assignment-row strong {
-  color: #ffffff;
+  color: var(--color-ink);
   font-weight: 500;
 }
 
 .assignment-list p {
-  color: #666666;
+  color: var(--color-muted);
   font-size: 12px;
 }
-
-/* RESPONSIVE */
 
 @media (max-width: 1000px) {
   .assignment-page {
@@ -504,6 +491,4 @@
   .assignment-row {
     font-size: 11px;
   }
-
-  
 }

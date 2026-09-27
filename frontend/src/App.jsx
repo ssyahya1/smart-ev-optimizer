@@ -9,6 +9,12 @@ import ChargingBays from "./pages/ChargingBays/ChargingBays";
 import GridSlots from "./pages/GridSlots/GridSlots";
 import ChargingSessions from "./pages/ChargingSessions/ChargingSessions";
 import Assignment from "./pages/Optimization/Assignment";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminUsers from "./pages/Admin/AdminUsers";
+import AdminVehicles from "./pages/Admin/AdminVehicles";
+import AdminChargingSessions from "./pages/Admin/AdminChargingSessions";
+import AdminChargingBays from "./pages/Admin/AdminChargingBays";
+import AdminGridSlots from "./pages/Admin/AdminGridSlots";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Layout from "./components/Layout";
 import "./app-theme.css";
@@ -37,8 +43,23 @@ function App() {
           <Route path="/sessions" element={<ChargingSessions />} />
           <Route path="/charging-plan" element={<Assignment />} />
           <Route path="/assignment" element={<Navigate to="/charging-plan" replace />} />
-
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
+
+        <Route
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/vehicles" element={<AdminVehicles />} />
+          <Route path="/admin/charging-sessions" element={<AdminChargingSessions />} />
+          <Route path="/admin/charging-bays" element={<AdminChargingBays />} />
+          <Route path="/admin/grid-slots" element={<AdminGridSlots />} />
+          <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>

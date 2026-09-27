@@ -7,6 +7,27 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isAdmin = user?.role === "admin";
+  const homePath = isAdmin ? "/admin" : "/dashboard";
+
+  const normalLinks = [
+    { to: "/dashboard", label: "Overview", end: true },
+    { to: "/vehicles", label: "Vehicles" },
+    { to: "/charging-plan", label: "Charging plan" },
+    { to: "/bays", label: "Charging bays" },
+    { to: "/sessions", label: "Charging sessions" },
+  ];
+
+  const adminLinks = [
+    { to: "/admin", label: "Admin dashboard" },
+    { to: "/admin/users", label: "Users" },
+    { to: "/admin/vehicles", label: "Vehicles" },
+    { to: "/admin/charging-sessions", label: "Sessions" },
+    { to: "/admin/charging-bays", label: "Bays" },
+    { to: "/admin/grid-slots", label: "Grid slots" },
+  ];
+
+  const visibleLinks = isAdmin ? adminLinks : normalLinks;
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -49,7 +70,7 @@ export default function Navbar() {
         </button>
         <button
           className="app-mobile-brand"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate(homePath)}
           aria-label="Smart EV overview"
         >
           <span className="app-brand-mark">E</span>
@@ -72,7 +93,7 @@ export default function Navbar() {
       <aside className={`app-sidebar${menuOpen ? " mobile-open" : ""}`}>
       <button
         className="app-brand"
-        onClick={() => navigate("/dashboard")}
+        onClick={() => navigate(homePath)}
         aria-label="Smart EV overview"
       >
         <span className="app-brand-mark">E</span>
@@ -80,14 +101,41 @@ export default function Navbar() {
       </button>
 
       <nav className="app-nav" id="app-navigation" aria-label="Main navigation">
-        <span className="app-nav-label">FLEET</span>
-        <NavLink to="/dashboard" end onClick={closeMenu} className={({ isActive }) => isActive ? "app-nav-link active" : "app-nav-link"}>Overview</NavLink>
-        <NavLink to="/vehicles" onClick={closeMenu} className={({ isActive }) => isActive ? "app-nav-link active" : "app-nav-link"}>Vehicles</NavLink>
-        <NavLink to="/charging-plan" onClick={closeMenu} className={({ isActive }) => isActive ? "app-nav-link active" : "app-nav-link"}>Charging plan</NavLink>
-        <NavLink to="/bays" onClick={closeMenu} className={({ isActive }) => isActive ? "app-nav-link active" : "app-nav-link"}>Charging bays</NavLink>
-        <NavLink to="/sessions" onClick={closeMenu} className={({ isActive }) => isActive ? "app-nav-link active" : "app-nav-link"}>Charging sessions</NavLink>
-        <span className="app-nav-label app-nav-label-spaced">ENERGY</span>
-        <NavLink to="/grid" onClick={closeMenu} className={({ isActive }) => isActive ? "app-nav-link active" : "app-nav-link"}>Grid availability</NavLink>
+        {!isAdmin && (
+          <>
+            <span className="app-nav-label">FLEET</span>
+            {normalLinks.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.end}
+                onClick={closeMenu}
+                className={({ isActive }) => (isActive ? "app-nav-link active" : "app-nav-link")}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+            <span className="app-nav-label app-nav-label-spaced">ENERGY</span>
+            <NavLink to="/grid" onClick={closeMenu} className={({ isActive }) => (isActive ? "app-nav-link active" : "app-nav-link")}>Grid availability</NavLink>
+          </>
+        )}
+
+        {isAdmin && (
+          <>
+            <span className="app-nav-label">ADMIN</span>
+            {visibleLinks.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.end}
+                onClick={closeMenu}
+                className={({ isActive }) => (isActive ? "app-nav-link active" : "app-nav-link")}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </>
+        )}
       </nav>
 
       <div className="app-sidebar-footer">
